@@ -1,0 +1,13 @@
+<div class="col-lg-2 col-md-2">
+<div class="span3 project-preview">
+    {% if include.project.link  %}<a href="{{ include.project.link }}" target="_blank">{% endif %}
+    <img src="/assets/img/projects/{{ include.project.thumbnail }}" alt="" class="img-polaroid" />
+    <div class="roles">
+      <h5><strong>{{ include.project.title }}</strong></h5>
+      <p>
+        {{ include.project.description }}
+      </p>
+    </div>
+    {% if include.project.link  %}</a>{% endif %}
+  </div>
+</div>

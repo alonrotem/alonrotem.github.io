@@ -1,0 +1,6 @@
+@font-face {
+    font-family: "baba-bold";
+    src: url("../font/baba-pro/BabaproBold-OVGqO.woff") format("woff"),
+    url("../font/baba-pro/BabaproBold-OVGqO.woff2") format("woff2"),
+    url("../font/baba-pro/BabaproBold-OVGqO.otf") format("opentype")
+    }

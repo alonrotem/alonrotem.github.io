@@ -1,0 +1,27 @@
+---
+layout: page
+---
+{% assign posts = page.posts  %}
+
+<div style="margin-bottom: 20px;">
+    <a class="alltagslink" href="/tags.html" title="Всички тагове"><img src="/assets/images/bookmark-color.png"></a>
+    <span class="tagpagetitle">
+        {{ page.title }} ({{ posts | size }})</span>
+</div>
+
+<div class="article-post">
+    <div class="categorylist">
+        <div class="container">
+            {% if posts %}
+            {% for post in posts %}
+            {% assign counter = forloop.length %}
+            {{ post.title }}<br/>
+            { % include postlistitem.html % }
+            {% endfor %}
+            {% endif %}
+            {% if counter == 0 %}
+            Няма публикувани статии под {{site.data.categoriestext[page.category].text}}
+            {% endif %}
+        </div>
+    </div>
+</div>

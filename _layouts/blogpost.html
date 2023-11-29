@@ -1,0 +1,65 @@
+---
+layout: page
+disqus: true
+comments: true
+---
+
+<!-- https://customer.io/blog/easy-date-formatting-with-liquid/ -->
+{% assign postdate = page.date | date: "%Y/%m/%d " %}
+{% assign hours = "00" %}
+{% assign minutes = "00" %}
+{% assign filename = page.path | remove_first: "_posts/" %}
+{% assign fn_parts = filename | split: "-" %}
+{% assign fn_parts_count = fn_parts | size %}
+{% if fn_parts_count > 5 %}
+    {% assign hours = fn_parts[3] %}
+    {% assign minutes = fn_parts[4] %}
+{% endif %}
+{% assign postdate = postdate | append: hours %}
+{% assign postdate = postdate | append: ":" %}
+{% assign postdate = postdate | append: minutes %}
+
+{% assign datestr =  postdate | date: "%d %B %Y" %}
+{% if hours != "00" and minutes != "00" %}
+    {% assign datestr = datestr | append: ", " %}
+    {% assign datestr = datestr | append: hours %}
+    {% assign datestr = datestr | append: ":" %}
+    {% assign datestr = datestr | append: minutes %}
+{% endif %}
+
+<div class="container blogpost">
+    <div class="row">
+        <div class="col">
+            <h1>{{ page.title }}</h1>
+            <div class="post-date"><a href="{{ page.url }}">{{ datestr }}</a></div>
+            {{ content }}
+            <div>
+                <i class="fa-solid fa-tags"></i> 
+                {% for tag in page.tags %}
+                    {% unless forloop.index == 1 %}, {% endunless %}<a href="/blog/tag/{{ tag | slugify }}">{{ tag }}</a>
+                {% endfor %}
+            </div>
+            <!-- disqus-->
+            <div id="disqus_thread"></div>
+            <script>
+                /**
+                *  RECOMMENDED CONFIGURATION VARIABLES: EDIT AND UNCOMMENT THE SECTION BELOW TO INSERT DYNAMIC VALUES FROM YOUR PLATFORM OR CMS.
+                *  LEARN WHY DEFINING THESE VARIABLES IS IMPORTANT: https://disqus.com/admin/universalcode/#configuration-variables    */
+                /*
+                var disqus_config = function () {
+                this.page.url = PAGE_URL;  // Replace PAGE_URL with your page's canonical URL variable
+                this.page.identifier = PAGE_IDENTIFIER; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+                };
+                */
+                (function() { // DON'T EDIT BELOW THIS LINE
+                var d = document, s = d.createElement('script');
+                s.src = 'https://alon-in-the-world.disqus.com/embed.js';
+                s.setAttribute('data-timestamp', +new Date());
+                (d.head || d.body).appendChild(s);
+                })();
+            </script>
+            <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>            
+            <!--/disqus-->
+        </div>
+    </div>
+</div>
