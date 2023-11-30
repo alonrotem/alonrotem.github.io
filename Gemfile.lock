@@ -75,6 +75,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  jekyll (~> 4.3.0)
   jekyll-archives
   jekyll-feed
   jekyll-paginate
