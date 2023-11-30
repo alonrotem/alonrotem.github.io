@@ -28,6 +28,9 @@
   color: #fff;
   text-shadow: none;
 }
+html, body {
+	min-height: 100%;
+}
 
 body {
   margin: 0;

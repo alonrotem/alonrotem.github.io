@@ -42,7 +42,6 @@ ruby RUBY_VERSION
 #
 #     bundle exec jekyll serve
 #
-
 # If you have any plugins, put them here!
 # gem 'wdm', '>= 0.1.0' if Gem.win_platform?
 gem "wdm",   :platforms => :x64_mingw
@@ -53,7 +52,7 @@ group :jekyll_plugins do
     gem 'jekyll-archives'
     gem 'jekyll-paginate'
     #em "jekyll-paginate-v2"
-    gem 'jekyll-redirect-from', '~> 0.14.0'
+    gem 'jekyll-redirect-from'
 end
 
-gem "webrick", "~> 1.8"
+gem "webrick"
