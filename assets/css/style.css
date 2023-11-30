@@ -5,7 +5,7 @@
     Author URL: https://bootstrapmade.com
 */
 
-@import url('font-awesome.css');
+@import url('../font/fontawesome/css/fontawesome.css');
 /* ==== overwrite bootstrap standard ==== */
 @import url('overwrite.css');
 
@@ -63,6 +63,7 @@ h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
 
 h1 {
   font-size: 34px;
+  letter-spacing: -6px;
 }
 
 h2 {

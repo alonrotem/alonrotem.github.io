@@ -1,4 +1,6 @@
 /*global $:false, jQuery:false, console:false */
+
+
 jQuery(document).ready(function($) {
   "use strict";
 
@@ -58,7 +60,7 @@ jQuery(document).ready(function($) {
   });
 
   //prettyphoto
-  $("a[data-pretty^='prettyPhoto']").prettyPhoto();
+  //$("a[data-pretty^='prettyPhoto']").prettyPhoto();
 
   //portfolio hover
   $('ul.da-thumbs > li').hoverdir();

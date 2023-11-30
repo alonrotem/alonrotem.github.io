@@ -1,40 +1,45 @@
-    <!-- start top -->
-    <header id="topnav" class="navbar navbar-fixed-top default" style="/*visibility:hidden*/">
-      <div class="container">
-      <nav class="container-fluid navbar navbar-expand-lg navbar-dark">
-        <div class="container-fluid">
-          <div class="navbar-brand">
-            <a href="/{{ site.homepage }}"><img src="/assets/img/alon-in-the-world-blue-baba-font.png" alt="" style="width: 114px;" /></a>
-          </div>
-          
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
-          <div class="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul class="navigation-list nav navbar-nav ms-auto mb-2 mb-lg-0 pull-right">
-              <!-- originals -->
-              <li class="nav-item"><a class="nav-link" href="/{{ site.homepage }}#intro">Home</a></li>
-              <li class="nav-item"><a class="nav-link" href="/{{ site.homepage }}#about">Who am I?</a></li>
-              <li class="nav-item"><a class="nav-link" href="/blog">Blog</a></li>
-              <li class="nav-item"><a class="nav-link" href="/{{ site.homepage }}#services">Services</a></li>
-              <li class="nav-item"><a class="nav-link" href="/{{ site.homepage }}#works">Works</a></li>
-              <li class="nav-item"><a class="nav-link" href="/{{ site.homepage }}#contact">Contact</a></li>
-              <li class="dropdown">
-                <a href="#">Features <i class="icon-angle-down"></i></a>
-                <ul class="dropdown-menu">
-                  <li><a href="components.html" class="external">Components</a></li>
-                  <li><a href="icons.html" class="external">Icons</a></li>
-                  <li><a href="animations.html" class="external">56 Animations</a></li>
-                </ul>
-              </li>
-              <!-- /originals -->
-
-            </ul>
-          </div>
+  {% assign blogactive = "" %}
+  {% if page.url contains "/blog/" %}
+    {% assign blogactive = "active" %}
+  {% endif %}
+  
+  <!-- start top -->
+  <header id="topnav" class="navbar navbar-fixed-top default" style="/*visibility:hidden*/">
+    <div class="container">
+    <nav class="container-fluid navbar navbar-expand-lg navbar-dark">
+      <div class="container-fluid">
+        <div class="navbar-brand">
+          <a href="/{{ site.homepage }}"><img src="/assets/img/alon-in-the-world-blue-baba-font.png" alt="" style="width: 114px;" /></a>
         </div>
-      </nav>
-    </div>
-    </header>  
+        
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navigation-list nav navbar-nav ms-auto mb-2 mb-lg-0 pull-right">
+            <!-- originals -->
+            <li class="nav-item"><a class="nav-link" href="/{{ site.homepage }}#intro">Home</a></li>
+            <li class="nav-item"><a class="nav-link" href="/{{ site.homepage }}#about">Who am I?</a></li>
+            <li class="nav-item"><a class="nav-link {{ blogactive }}" href="/blog">Blog</a></li>
+            <li class="nav-item"><a class="nav-link" href="/{{ site.homepage }}#services">Services</a></li>
+            <li class="nav-item"><a class="nav-link" href="/{{ site.homepage }}#works">Works</a></li>
+            <li class="nav-item"><a class="nav-link" href="/{{ site.homepage }}#contact">Contact</a></li>
+            <li class="dropdown">
+              <a href="#">Features <i class="icon-angle-down"></i></a>
+              <ul class="dropdown-menu">
+                <li><a href="components.html" class="external">Components</a></li>
+                <li><a href="icons.html" class="external">Icons</a></li>
+                <li><a href="animations.html" class="external">56 Animations</a></li>
+              </ul>
+            </li>
+            <!-- /originals -->
+
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </div>
+  </header>  
     <!--
     <div id="topnav" class="navbar navbar-fixed-top default">
       <div class="navbar-inner">

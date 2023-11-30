@@ -3,6 +3,7 @@ layout: page
 disqus: true
 comments: true
 ---
+{% assign page.title = "abcde" %}
 
 <!-- https://customer.io/blog/easy-date-formatting-with-liquid/ -->
 {% assign postdate = page.date | date: "%Y/%m/%d " %}
@@ -32,7 +33,13 @@ comments: true
         <div class="col">
             <h1>{{ page.title }}</h1>
             <div class="post-date"><a href="{{ page.url }}">{{ datestr }}</a></div>
-            {{ content }}
+
+            {% if page.image %}
+                <img src="{{ page.image }}" style="float: right; width: 35%;" />
+            {% endif %}
+                
+            <div>{{ content }}</div>
+            
             <div>
                 <i class="fa-solid fa-tags"></i> 
                 {% for tag in page.tags %}
