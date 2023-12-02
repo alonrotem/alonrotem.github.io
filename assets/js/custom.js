@@ -40,6 +40,7 @@ jQuery(document).ready(function($) {
     $(this).find('.accordion-toggle i').not($(e.target)).addClass('icon-plus');
   });
 
+  /*
   // Create the dropdown base
   $("<select />").appendTo("nav");
 
@@ -76,6 +77,7 @@ jQuery(document).ready(function($) {
   }, function() {
     $(this).find('.dropdown-menu').stop(true, true).delay(200).fadeOut();
   });
+  */
   //.parallax(xPosition, speedFactor, outerHeight) options:
   //xPosition - Horizontal position of the element
   //inertia - speed to move relative to vertical scroll. Example: 0.1 is one tenth the speed of scrolling, 2 is twice the speed of scrolling
