@@ -1,0 +1,137 @@
+{% assign element_width = 200 %}
+{% if include.width %}
+    {% assign element_width = include.width %}
+{% endif %}
+
+{% assign button_size = 30 %}
+{% assign pos_left = (include.percents | times: element_width)  %}
+{% assign pos_left = pos_left | divided_by: 100 %}
+{% assign button_offest = button_size | divided_by: 2 %}
+{% assign pos_left = pos_left | minus: button_offest %}
+
+{% assign tooltip = include.percents | append: "%" %}
+{% if include.info %}
+  {% assign tooltip = include.info %}
+{% endif %}
+
+<style>
+.slider {
+  align-self: center;
+    position: relative;
+    top: -11px;
+    margin: 0px 5px;
+}
+
+.slider-box {
+  width: {{element_width}}px;
+  height: 1rem;
+  cursor: pointer;
+  box-shadow: inset 0.2rem 0.2rem 0.5rem #c8d0e7, inset -0.2rem -0.2rem 0.5rem white; /*--greyLight-2*/
+  border-radius: 1rem;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.slider-button {
+  width: {{ button_size }}px;
+  height: {{ button_size }}px;
+  border-radius: 50%;
+  background: white;
+  position: absolute;
+  box-shadow: 0px 0.1rem 0.3rem 0px #bec8e4; /* --greyLight-3 */
+  z-index: 200;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  {% assign x = (((element_width / 100) * (include.percents))) | minus: (button_size/2) %}
+  left: {{ pos_left }}px
+}
+.slider-button:hover ~ .slider-tooltip {
+  opacity: 1;
+}
+.slider-button::after {
+  content: "";
+  position: absolute;
+  width: 0.8rem;
+  height: 0.8rem;
+  border-radius: 50%;
+  /*box-shadow: inset 0.2rem 0.2rem 0.5rem #c8d0e7, inset -0.2rem -0.2rem 0.5rem white; /*--greyLight-2*/
+  background: #3498db;
+}
+.slider-fill0color {
+  height: 100%;
+  width: {{ include.percents }}%;
+  position: absolute;
+  left: 0;
+  z-index: 100;
+  border-radius: inherit;
+  background: var(#3599dc); /* --primary */
+  /*background: linear-gradient(-1deg, #033f96 0%, #3599dc 50%, #608ac9 100%); /* --primary-dark, --primary,  --primary-light*/
+  background: linear-gradient(-1deg, #608ac9 0%, #3599dc 50%, #608ac9 100%);
+}
+.slider-tooltip {
+  position: absolute;
+    top: 30px;
+    border-radius: 0.6rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0.3rem 0.3rem 0.6rem #c8d0e7, -0.2rem -0.2rem 0.5rem white;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    font-size: 10px;
+    font-weight: 700;
+    color: #3498db;
+    padding: 5px;
+    background-color: whitesmoke;
+}
+
+.slider-container {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-content: center;
+  align-items: flex-start;
+  font-size: 10px;
+  font-weight: 700;
+  color: #3498db;
+}
+
+.side-box {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.rocket-science-box {
+    position: relative;
+    left: -6px;
+}
+
+</style>
+
+<div class="slider-container">
+
+  <div  class="side-box">
+    <img class="nolightbox" style="width: 50px;margin: 0;" src="/assets/img/blog/donald-trump.png">
+    <div >Simple</div>
+  </div>
+
+  <div class="slider">
+      <div class="slider-box">
+          <span class="slider-button" id="find"></span>
+          <span class="slider-fill0color"></span>
+          <span class="slider-tooltip">{{ tooltip }}</span>
+      </div>
+  </div>
+
+  <div class="side-box rocket-science-box">
+    <img class="nolightbox" style="width: 67px;margin: 0;" src="/assets/img/blog/NASA_logo.png">
+    <div >Rocket science</div>
+  </div>
+</div>

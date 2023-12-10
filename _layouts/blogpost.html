@@ -6,44 +6,26 @@ comments: true
 {% assign page.title = "abcde" %}
 
 <!-- https://customer.io/blog/easy-date-formatting-with-liquid/ -->
-{% assign postdate = page.date | date: "%Y/%m/%d " %}
-{% assign hours = "00" %}
-{% assign minutes = "00" %}
-{% assign filename = page.path | remove_first: "_posts/" %}
-{% assign fn_parts = filename | split: "-" %}
-{% assign fn_parts_count = fn_parts | size %}
-{% if fn_parts_count > 5 %}
-    {% assign hours = fn_parts[3] %}
-    {% assign minutes = fn_parts[4] %}
-{% endif %}
-{% assign postdate = postdate | append: hours %}
-{% assign postdate = postdate | append: ":" %}
-{% assign postdate = postdate | append: minutes %}
-
-{% assign datestr =  postdate | date: "%d %B %Y" %}
-{% if hours != "00" and minutes != "00" %}
-    {% assign datestr = datestr | append: ", " %}
-    {% assign datestr = datestr | append: hours %}
-    {% assign datestr = datestr | append: ":" %}
-    {% assign datestr = datestr | append: minutes %}
-{% endif %}
+{% assign datestr = page.date | date: "%d %B %Y" %}
 
 <div class="container blogpost">
     <div class="row">
         <div class="col">
             <h1>{{ page.title }}</h1>
+            <p style="font-weight: 900;">{{ page.subtitle }}</p>
             <div class="post-date"><a href="{{ page.url }}">{{ datestr }}</a></div>
 
             {% if page.image %}
-                <img src="{{ page.image }}" style="float: right; width: 35%;" />
+                <img class="post-image" src="{{ page.image }}" style="float: right; width: 35%;" />
             {% endif %}
                 
+            
             <div>{{ content }}</div>
             
-            <div>
+            <div class="tags-section">
                 <i class="fa-solid fa-tags"></i> 
                 {% for tag in page.tags %}
-                    {% unless forloop.index == 1 %}, {% endunless %}<a href="/blog/tag/{{ tag | slugify }}">{{ tag }}</a>
+                    <a href="/blog/tag/{{ tag | slugify }}">{{ tag }}</a>
                 {% endfor %}
             </div>
             <!-- disqus-->

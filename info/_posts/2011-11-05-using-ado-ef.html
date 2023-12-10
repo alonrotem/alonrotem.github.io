@@ -1,0 +1,352 @@
+---
+title: Using ADO.NET Entity Framework 4.1 with SQL Server Compact 4.0
+tags:
+    - .NET
+    - ADO.NET
+    - C#
+    - Entity Framework
+    - Not quite rocket science
+    - Sample projects
+    - SQL Compact
+redirect_from: /2011/11/using-adonet-entity-framework-41-with.html
+image: /assets/img/blog/Entity-Framework.jpg
+hidden: false
+subtitle: Auto object-relational mapping with ease
+---
+<h2>WTF and Why?!!</h2>
+<p>
+ADO.NET Entity Framework, an object-relational mapper (ORM) built into the .NET framework, provides an easy way to map your classes into a database tables and vice versa.
+</p>
+<p>
+I've been working with with Entity Framework CTP 4, and have now upgraded my project to use the final released version 4.1. I'll provide here a small proof-of concept which I've built in order to chart the important bits and pieces.
+</p>
+<strong>Article level:</strong><br/>
+{% include blog/slider.html percents=80 info="Not quite rocket science" %}
+
+<h2>SQL Server Compact (CE)</h2>
+<p>
+Yet another useful small scale tool. Of course you can map your entities into a full robust database. There are a number of pre-built providers, not counting Microsoft SQL and SQL Express (the default). I've chosen to use MS SQL Server Compact as a first option (later to be replaced or give the user/administrator the option to set a different provider) mainly because it's super-lightweight, builds the database in a file, and does not require heavy installation and licenses. It's free and is supported by mobile devices. For small applications it may be sufficient. For larger scale apps perhaps not so much.
+</p>
+<h2>Prerequisites checklist</h2>
+<ul>
+<li>ADO.NET Entity Framework 4.1, available <a href="http://www.microsoft.com/download/en/details.aspx?displaylang=en&id=8363" target="_blank">here</a>.</li>
+<li>Microsoft SQL Server Compact 4.0, available <a href="http://www.microsoft.com/download/en/details.aspx?id=17876" target="_blank">here</a>.</li>
+<li>MS SQL Server CE has no fancy management application (like MS SQL Server Management Studio for more robust SQL Server versions) and it is not natively browsable from Visual Studio.<br/>
+However, in order to query your tables and see what's going on, I recommend using SQL Server Compact Toolbox Visual Studio extension, available <a href="http://visualstudiogallery.msdn.microsoft.com/0e313dfd-be80-4afb-b5e9-6e74d369f7a1/" target="_blank">here</a>.<br/>
+Mind you that in order for it to run properly, you will need to have both SQL Server CE 4.0 (from the link above) and the SQL Server CE 3.5 SP2 runtime from <a href="http://www.microsoft.com/download/en/details.aspx?id=5783" target="_blank">here</a> installed on your machine.<br/>
+If you are running a 64 bit version of Windows, you will have to download, extract and install both the 32 bit and the 64 bit versions of the SQL Server CE 3.5 SP2.
+</ul>
+
+<h2>Project references</h2>
+Once all prerequisites are in place, the following assembly references are to be added to the project:
+<ul>
+<li>EntityFramework<br/>
+Should reside in the folder where the Microsoft ADO.NET Entity Framework 4.1 has been installed. By default it would be something like:<br/>
+C:\Program Files (x86)\Microsoft ADO.NET Entity Framework 4.1\Binaries\</li>
+<li>System.ComponentModel.DataAnnotations<br/>
+This is required in order to use data attributes for annotating your persisted class properties, such as [Key] to denote a primary key property.</li>
+</li>
+</ul>
+
+<h2>Code first: Data classes</h2>
+<p>
+The approach I'm implementing here assumes you have the data classes created first, and wish to map those into database tables. There are ways to implement in the opposite direction, meaning you have your database and wish to create corresponding classes ("Model first"). I'll use a simple structure of a Person class and Company class.
+</p>
+<p>
+The simpler of the two is the company class, which consists of 2 properties: an ID and a name.
+</p>
+<pre><code class="language-csharp line-numbers">public class Company
+{
+    public Company()
+    {
+    
+    }
+    
+    public Company(Guid companyId, string companyName)
+    {
+        this.CompanyId = companyId;
+        this.CompanyName = companyName;
+    }
+    
+    [Key, Column(Order =1)]
+    public Guid CompanyId { get; set; }
+    
+    [Key, Column(Order = 2)]
+    public string CompanyName { get; set; }
+}    
+</code></pre>
+<p>
+    A few points to note, though:
+    <ul>
+        <li>
+    Notice it has an empty default constructor with no arguments. Even if this constructor does nothing, it is required for reconstructing the object once it's fetched back from the database.
+        </li>
+        <li>
+    For this example, I've defined  both public properties, CompanyId and CompanyName as parts of a compound primary key.  It is also necessary to order the key parts as demonstrated here.
+        </li>
+    </ul>
+</p>
+<p>
+    For this demo, I've also included a simple enum. Enums were quite clumsy to use in previous CTP versions of the Entity Framework, but as of version 4.x they are supported more easily.
+</p><p>
+    Hence the following enum is also defined:
+</p>
+<pre><code class="language-csharp line-numbers">public enum Prefix 
+{ 
+    Mr,
+    Ms,
+    Mrs,
+    Dr
+}
+</code></pre>
+
+<p>
+    The Person class: 
+</p>
+<pre><code class="language-csharp line-numbers">public class Person
+{
+    public Person()
+    {
+    
+    }
+    
+    public Person(Guid personId, string name, int age, Prefix pref, Company workplace)
+    {
+        this.PersonId = personId;
+        this.Name = name;
+        this.Age = age;
+        this.NamePrefix = pref;
+        this.Workplace = workplace;
+    }
+    
+    [Key]
+    public Guid PersonId { get; set; }
+    
+    public string Name { get; set; }
+    
+    public int Age { get; set; }
+    
+    public Company Workplace { get; set; }
+    
+    [Required]
+    public virtual Prefix NamePrefix { get; set; }
+    
+    public virtual int NamePrefixId
+    {
+        get { return (int)NamePrefix; }
+        set { NamePrefix = (Prefix)value; }
+    }
+}</code></pre>
+<p>
+    <ul>
+        <li>A more complex class. It has a member of type Company.</li>
+        <li>It has 2 member properties: NamePrefix and NamePrefixId, which relate to the enum of type Prefix. The NamePrefixId member is a helper for translating the enum to/from int, which is the actual underlying type which will be stored in the database.</li>
+        <li>It also has an empty default non-argumentative constructor for the sake of reconstructing the retrieved object.</li>
+    </ul>
+</p>
+
+<h2>Database context</h2>
+<p>
+This class is required as a management context for our persisted objects against the framework. It inherits DbContext and its properties, which are of the generic DbSet type represent the queryable collections of the persisted objects.
+</p>
+<pre><code class="language-csharp line-numbers">public class PersonsContext : DbContext
+{
+    public PersonsContext()
+        : base(PersonsContext.ConnectionString)
+    {
+    }
+    
+    public DbSet<Person> Persons { get; set; }
+    public DbSet<Company> Companies { get; set; }
+    
+    public static string ConnectionString
+    {
+        get
+        {
+            return @"Data Source=" + 
+                System.Reflection
+                    .Assembly
+                    .GetExecutingAssembly()
+                    .Location
+                    .Substring(0, 
+                        System
+                        .Reflection
+                        .Assembly
+                        .GetExecutingAssembly()
+                        .Location
+                        .LastIndexOf("\\") + 1) 
+                + @"\\people.sdf";
+        }
+    }
+}</code></pre>
+<p>
+Furthermore:
+<ul>
+<li>Notice the constructor.<br/>
+It invokes the base class constructor, providing a simple connection string to our database.<br/>
+It could have also provided the name of a connection string from the App.Config file, or it could provide no connection string at all (in which case our database would be created on the local instance of SQL Express, with a name similar to our executing application.
+</li>
+<li>
+The connection string provided here corresponds with MS SQL Compact, and refers to a database file, people.sdf, which is expected to be created/found on the same folder of our application's assembly (If debug/run the solution from Visual Studio, the folder would be Bin\Debug by default).
+</li>
+</ul>
+</p>
+
+<h2>Sowing the seeds of love</h2>
+<p>
+Many times when we run a newly built database-oriented application, we'd want to start with some predefined data already stored in the database.<br/>
+If we generate the database manually with some SQL script, we could easily include some INSERT statements in order to generate and store the initial data.<br/>
+In the case of Entity Framework, we can generate and store our initial data by creating the following class:
+</p>
+<pre><code class="language-csharp line-numbers">public class DatabaseInitializer : CreateDatabaseIfNotExists<PersonsContext>
+{
+    protected override void Seed(PersonsContext context)
+    {
+        Company telerik = new Company(Guid.NewGuid(), "Telerik");;
+        Person alon = new Person(Guid.NewGuid(), "Alon", 38, Prefix.Mr, telerik);
+    
+        context.Companies.Add(telerik);
+        context.Persons.Add(alon);
+    
+        context.SaveChanges();
+    }
+}</code></pre>
+<p>
+    Notice:
+    <ul>
+    <li>This class inherits the generic CreateDatabaseIfNotExists class. This is the default policy of the Entity Framework (to create the database if it does not already exist, duh!). Other options are listed on the <a href="http://msdn.microsoft.com/en-us/library/gg696142(v=VS.103).aspx" target="_blank">MSDN library</a> (duh!!).</li>
+    <li>We override the Seed method, and populate the context argument with our predefined objects. Once the new database is created, this data should be automatically inserted into the underlying tables.
+    In this case, one company (telerik) and one person (alon) are created and seeded.</li>
+    </ul>
+</p>
+
+<h2>I ❤ Helper classes</h2>
+<p></p>
+Now almost <a href="https://www.youtube.com/watch?v=VrpGhEVyrk0" target="_blank">everything is in its right place</a>. We will need to tie everything together, though.<br/>
+<strong>I love helper classes.</strong> They are just so damn helpful. I've created this helper class in order to simplify and wrap the interaction with the data context nicely.
+<pre><code class="language-csharp line-numbers">public class DataManager
+{
+    public static PersonsContext DataContext
+    {
+        get
+        {
+            if (DataManager.dataContext == null)
+            {
+                Database.DefaultConnectionFactory = new SqlCeConnectionFactory("System.Data.SqlServerCe.4.0");
+                DataManager.dataContext = new PersonsContext();
+                bool dbExists = DataManager.dataContext.Database.Exists();
+                if (dbExists)
+                {
+                    //UpgradeScript();
+                }
+                if (!dbExists)
+                {
+                    Database.SetInitializer(new DatabaseInitializer());
+                }
+                else
+                    Database.SetInitializer<PersonsContext>(null);
+            }
+            return DataManager.dataContext;
+        }
+    }
+    private static PersonsContext dataContext = null;
+}</code></pre>
+<p>
+    About this class:
+    <ul>
+    <li>The main purpose here is to statically cache (in memory) and manage our PersonsContext object.</li>
+    <li>A few important settings are also applied here:<br/>
+    Setting the default database factory to SQL Server Compact (SqlServerCe).</li>
+    <li>If the database does not exist, an initializer of type DatabaseInitializer is assigned. That is, the seeding class defined above will kick in and create the persisted entities in the database.</li>
+    <li>If the database already exists, no initializer is assigned, but I'm leaving the option to run upgrade scripts (i.e. check the version of our data and apply changes in the database schema according to changes in our persisted classes and/or seeded data to match the current product version) if they are needed.<br/>
+    Those should manipulate tables, and need to be run directly against the database.</li>
+    </ul>
+</p>
+<h2>Manipulations are always such fun</h2>
+<p>
+To demonstrate the ease of use of this shameless production and manipulation through basic CRUD operations, I've constructed a small console application. Here is its main function:
+</p>
+<pre><code class="language-csharp line-numbers">class Program
+{
+    static void Main(string[] args)
+    {
+        //Check seeding:
+        Console.WriteLine("{0} persons are in your database.\n", DataManager.DataContext.Persons.Count());
+    
+        //Basic CRUD operations:
+    
+        //C(reate)
+        if (DataManager.DataContext.Companies.FirstOrDefault(
+        c => c.CompanyName == "Microsoft") == null)
+        {
+            DataModel.Company microsoft = new DataModel.Company(Guid.NewGuid(), "Microsoft");
+            DataManager.DataContext.Companies.Add(microsoft);
+            DataManager.DataContext.Persons.Add(new DataModel.Person(
+                Guid.NewGuid(), 
+                "John doe", 
+                20, 
+                DataModel.Prefix.Dr, 
+                microsoft));
+            DataManager.DataContext.Persons.Add(new DataModel.Person(
+                Guid.NewGuid(), 
+                "Klark Kent", 
+                30, 
+                DataModel.Prefix.Dr, 
+                microsoft));
+            DataManager.DataContext.SaveChanges();
+        }
+    
+        //R(ead)
+        IQueryable<DataModel.Person> microsoftWorkers = DataManager.DataContext.Persons.Where(
+            person => person.Workplace.CompanyName == "Microsoft");
+        Console.WriteLine("{0} persons are working in Microsoft.\n", microsoftWorkers.Count());
+    
+        //U(pdate)
+        DataModel.Person johnDoe = DataManager.DataContext.Persons.FirstOrDefault(
+            p => p.Name == "John Doe");
+        if (johnDoe != null)
+        {
+            johnDoe.Name = "Changed Name";
+            DataManager.DataContext.SaveChanges();
+        }
+    
+        //D(elete)
+        DataModel.Person klark = DataManager.DataContext.Persons.FirstOrDefault(
+            p => p.Name == "Klark Kent");
+        if (klark != null)
+        {
+            DataManager.DataContext.Persons.Remove(klark);
+            DataManager.DataContext.SaveChanges();
+        }
+            
+        //Done.
+        Console.ReadKey();
+    }
+}</code></pre>
+
+<h2>Where is my data?</h2>
+<p>
+As written in the prerequisites section above, I'm using the very comfortable SQL Server Compact Toolbox Visual Studio extension.
+<br/>
+Once installed, it can be accessed through the Tools menu:
+</p>
+<img src="/assets/img/blog/toolbox_menu.png" title="SQL Server Compact Toolbox added to Visual Studio's Tools menu"/>
+<div class="caption">SQL Server Compact Toolbox added to Visual Studio's Tools menu</div>
+
+<p>Connecting to your database file is then extremely simple:</p>
+<img src="/assets/img/blog/toolbox_add_connection.png" title="Add SQL Server Compact 4.0 Connection..." />
+<div class="caption">Add SQL Server Compact 4.0 Connection...</div>
+
+<p>In the dialog, browse to select your created SDF database file, the connection string will be automatically created:</p>
+<img src="/assets/img/blog/toolbox_select file.png" title="Browse for the file">
+<div class="caption">Browse for the file</div>
+
+<p>
+And you can now browse through your database and run queries like any civilized respectful person would do, if they were you:
+</p>
+<img src="/assets/img/blog/toolbox_queries.png" title="Here are your tables! Creating queries is easy">
+<div class="caption">Here are your tables! Creating queries is easy</div>
+
+<p>A query execution window will open</p>
+<img src="/assets/img/blog/toolbox_queries_execution.png" title="Edit, plan, parse and execute your queries easily.">
+<div class="caption">Edit, plan, parse and execute your queries easily.</div>
