@@ -14,6 +14,9 @@ redirect_from: /2011/11/teletris-console-demo-project.html
 image: /assets/img/blog/telerik-academy.jpg
 hidden: false
 subtitle: Building a console-based game
+attachment:
+    url: https://github.com/alonrotem/alonrotem.github.io/raw/main/assets/attachments/TeleTris.zip
+    title: Download the code
 ---
 <p>
     One of the projects provided as demos for <a href="/blog/2011/11/13/teaching-at-telerik-school-academy.html">my class</a> at the <a href="https://www.telerikacademy.com/" target="_blank">Telerik Academy</a> was a console implementation of the classic <a href="http://en.wikipedia.org/wiki/Snake_(video_game)" target="_blank">Snake game</a> (they named it <em>JustSnake</em>). You can see it and some of its code on the screen recording of my lecture "<strong><em>Console Input and Output</em></strong>", which I will share here very soon.<br/>
@@ -22,4 +25,41 @@ subtitle: Building a console-based game
 <p>
 <strong>Article level:</strong><br/>
 {% include blog/slider.html percents=50 info="Reasonably moderate" %}
+</p>
+<!--  -->
+<h2>TeleTris In Action</h2>
+<p>
+Of course <a href="https://github.com/alonrotem/alonrotem.github.io/raw/main/assets/attachments/TeleTris.zip" target="_blank">I'm attaching</a> the full source code solution (and pre-built executable) here for anyone who wishes to download and play.  Note that in order to run the executable, you will need to have the <a href="http://www.microsoft.com/download/en/details.aspx?id=17718" target="_blank">Microsoft .NET Framework (4.0)</a> installed on your machine.<br/>
+Everyone is free to suggest improvements and bug fixes. I am aware of some minor graphic bugs and of the fact that the game's responsiveness could be improved, but for a single evening of work I think it's ok.<br/>
+Here's a small screen capture of TeleTris in action. Click to open the animated version:
+</p>
+<img src="/assets/img/blog/TeleTris.gif"/>
+
+<h2>Code Overview</h2>
+<p>
+The code consists of a straight-forward console application project, split it into 4 files:
+</p>
+<ul>
+    <li>
+<strong>Program.cs</strong><br/>
+This is the default main file. It contains the code for the fancy splash screen (which is also used as a credits screen) and all it does is trigger the main menu, which takes the functionality on from there.
+</li><li>
+    <strong>MainMenu.cs</strong><br/>
+This file contains the functionality of the main options menu and of the game-speed setting menu. These 2 menus function in a similar way: On every change, the menu is reprinted with the newly selected option highlighted. Of course, the main menu invokes all other functions: the actual game, speed setting, credits screen and quitting the application.
+</li><li>
+    <strong>TetrisShape.cs</strong><br/>
+This file contains the base abstract class TetrisShape, and a few sample derived classes: Shape1, Shape2, Shape3 and Shape4. The shapes defer from one another only in their outlines, which are  stored in a bidimensional array of characters.<br/>
+The functionality implemented in the TetrisShape class covers the ability to rotate the shape clockwise, detect the utilized shape boundaries within the array (recalculated when the shape is constructed and when the shape is rotated) and the option to print out the shape to the console at specific coordinates. If the shape has already been displayed (determined by the 2 members lastPositionX and lastPositionY), it is first removed from its previous location, then printed in the new one.<br/>
+A random colour, out of a limited choice of console colours, is picked in the constructor of the base class for every new shape (yes, I know that in the classic Tetris game each shape has its own set colour. However this was an administrative decision and once it got voted for unanimously by me, I could not object to it anymore).<br/>
+The TetrisShape class has also a static method, GetShape, which is kinda like a factory for retrieving a random shape out of the 4 possible shapes.
+</li><li>
+    <strong>Game.cs</strong><br/>
+Naturally the most complex of the 4 files as it contains the Play method which controls the entire game flow.<br/>
+It uses a member bidimensional array named SkyLine, which reflects the screen area with all the shapes which have already fallen (and stopped falling). This is due to the fact that reading the console screen buffer with C# is not a trivial task at all, and the game needs to be aware of what's going on on the client's screen: to know when shapes collide, when rows are complete and how to reprint the skyline after complete rows are deleted.<br/>
+In a while loop which iterates  as long as it can, a new shape is created and starts falling (reprinted to the console on every step, considering the user's keystrokes of left/right/down arrows, spacebar and Esc). Once a shape detects a collision directly underneath it (with the help of the SkyLine), it stops falling and a new shape is retrieved. If the user clicks the down arrow, the shape starts falling faster, while ignoring the user's keys until it reaches its lowest point.<br/>
+Before a new shape is retrieved, the SkyLine is updated, and checked for complete rows. If such is found, it is: (1) coloured in yellow, (2) deleted from the SkyLine, while the entire SkyLine array shifts downwards, (3) the updated part of the SkyLine is reprinted to the screen (in gray only. Sorry, that was another administrative decision of laziness) (4) the score is updated and displayed.
+</li>
+</ul>
+<p>
+As written above, you are welcome to download, explore and fix my bugs, because I am definitely not planning to do so for this project :-)
 </p>
