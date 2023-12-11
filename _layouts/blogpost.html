@@ -22,6 +22,14 @@ comments: true
             
             <div>{{ content }}</div>
             
+            {% if page.attachment and page.attachment.url %}
+            {% assign attachment_text = "Download attachment" %}
+            {% if page.attachment.title %}
+            {% assign attachment_text = page.attachment.title %}
+            {% endif  %}
+            <div class="attachment"><a href="{{ page.attachment.url }}" target="_blank"><i class="fa-solid fa-floppy-disk"></i> {{ attachment_text }}</a></div> 
+            {% endif %}
+            
             <div class="tags-section">
                 <i class="fa-solid fa-tags"></i> 
                 {% for tag in page.tags %}

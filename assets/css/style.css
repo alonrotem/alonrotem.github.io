@@ -1504,3 +1504,11 @@ Blog posts
 .blogpost div.tags-section a:hover::after {
     border-left: 10px solid  #3498db;
 }
+
+.blogpost .attachment a {
+	font-size: 15px;
+    font-weight: 700;
+}
+.blogpost .attachment a:hover {
+	text-decoration: none;
+}
