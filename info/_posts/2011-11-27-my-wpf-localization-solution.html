@@ -1,0 +1,565 @@
+---
+title: My WPF Localization Solution
+tags:
+    - .NET
+    - C#
+    - Localization
+    - Not quite rocket science
+    - Sample projects
+    - WPF
+redirect_from: /2011/11/my-wpf-localization-solution.html
+image: /assets/img/blog/flags.png
+hidden: false
+subtitle: Making your WPF app support multiple languages
+attachment:
+    url: /assets/attachments/LocalizationDemo.zip
+    title: Download the code
+---
+<h2>The world awaits</h2>
+<p>
+I ran into a need to have my WPF application support multiple languages, to prepare it for its big day day when it finally becomes the hottest product in China or at least in Burkina-Faso.
+</p>
+<p>
+There are plenty of localization solutions out there. I've been searching for the optimal way to make my application multilingual, and being the lazy developer I am, by "optimal" I usually mean optimal for me (i.e. the developer):
+<ul>
+<li>I want all the texts to change to the current selected culture automatically.</li>
+<li>I want to retrieve additional resources, such as images, for a specific culture. </li>
+<li>I want to be able to add new multilingual resources to my application without effort.</li>
+<li>I want all multilingual support and resources to be reusable in a separate assembly.</li>
+</ul>
+</p>
+<p>
+    <strong>Article level:</strong><br/>
+    {% include blog/slider.html percents=80 info="Not quite rocket science" %}    
+</p>
+<p>
+    <h2>Showing off</h2>
+    First, to show some abilities:
+    <p>
+    <img src="/assets/img/blog/i18n-ScreenCapture.gif"/>
+    <div class="caption">In action</div>
+</p>
+    Some features which can be seen in this screen capture:
+    <ul>
+    <li>The following texts in the window are bound to localized resources and they change automatically when the culture is changed:
+    <ul>
+        <li>The title of the window itself.</li>
+        <li>The 1st text block in the window ("Hello, world!").</li>
+        <li>The 2nd text block in the window ("Text in English").</li>
+        <li>The 3rd text block in the window ("This year, 2011").</li>
+        <li>The text on the button.</li>
+        <li>The text in the message-box, which pops when the button is clicked.</li>
+        <li>The menu item "Language", </li>
+    </ul>
+    </li>
+    <li>The menu under "Language" automatically lists the languages for which there are available resources.</li>
+    <li>The flag on each menu item is also retrieved automatically, if it's available.</li>
+    </ul>
+</p>
+<p>
+    <h2>The foundations</h2>
+<p>
+    I've split my solution into 2 projects:
+    <img src="/assets/img/blog/i18n-solution.png" title="Solution structure"/>
+    <div class="caption">Solution structure</div>
+</p>
+<p>
+    <strong>Localization Demo</strong> - is the sample WPF application with a single XAML window.
+</p><p>
+    <strong>Localization</strong> - is the external assembly (class library) which holds the entire functionality to make everything multilingual. It contains all the string resources and the useful static CultureResources class (see breakdown below).
+</p><p>    
+    In this example there is 1 resource file named MainApp.resx, which contains the default strings in American English (en-US), and corresponding translation- MainApp.bg-BG.resx which contains the strings in Bulgarian (bg-BG) and MainApp.he-IL.resx which contains the strings in Hebrew (he-IL).
+</p><p>    
+    New resources for the application should be easily added and placed in the Resources folder, split into the cultures they support. That is all. <strong>No additional actions are required</strong>.
+</p><p>    
+    Resources in different languages should have matching resource names, and since all the resources are in a separate assembly, they should be declared as public. Notice this in the "Access Modifier" drop down below.
+</p>
+
+<p>
+    <img src="/assets/img/blog/i18n-resx.png" title="The default English resource file MainApp.resx"/>
+    <div class="caption">The default English resource file MainApp.resx</div>
+</p>
+
+
+
+<p>
+    <img src="/assets/img/blog/i18n-resx-bg.png" title="The Bulgarian resource file MainApp.bg-BG.resx"/>
+    <div class="caption">The Bulgarian resource file MainApp.bg-BG.resx</div>
+</p>
+
+
+
+<p>
+    <img src="/assets/img/blog/i18n-resx-he.png" title="The Hebrew resource file MainApp.he-IL.resx"/>
+    <div class="caption">The Hebrew resource file MainApp.he-IL.resx</div>
+</p>
+
+<p>
+I've also included a resource file which contains the flags for each of the supported languages as 16x16 px images. Note that there is a convention for the flags' names which correspond to its matching culture.<br/>
+This resource's Access Modifier is also set as Public.
+</p>
+<p>
+    <img src="/assets/img/blog/flags.png" title="The flags file Flags.resx"/>
+    <div class="caption">The flags file Flags.resx</div>
+</p>
+
+<h2>Anatomy of the CultureResources static class</h2>
+<h3>Lazy loading: Mapping the available resources</h3>
+<p>
+    
+    No, you jokers! I don't mean "<em>Lazy loading</em>" as in getting just the data you need. I mean "<em>Lazy loading</em>" as in be lazy and let the programme load and handle its manifested resources on its own.<br/>
+    If resources are added/removed, this process will auto-update them. Hurray for laziness!
+</p>
+<p>    
+    So this will be done dynamically via reflection. In order not to repeat the costly process of reflection more than once, I keep a dictionary of the resources as a private field which is populated once, and kept cached statically in memory:   
+</p>
+
+<pre><code class="language-csharp line-numbers remove-initial-line-feed">
+    private static Dictionary&lt;string, object&gt; localizationResources = new Dictionary&lt;string, object&gt;();
+</code></pre>
+<p>
+    Those resources are mapped and accessed via the matching public static property:
+</p>
+<pre><code class="language-csharp line-numbers remove-initial-line-feed">
+/// &lt;summary&gt;
+/// Gets the resources manifested by this assembly.
+/// &lt;/summary&gt;
+public static Dictionary&lt;string, object&gt; LocalizationResources
+{
+    get
+    {
+        if (CultureResources.localizationResources.Keys.Count == 0)
+        {
+            string[] resourcesInThisAssembly = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceNames();
+            foreach (string resource in resourcesInThisAssembly)
+            {
+                string res = resource.Substring(0, resource.LastIndexOf("."));
+                string resKey = res.Substring(res.LastIndexOf(".") + 1);
+                if (!CultureResources.localizationResources.ContainsKey(res))
+                {
+                    Type t = Type.GetType(res);
+                    object resourceInstance = t.GetConstructor(
+                            BindingFlags.NonPublic | BindingFlags.Instance,
+                            null,
+                            Type.EmptyTypes, null)
+                                .Invoke(new object[] { });
+                    CultureResources.localizationResources.Add(resKey, resourceInstance);
+                }
+            }
+        }
+        return localizationResources;
+    }
+}
+</code></pre>
+
+<p>
+    The keys of the dictionary are the names of the resources (in this case will contain 2, named: MainApp and Flags). The values are the resources themselves.
+</p>
+<p>
+I can also retrieve a specific resource by its name, by this rather simple method:
+</p>
+<pre><code class="language-csharp line-numbers remove-initial-line-feed">
+/// &lt;summary&gt;
+/// Gets a resource by name, corresponding to one of the resources in the Localization assembly.
+/// &lt;/summary&gt;
+/// &lt;param name="resname"&gt;The resname.&lt;/param&gt;
+/// &lt;returns&gt;&lt;/returns&gt;
+public static object GetResource(string resname)
+{
+    if (LocalizationResources.ContainsKey(resname))
+        return LocalizationResources[resname];
+    return null;
+}
+</code></pre>
+
+<h3>The background workers: Associating each resource with an object data provider</h3>
+<p>
+The data providers do the whole trick of automatic language switching. Each of the resources is associated with a data provider of type ObjectDataProvider.<br/>
+When the culture of the UI is changed, each of these providers is refreshed, and the resources automatically reload, getting the strings in the newly set culture.<br/>
+In an approach similar to the one used to map the resources, I'm keeping those providers in their own static dictionary:
+</p>
+
+<pre><code class="language-csharp line-numbers remove-initial-line-feed">
+private static Dictionary&lt;string, ObjectDataProvider&gt; resourceDataProviders = new Dictionary&lt;string, ObjectDataProvider&gt;();
+</code></pre>
+
+<p>
+A method PopulateDataProviders is used to construct each of the data providers.
+Again, the resources are scanned through reflection, and a dynamic ObjectDataProvider is created to correspond with each of them.
+</p>
+<p>
+Another important statement to note in this piece of code, is the addition of the provider to <strong><em>Application.Current.Resources</em></strong>. This will allow our executing assembly (the main WPF executable, <strong>not</strong> the Localization class library where this code resides) to access the resources directly, as if they were added to it.
+</p>
+
+<pre><code class="language-csharp line-numbers remove-initial-line-feed">
+/// &lt;summary&gt;
+/// Instantiates the object data providers associated with the resources manifested by this assembly,
+/// Pupulates the the resources and data providers dictionaries,
+/// Adds all the resources to the current application resources (which is why it should be called on OnStartup of App.xaml.cs
+/// &lt;/summary&gt;
+public static void PopulateDataProviders()
+{
+    if (CultureResources.resourceDataProviders.Keys.Count == 0)
+    {
+        string[] resourcesInThisAssembly = System.Reflection.Assembly.GetExecutingAssembly().GetManifestResourceNames();
+        foreach (string resource in resourcesInThisAssembly)
+        {
+            string res = resource.Substring(0, resource.LastIndexOf("."));
+            string resKey = res.Substring(res.LastIndexOf(".") + 1);
+            if (!CultureResources.resourceDataProviders.ContainsKey(res))
+            {
+                ObjectDataProvider prov = null;
+                try
+                {
+                    if (Application.Current.Resources.Contains(resKey))
+                        prov = (ObjectDataProvider)Application.Current.FindResource(resKey);
+                    else
+                    {
+                        prov = new ObjectDataProvider() {
+                          ObjectInstance = Localization.CultureResources.GetResource(resKey) 
+                        };
+                        Application.Current.Resources.Add(resKey, prov);
+                    }
+                }
+                catch
+                {
+                    prov = null;
+                }
+                CultureResources.resourceDataProviders.Add(resKey, prov);
+            }
+        }
+    }
+}
+</code></pre>
+
+<p>
+    The ObjectDataProviders are also accessible via a public property, which first makes sure the dictionary is initialized:
+</p>
+<pre><code class="language-csharp line-numbers remove-initial-line-feed">
+/// &lt;summary&gt;
+/// Gets the object data providers associated with the resources manifested by this assembly.
+/// &lt;/summary&gt;
+public static Dictionary&lt;string, ObjectDataProvider&gt; ResourceDataProviders
+{
+    get
+    {
+        CultureResources.PopulateDataProviders();
+        return resourceDataProviders;
+    }
+}
+</code></pre>
+
+<p>
+    A method which verifies a specific ObjectDataProvider (for a specific resource) is instantiated is also added and will be used momentarily. The importance of this method is to make sure the resources and their data providers are accessible and instantiated, in case they had been addressed too early.
+</p>
+
+<pre><code class="language-csharp line-numbers remove-initial-line-feed">
+/// &lt;summary&gt;
+/// Instantiates a data provider associated wth a static resource 
+/// (once the provider is refreshed, the bound strings are reloaded with the current UI language).
+/// &lt;/summary&gt;
+/// &lt;param name="resource"&gt;The name of resource to associate with the provider.&lt;/param&gt;
+/// &lt;returns&gt;The instantiated data provider.&lt;/returns&gt;
+private static ObjectDataProvider InstantiateDataProvider(string resource)
+{
+    try
+    {
+        if (ResourceDataProviders.ContainsKey(resource))
+        {
+            if (ResourceDataProviders[resource] == null)
+                ResourceDataProviders[resource] = (ObjectDataProvider)Application.Current.FindResource(resource);
+        }
+    }
+    catch
+    {
+        return null;
+    }
+    return ResourceDataProviders[resource];
+}
+</code></pre>
+
+<h3>Where the magic happens: Changing the current UI culture</h3>
+<p>
+Switching among the different available cultures is the main idea here, so first of all I'm keeping track of the current UI culture with this property:
+</h2>
+
+<pre><code class="language-csharp line-numbers remove-initial-line-feed">
+/// &lt;summary&gt;
+/// Gets or sets the current UI culture name.
+/// &lt;/summary&gt;
+/// &lt;value&gt;
+/// The current UI culture name.
+/// &lt;/value&gt;
+public static string CurrentCulture
+{
+    get;
+    set;
+}
+</code></pre>
+
+<p>
+    Now changing to a new culture is as easy as calling this method:
+</p>
+<pre><code class="language-csharp line-numbers remove-initial-line-feed">
+/// &lt;summary&gt;
+/// Changes the UI culture.
+/// &lt;/summary&gt;
+/// &lt;param name="culture"&gt;The new UI culture.&lt;/param&gt;
+public static void ChangeCulture(CultureInfo culture)
+{
+    CurrentCulture = culture.Name;
+    System.Threading.Thread.CurrentThread.CurrentUICulture = culture;
+    
+    for (int i = 0; i &lt; ResourceDataProviders.Keys.Count; i++)
+    {
+        ObjectDataProvider prov = InstantiateDataProvider(ResourceDataProviders.ElementAt(i).Key);
+        if (prov != null)
+            prov.Refresh();
+    }
+}
+</code></pre>
+
+<p>
+    As you can see, it changes the current UI culture of the current thread, then goes through the <em>ObjectDataProviders</em> in the dictionary, verifies every one of them is instantiated, then the <strong><em>Refresh</em></strong> method is invoked. That's where the magic happens.    
+</p>
+
+<h3>Bonus feature I: Listing the available cultures (Lazy loading II)</h3>
+<p>
+It may be important for the running application to know which cultures have valid translations. For example, in this demo application I construct a menu which lists them.<br/>
+Again, being the lazy loader I am, I do not want to do that myself. I'll let my app figure it out on its own.
+</p><p>
+For each culture, a folder will be created at build time, which will contain a satellite assembly with the same name of our resources assembly ("Localization" in our case) and a postfix of resources.dll.
+</p>
+<p>
+    <img src="/assets/img/blog/i18n-folders.png" title="Contents of the application's output folder and subfolders"/>
+    <div class="caption">Contents of the application's output folder and subfolders</div>
+</p>
+<p>
+    In order to determine which cultures are supported by our application, this feature checks file system for folder containing *.resource.dll file
+</p><p>
+    Since I don't need it to run more than once, I cache the results in memory :
+</p>
+<pre><code class="language-csharp line-numbers remove-initial-line-feed">private static List&lt;CultureInfo&gt; availableCultures = new List&lt;CultureInfo&gt;();</code></pre>
+<p>
+    and get populate it on the public property with the help of some LINQ:
+</p>
+<pre><code class="language-csharp line-numbers remove-initial-line-feed">
+/// &lt;summary&gt;
+/// Gets the list of cultures valid for the resources manifested by this assembly.
+/// &lt;/summary&gt;
+public static List&lt;CultureInfo&gt; AvailableCultures
+{
+    get
+    {
+        if (availableCultures.Count == 0)
+        {
+            if (localizationResources.Count &gt; 0)
+            {
+                availableCultures.Add(new CultureInfo("en-US"));
+            }
+            string resourceFileName = Path.GetFileNameWithoutExtension(Assembly.GetExecutingAssembly().Location) 
+                        + ".resources.dll";
+            DirectoryInfo rootDir = new DirectoryInfo(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));
+            availableCultures.AddRange((from culture in CultureInfo.GetCultures(CultureTypes.AllCultures)
+                                        join folder in rootDir.GetDirectories() on culture.IetfLanguageTag equals folder.Name
+                                        where folder.GetFiles(resourceFileName).Any()
+                                        select culture));
+        }
+        return availableCultures;
+    }
+}
+</code></pre>
+
+<h3>Bonus feature II: Retrieving a flag image for a specific culture, if available</h3>
+<p>
+As can be seen above, I'm holding some flags in a resource file, flags.resx. Of course I could have just used them as regular image files as regular or embedded resources.<br/>
+Since this project is all about dynamic resources, and management of cultures, I wanted my assembly to be able to get me a flag automatically, if the resource holds it.<br/>
+Since the resource files create dynamic types, the flags should be retrieved as properties, then I cast them to bitmaps:
+</p>
+<pre><code class="language-csharp line-numbers remove-initial-line-feed">
+/// &lt;summary&gt;
+/// Gets a 16x16 icon image of a flag by a specific culture (if stored in the currnet resources)
+/// &lt;/summary&gt;
+/// &lt;param name="cultureName"&gt;Name of the culture (e.g. "en-US").&lt;/param&gt;
+/// &lt;returns&gt;A 16x16 icon image of a flag by a specific culture (if stored in the currnet resources).&lt;/returns&gt;
+public static System.Drawing.Bitmap GetFlag(string cultureName)
+{
+    string flagName = "Flag_" + cultureName.Replace("-", "_");
+    PropertyInfo flagProperty = typeof(Localization.Resources.Flags).GetProperty(flagName);
+    if (flagProperty == null)
+        return null;
+    else
+        return (System.Drawing.Bitmap)flagProperty.GetValue(null, null);
+}
+</code></pre>
+
+<h3>Bonus feature III: Retrieving a string from a resource (in the current culture)</h3>
+<p>
+Similar to the method for getting flags, I can also retrieve a specific string from a resource. The string will be retrieved in the current UI culture. This is how:
+</p>
+<pre><code class="language-csharp line-numbers remove-initial-line-feed">
+public static string GetString(string resourceName, string key)
+{
+    string str = null;
+    object resource = GetResource(resourceName);
+    if (resource != null)
+    {
+        PropertyInfo resStr = resource.GetType().GetProperty(key);
+        if (resStr != null)
+        {
+            str = System.Convert.ToString(resStr.GetValue(null, null));
+        }
+    }
+    return str;
+}
+</code></pre>
+
+<h3>A secret nugget: Associating the resources with the application's executable</h3>
+<p>
+Just before it all comes together, in order to make the main WPF executable be aware of all the resources available in the Localization assembly, 2 steps need to be taken:
+<ul>
+    <li>
+Localization assembly has to be added as reference to the main WPF executable, LocalizationDemo.
+</li><li>
+The following code needs to be placed in the WPF executable's App.XAML.cs file:<br/>
+<pre><code class="language-csharp line-numbers remove-initial-line-feed">
+using System.Windows;
+
+namespace LocalizationDemo
+{
+    public partial class App : Application
+    {
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+            Localization.CultureResources.PopulateDataProviders();
+        }
+    }
+}
+</code></pre>
+It calls the PopulateDataProviders which initializes all the providers and attaches them as resources to the currently executing application (the exe assembly).<br/>
+Now all the resources should be accessible on the WPF application.
+</li>
+</ul>
+</p>
+
+<h2>The really really easy part: Making it work for you</h2>
+<p>
+Now that everything is in its place, all we have to do is bind our textual elements to the right resources.
+</p>
+
+<h3>Binding texts declaratively in the XAML</h3>
+<p>
+This is how properties of text elements can be bound to dynamic texts directly in the XAML. They will change according to the current culture automatically.<br/>
+For example, I've placed a TextBlock (the first one which reads "<em>Hello, world!</em>"):
+</p>
+<pre><code class="language-html line-numbers remove-initial-line-feed">
+&lt;!-- This TextBlock is bound directly from the XAML --&gt;
+&lt;TextBlock Text="{Binding Path=HelloWorld, Source={StaticResource MainApp}}" Margin="10"/&gt;
+</code></pre>
+
+<p>
+Same for the "Languages" menu item:
+</p>
+<pre><code class="language-html line-numbers remove-initial-line-feed">
+&lt;Menu Name="mainMenu"&gt;
+    &lt;MenuItem Name="menuOptionsLanguage"&gt;
+        &lt;MenuItem.Header&gt;
+            &lt;TextBlock Text="{Binding Path=LanguageMenuItem, Source={StaticResource MainApp}}"/&gt;
+        &lt;/MenuItem.Header&gt;
+    &lt;/MenuItem&gt;
+&lt;/Menu&gt;
+</code></pre>
+
+<p>Same for the button text:</p>
+<pre><code class="language-html line-numbers remove-initial-line-feed">
+&lt;Button Click="Button_Click" Width="100" Margin="10"&gt;
+    &lt;TextBlock Text="{Binding Path=ButtonText, Source={StaticResource MainApp}}"/&gt;
+&lt;/Button&gt;    
+</code></pre>
+
+<p>And same for the window title itself:</p>
+<pre><code class="language-html line-numbers remove-initial-line-feed">
+&lt;Window x:Class="LocalizationDemo.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Height="256" Width="393" WindowStartupLocation="CenterScreen"
+        Title="{Binding Path=HelloWorld, Source={StaticResource MainApp}}"&gt;
+    &lt;!-- Content... --&gt;
+&lt;/Window&gt;
+</code></pre>
+
+<h3>Binding texts programmatically</h3>
+The 2<span style="vertical-align: super;">nd</span> text block, which reads "<em>Text in English</em>" is bound to a dynamic resource as well, but its binding is performed in code. This is how:
+<pre><code class="language-csharp line-numbers remove-initial-line-feed">
+this.codeBoundTextBlock.SetBinding(
+    TextBlock.TextProperty, 
+    new Binding() 
+    { 
+        Source = CultureResources.ResourceDataProviders["MainApp"], 
+        Path = new PropertyPath("LoclizedText") 
+    }
+);
+</code></pre>
+
+<h3>Binding texts with formatted strings</h3>
+<p>
+The 3<span style="vertical-align: super;">rd</span> text block, which reads "<em>This year, 2011</em>", consists of a formatted string with placeholders.  This means the binding here needs to be more dynamic, with an unknown number of arguments.<br/>
+For that I've created a class named StringFormatConverter, in the Localization Assembly. It inherits from IMultiValueConverter, so I can use regular binding of text resources with multiple arguments. This is its content:
+</p>
+<pre><code class="language-csharp line-numbers remove-initial-line-feed">
+public class StringFormatConverter : IMultiValueConverter
+{
+    public object Convert(object[] values, System.Type targetType, object parameter, CultureInfo culture)
+    {
+        if (values.Count() == 0)
+            return string.Empty;
+        string str = values[0].ToString();
+    
+        if (values.Count() == 1)
+            return str;
+    
+        List&lt;object&gt; paramsList = values.ToList();
+        paramsList.RemoveAt(0);
+        return string.Format(str, paramsList.ToArray());
+    }
+    
+    public object[] ConvertBack(object value, System.Type[] targetTypes, object parameter, CultureInfo culture)
+    {
+        throw new System.NotImplementedException();
+    }
+    
+    public static StringFormatConverter Converter = new StringFormatConverter();
+}
+</code></pre>
+<p>
+    It constructs a formatted string based on the bound values, and it has a static instance of itself, for ease of use.<br/>
+    And here is how it is used in the <em>MainWindow.XAML.cs</em>:
+</p>
+<pre><code class="language-csharp line-numbers remove-initial-line-feed">
+this.codeBoundTextBlockWithArgs.SetBinding(TextBlock.TextProperty, new MultiBinding() 
+{
+    Converter = StringFormatConverter.Converter,
+    Bindings = 
+    { 
+        new Binding() 
+        { 
+            Source = CultureResources.ResourceDataProviders["MainApp"], 
+            Path = new PropertyPath("FormattedString") 
+        },
+        new Binding() 
+        { 
+            Source = DateTime.Now.Year.ToString() 
+        }
+    }
+});
+</code></pre>
+
+<h3>Manually getting a string</h3>
+Clicking the button pops up a message box, which shows a text in the current UI culture. It's as simple as retrieving the string, and showing it:
+<pre><code class="language-csharp line-numbers remove-initial-line-feed">
+private void Button_Click(object sender, RoutedEventArgs e)
+{
+    MessageBox.Show(CultureResources.GetString("MainApp", "HelloWorld"));
+}
+</code></pre>

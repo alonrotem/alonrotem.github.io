@@ -1,0 +1,445 @@
+---
+title: Remote Debugging In the Comfort of Your Living Room
+tags:
+    - .NET
+    - C#
+    - Debugging
+    - Not quite rocket science
+redirect_from: /2012/02/remote-debugging-tn-confort-of-your.html
+image: /assets/img/blog/debugging.jpg
+hidden: false
+subtitle: A complete guide to remote .NET debugging
+attachment:
+    url: /assets/attachments/RunAsWithCredentials.zip
+    title: Download code for RunAsWithCredentials
+---
+<style>
+    .screenshot-thumb { 
+        width: 50%;
+    }
+</style>
+<h2>Be the domainless master of your own domain</h2>
+<p>
+Many times I need to test a project on different operating systems, preinstalled or not preinstalled with specific components (e.g. a 32 bit project built with Windows 7 x64, run on a Windows XP x64 or x86, without an installation of the .NET framework runtime environment) and see how it behaves.
+And in many cases it would misbehave.
+</p>
+<p>
+In such cases I'd like to inspect my errors in order to repair them. And in many cases this is no easy task. It's sometimes hard to trace the problems without a proper debugger.
+It's possible, of course, to install  a complete development environment on my test machine, but that would be heavy, take disk space and memory, and in many cases would be quite an overkill.
+</p>
+<p>
+Fortunately, Microsoft provides the platform and tools for remotely debugging your application.
+Unfortunately, accessing a remote machine for debugging requires appropriate permissions, and the remote debugging tools are planned to work when both computers share a domain and can work with common domain users.
+</p>
+<p>
+A common (and economic) trick for testing an application on multiple environments is by using a virtual machine. I can  run several virtual machines on my computer, each with a different setup and a different OS.
+In order to achieve remote debugging, I'd theoretically need to set up a domain server, and start managing users among my virtual machines (or use a real network, such as the one in my workplace, in order to log in as a domain user, given sufficient privileges on the virtual machine).
+However, there are tricks to work around this requirement. I'll demonstrate how to run remote debugging from my local machine (not attached to any domain) to a virtual machine (running on its own detached workgroup).
+Click to see the wonder in action:
+</p>
+
+<a href="/assets/img/blog/crash-screencap.gif" data-lightbox="image-1" data-title="Snap! A crash inside the VM"><img class="nolightbox" src="/assets/img/blog/crash-play- button.png" /></a>
+<div class="caption">Snap! A crash inside the VM (Click for the screen capture)</div>
+
+<p>
+    Obviously an index was exceeding the bounds of some array. Absolutely valuable information, which will not always be available upon crash, especially if your project is big enough.
+    In any case, we need to know <strong><em>where</em></strong> this exception is thrown and <strong><em>why</em></strong>.
+</p>
+<p>
+    <strong>Article level:</strong><br/>
+    {% include blog/slider.html percents=80 info="Not quite rocket science" %}    
+</p>
+
+<h2>Crash course in virtual machine's mechanics' crashes</h2>
+<p>
+There are a few common options for the choice of a virtual machine.<br/>
+It's possible to use the robust <a href="https://www.vmware.com/products/workstation-player.html" target="_blank">VMware Workstation</a>. Stingy <a href="https://www.vmware.com/" target="_blank">VMware</a> fans will be happy to know it's possible to use VMware machines for free, by using <span style="text-decoration: line-through; color: red;">the free VMmanager</span> (<em>depracated</em>) in order to create the machine and the free VMware Player in order to run it.<br/>
+Another popular free option is Microsoft's free <a href="https://learn.microsoft.com/en-us/virtualization/hyper-v-on-windows/quick-start/quick-create-virtual-machine" target="_blank">Virtual PC</a> (<em>partially depracated</em>), which is nice and neat and just like other Microsoft products, it works well most of the time.<br/>
+</p><p>
+For my virtual machines I use <a href="https://www.virtualbox.org/" target="_blank">Oracle's VirtualBox</a>. It's free (open source), supports multiple platforms (there are x86 and x64 host versions for Linux, OS X, Solaris and Windows), it's comfortable and works nicely.
+</p>
+<h3>Terminology</h3>
+<p>
+The primary computer on which the virtual machine is installed is usually referred to as the host.<br/>
+The machine which runs on the virtual environment (not knowing it's virtual) is usually referred to as the guest.
+</p>
+<h3>The demonstrated faulty app</h3>
+<p>
+My test project is a 32 bit winform application, built under Windows 7 x64 and Visual Studio 2010 on my virtual machine host. For this demo, I'll be debugging it on a guest virtual machine installed with Windows XP x64 and no Visual Studio.
+</p>
+<h2>Preinstall the remote debugging components</h2>
+<p></p>
+In order to connect with a debugger to the virtual machine, you will need to install the Microsoft Visual Studio Remote Debugger on it, which can downloaded from this link (for Visual Studio 2010).
+</p>
+<h2>Networking your way to success</h2>
+<p>
+In order to remote-debug, both machines need to be able to access each other.<br/>
+The guest machine needs to have an IP address which is accessible from the host. As a first step, I open the settings of the guest machine and change its adapter settings from the default NAT (Network Address Translation) to Bridged Adapter.
+</p>
+<img src="/assets/img/blog/00-Set-Bridged-adapter-on-VM.jpg" />
+<p>If you are behind a router, both the host and the guest should be assigned a valid IP in the local area network (e.g. 192.168.1.107 and 192.168.1.110).
+</p>
+
+<h3>Pings on the wing</h3>
+<p>
+One common method to make sure both computers are able to communicate with each other is the good old Ping. Here I'm trying to ping the guest in the VM from the host:
+</p>
+<img src="/assets/img/blog/ping-not-working.jpg" title="Ping from the host to the guest.. FAIL!" />
+<div class="caption">Ping from the host to the guest.. FAIL!</div>
+<p>Oh, that didn't seem to work very well...</p>
+
+<p>Of course, if you are running a virtual machine, you may just disable the firewall on it completely. If you still need the firewall to be there for some reason (e.g. your application's needs), you can let the pings in.</p>
+
+<p>In order to let pings into the virtual machine, while its firewall is active, go to the firewall settings:</p>
+<ul>
+    <li>On Control Panel <i class="fa-solid fa-arrow-right"></i> Network Connections</li>
+    <li>Find the Local Area Connection</li>
+    <li>Right-Click <i class="fa-solid fa-arrow-right"></i> Properties</li>
+    <li>Go to the Advanced tab</li>
+    <li>Click the Settings button of the Windows Firewall</li>
+    <li>Go to the Advanced tab</li>
+    <li>Click the Settings button of ICMP</li>
+    <li>Make sure the "Allow incoming echo request" checkbox is checked.</li>
+</ul>
+<p>Now ping should pass...</p>
+
+<img src="/assets/img/blog/ping-working.jpg" title="Win! Nice to see you!" />
+<div class="caption">Win! Nice to see you!</div>
+<p>That's more like it. The 2 machines can access each other.</p>
+
+<h3>Additional firewall settings</h3>
+<p>
+    
+    If you are debugging a local virtual machine, the easiest thing to do would be taking down its firewall altogether.<br/>
+    If this is not an option, or you wish to leave it on for the remote debugging session, there are some additional specific steps to be taken in order to properly configure it. Here are instructions for <a href="https://learn.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-2010/bb385683(v=vs.100)?redirectedfrom=MSDN" target="_blank">Windows XP</a> here, for <a href="https://learn.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-2010/bb385831(v=vs.100)?redirectedfrom=MSDN" target="_blank">Windows Vista here</a> and for <a href="https://learn.microsoft.com/en-us/previous-versions/visualstudio/visual-studio-2010/ee126350(v=vs.100)?redirectedfrom=MSDN" target="_blank">Windows 7 here</a>. 
+    Additional information/systems <a href="https://learn.microsoft.com/en-us/visualstudio/debugger/configure-the-windows-firewall-for-remote-debugging?view=vs-2022" target="_blank">here</a>.
+</p>
+
+<h2>PDB is my co-pilot</h2>
+<p>
+    If you check the content of your application's output Bin folder, you should find, in addition to the built .exe/.dll assembly, a .PDB (Project Database) file, which contains debug info about your assembly.
+    <a href="https://www.atmosera.com/blog/pdb-files-what-every-developer-must-know/" target="_blank">This link</a> contains a nice elaborate post about the importance of PDB files.
+</p>
+<p>    
+    The bottom line is that the PDB file is required to be present next to your debugged assembly (either locally or on the remote virtual machine) so that the debugger can relate the executing assembly to its debug info, and thus to attach and debug your code.
+</p>
+<img src="/assets/img/blog/PdbFile.jpg" title="PDB in place" />
+<div class="caption">PDB in place</div>
+
+<p>
+    PDBs are produced by default (at least in Debug configuration).<br/>
+    In order to make sure the PDB file is produced for your assembly:
+</p>
+<ul>
+    <li>Go to your project's properties</li>
+    <li>Select the Build tab</li>
+    <li>In the Configuration drop-down, select your build configuration (Debug / Release)</li>
+    <li>Click the Advanced button</li>
+    <li>Inspect the Debug Info drop-down</li>
+    <li>You should have either "full" or "pdb-only" selected according to your needs.</li>
+</ul>
+<img class="screenshot-thumb" src="/assets/img/blog/Produce-PDB-file.jpg" title="Make sure a PDB is produced" />
+<div class="caption">Make sure a PDB is produced (Click for full size screenshot)</div>
+
+<p>Once you have the PDB of the assembly you wish to debug, copy it to the virtual machine, next to the built assembly.</p>
+<img class="screenshot-thumb" src="/assets/img/blog/PDB-in-VM.jpg" title="PDB in its unnatural habitat, in the virtual machine" />
+<div class="caption">PDB in its unnatural habitat, in the virtual machine (click for full size screenshot)</div>
+
+<h2>Ghosts of users without a home</h2>
+<p>
+    As stated above, in normal work environments (e.g. common workplace), there is usually a domain controller involved, and it's possible to log on a single user account to operating systems of both host machine and the guest virtual machine.
+    I'm working without a domain server, but still I need to establish some trust between the host computer and the guest virtual machine.
+    Being lazy (also as stated many times), and sometimes working on projects outside my workplace environment, I wish to run the remote debugging environment in the comfort of my living room, which is the reason I'm using a virtual machine in the first place.
+</p>
+<p>
+    
+    The operating system on the virtual machine is a member of its own separate workgroup, and so is the one on my main host operating system. With this configuration, if I try to run the remote debugger in the virtual machine and attach to its process from the host, I may fail miserably with an error message stating:
+</p>
+<p> 
+    <em>"Unable to connect to the Microsoft Visual Studio Remote Debugging Monitor named '&lt;VM IP&gt;'. Login failure: unknown user name or bad password. See help for more information.".</em>
+</p>
+<img class="screenshot-thumb" src="/assets/img/blog/unable-to-connect.png" title="In the screenshot: a miserable fail." />
+<div class="caption">In the screenshot: a miserable fail.</div>
+<p>The way around this error, as <a href="https://learn.microsoft.com/en-gb/previous-versions/visualstudio/visual-studio-2015/debugger/remote-debugging?view=vs-2015&redirectedfrom=MSDN" target="_blank">MSDN states</a>, is to have a local user account on each of the machines, and both accounts must have the same user name and password. Fair enough.</p>
+
+<h3>The double life of a double agent</h3>
+<p>I'll add a new user with the name debugger (and password debugger) to each of my machines. Those are unrelated local accounts which just happen to have the same credentials.</p>
+
+
+<img class="screenshot-thumb" src="/assets/img/blog/same-user.png" title="A matching user account on the host (left) and on the guest (right)" />
+<div class="caption">Adding a matching user account to the host and to the guest (click for full size screenshot)</div>
+
+<h3>The double agent goes under cover</h3>
+<p>
+    Great! Now every time I start my computer (the host machine), I'll have an extra user listed on the Welcome screen. However, I never want to actually log on as "debugger". I can still run Visual Studio under under the credential of the debugger user without explicitly logging in (more about that later).<br/>
+    This annoying un-European behaviour, can be disabled via a simple trick in the Registry editor:
+</p>
+<ul>
+    <li>Open Registry editor (Regedit.exe)</li>
+    <li>Navigate to:<br/>
+    <strong>HKEY_LOCAL_MACHINE \ SOFTWARE \ Microsoft \ Windows NT \ CurrentVersion \ Winlogon \ SpecialAccounts \ UserList</strong></li>
+    <li>(Note: if any of the above keys/subkeys does not exist, create them yourself).</li>
+    <li>Create a new DWORD value. Name it the same name of the user you wish to hide (in my case, "debugger"), and make sure its Data value is kept as 0 (or set it to 0, if it's already there with a different value).</li>
+    <li>In order to unhide the user, the Data value should be set to 1.</li>
+</ul>
+<img class="screenshot-thumb" src="/assets/img/blog/hide-users.png" />
+<p>This trick works on Windows 7, Vista and XP. Thus it's effective on both my host (Windows 7 x64) and on my virtual machine (Windows XP x64). The debugger user account will be there but won't appear on the Welcome screens.</p>
+
+<h3>The double agent takes another person's identity</h3>
+<p>
+    Now with the hidden user I can run Visual Studio under the debugger user account.<br/>
+    In order to do that without actually logging in as the debugger user, we can use Windows built-in impersonation tool,  RunAs, a console application which usually resides in the System32 folder.<br/>
+    RunAs is cool because it has many options.<br/>
+    It's not cool because it requires the user to enter their password every time (which as one can  guess, I find a nuisance).
+</p>
+<p>
+    Hence I've produced a small utility of my own, named RunAsWithCredentials, which allows entering the password as a command line argument.<br/>
+    Using it is quite easy, all you need to do is specify the username, password, executable and optional command line switches for executing (specifying a domain name is optional). Running it without command line switches produces a useful help message<br/>
+    (It also has an unlisted <strong>Easter egg</strong>(!!!)).<br/>
+    For example, in order to run Visual Studio under the credentials of my debugger user:
+
+    <pre><code class="language-batch line-numbers remove-initial-line-feed">
+    RunAsWithCredentials.exe /user:debugger /pass:debugger "C:\Program Files (x86)\Microsoft Visual Studio 10.0\Common7\IDE\devenv.exe"
+    </code></pre>
+</p>
+<p>And I can create a shortcut so that I can start Visual Studio in "remote debug" mode whenever I need:
+    <img src="/assets/img/blog/VS-Shortcut.png" class="nolightbox" style="margin: 0;"/>
+    <div class="caption" style="text-align: left;">RunAsWithCredentials  in a comfortable desktop shortcut</div>
+</p>
+<p>Note that it's possible to export all your Visual Settings when running with your default user account, then import them when Visual Studio is running under the credentials of the debugger user. Thus you'll have access to all your usual add-ons and settings, while faking it as someone else, and the usability should be smooth.</p>
+
+<p><strong>A small hiccup with Visual Studio:</strong></p>
+<img src="/assets/img/blog/unknown-error.png" class="nolightbox" style="margin: 0;" />
+<p>
+    
+    In the first times I tried to run Visual Studio with my debugger user, I got a strange unexplained "Unknown error" messagebox, and Visual Studio failed to start. This happened both when I used my RunAsWithCredentials and when I used the Windows RunAs.<br/>
+    What I did to resolve this (on my host machine, where I need to run Visual Studio):
+    <ol>
+        <li>Unhid the debugger user from the Welcome screen, using the reverse of the registry trick above.</li>
+        <li>Logged in as the debugger user (to create a profile).</li>
+        <li>Opened Visual Studio under the debugger user's profile (this was successful).</li>
+        <li>Logged out debugger and re-logged in as my default user.</li>
+        <li>Ran Visual Studio using RunAsWithCredentials as debugger user with /SafeMode command-line switch (this was successful).</li>
+        <li>From then on, Visual Studio managed to run under the credentials of the the debugger user, with RunAsWithCredentials, smoothly without crashing and without the need for the safe mode switch.</li>
+        <li>I re-hid the debugger user again from the Welcome screen, using the registry trick above.</li>
+    </ol>
+</p>
+<p><strong>The code for RunAsWithCredentials is attached at the bottom of this article.</strong></p>
+
+<h2>The long and winding road to happiness</h2>
+<h3>Allow the debugger user account to debug application</h3>
+<p>
+    Now that we have a special user, debugger, it's important to allow that user account to debug applications.<br/>
+    <strong>On the virtual machine:</strong>
+</p>
+<ol>
+    <li>Go to the Control Panel <i class="fa-solid fa-arrow-right"></i> Administrative Tools.</li>
+    <li>Open Local Security Policy.</li>
+    <li>On the <i class="fa-solid fa-arrow-right"></i> left hand side tree navigate to: Security Settings  Local Policies  User Rights Assignment.</li>
+    <li>On the right hand side list, under the Policy column, locate "Debug programs" and double-click it.
+        <img src="/assets/img/blog/debugger-rights.png" class="nolightbox" style="margin: 0;" />
+    </li>
+    <li>In the dialog that pops up, click "Add User or Group...", then choose the user to allow debugging.
+        <img src="/assets/img/blog/add-the-user.png" class="nolightbox" style="margin: 0;" />
+    </li>
+</ol>
+
+<h3>Attempt debug</h3>
+<p>
+    So far I have what it takes to start the remote debugging session.<br/>
+    Or so I thought. There's more than meets the eye here. I'll list some potential problems along the long and winding road to happiness.
+</p>
+
+<p>First, let's break down the steps of the remote debugging session:</p>
+
+<p><strong>On the guest virtual machine:</strong></p>
+<p>The Remote Debugger must now run under the credentials of the debugger user. I have placed a convenient shortcut on the virtual machine's desktop, which impersonates the user with my RunAsWithCredentials app.</p>
+
+<p>Thus, the first step is to start Visual Studio 2010 Remote Debugger (x86 version, since I'm debugging a 32 bit executable, although my virtual machine runs a x64 operating system):<br/>
+    <img src="/assets/img/blog/remote-debugger-shortcut.png" class="nolightbox" style="margin: 0;" />
+    <div class="caption" style="text-align: left;">Remote Debugger started with RunAsWithCredentials in a  shortcut on the VM</div>
+</p>
+<p>In my case, I also get a warning about running  x86 version of the debugger on a x64 environment. This is not a problem:<br/>
+    <img src="/assets/img/blog/running-x86-on-x64-system.jpg" class="nolightbox" style="margin: 0;" />
+    <div class="caption" style="text-align: left;">RApprove it if needed...</div>
+</p>
+<p>
+    The following message which appears right after this dialog is a problem:<br/>
+
+    "<em>Visual Studio Remote Debugging Monitor will not be able to debug applications because the 'Network access: Sharing and security model for local accounts' local security policy option is set to 'Guests only - local users authenticate as Guest'. This can be configured with the 'Local Security Settings administration tool.</em>"<br/>
+    (If you didn't get this dialog, you're doing fine! skip to the next step).<br/>
+    <img src="/assets/img/blog/problem-local-user-authenticate-as-guest.png" class="nolightbox" style="margin: 0;" />
+    <div class="caption" style="text-align: left;">Fail</div>
+
+    <p>
+        I click <em>No</em> (not to continue), and resort to resolve this issue first. This error message is great because it gives a detailed description of the problem and  how to fix it. So here is how:<br/>
+        <ol>
+            <li>Go to the Control Panel <i class="fa-solid fa-arrow-right"></i> Administrative Tools.</li>
+            <li>Open Local Security Policy.</li>
+            <li>On the  left hand side tree navigate to: Security Settings <i class="fa-solid fa-arrow-right"></i> Local Policies <i class="fa-solid fa-arrow-right"></i> Security Options.</li>
+            <li>On the right hand side list, under the Policy column, locate "<em>Network access: Sharing and security model for local accounts</em>" and double-click it.<br/>
+                <img src="/assets/img/blog/network-security-options.png" class="nolightbox" style="margin: 0;" />
+            </li>
+            <li>In the dialog that pops up, select the option "Classic - local users authenticate as themselves", then click OK and close all windows.<br/>
+                <img src="/assets/img/blog/set-user-policy.png" class="nolightbox" style="margin: 0;" />
+                </li>
+        </ol>     
+    </p>
+
+    <p>
+        Now I should be able to run both the Visual Studio 2010 Remote Debugger under the debugger user credentials, and the debuggable application on the virtual machine (under the default logged in user credentials, not necessarily the <em>debugger</em> user).<br/>
+        This is how it looks like on my machine:
+        <img src="/assets/img/blog/remote-debugger-and-app-running-side-by-side.png" title="Remote debugger is running, the application to debug is running too. Hurray!" />
+        <div class="caption">Remote debugger is running, the application to debug is running too. Hurray!</div>
+    </p>
+
+    <p>And with this little triumph, we can turn to the host machine.</p>
+</p>
+
+<p><strong>On the host machine: </strong></p>
+<ol>
+    
+    <li>Open Visual Studio 2010 with the credentials of the debugger user. I'm lucky to have a shortcut. Remember?
+        <img src="/assets/img/blog/VS-Shortcut.png" class="nolightbox" style="margin: 0;"/>
+        <div class="caption" style="text-align: left;">RunAsWithCredentials  in a comfortable desktop shortcut</div>
+    </li>
+    <li>RunAsWithCredentials  in a comfortable desktop shortcut</li>
+    <li>Open the solution of the application to debug.</li>
+    <li>Open the Attach to Process dialog.</li>
+    <li>Either through Visual Studio's main menu Debug <i class="fa-solid fa-arrow-right"></i> Attach to Process... <br/>
+    or by pressing the default hotkey combination: Ctrl+Alt + P.<br/>
+    In the Qualifier textbox fill the IP of the virtual machine and press Enter.<br/>
+    <img src="/assets/img/blog/attach-to-remote.png" style="margin: 0;" title="Attach to remote process" />
+    <div class="caption" style="text-align: left;">Attach to remote process  (click for full size screenshot) </div>
+    </li>
+
+    <li>The processes on the virtual machine should appear in the list after a sec or two.<br/>
+    If your debugged application is not listed under Available Processes make sure both checkboxes in the bottom of the Attach to Process dialog are checked:<br/>
+    <em>"Show processes from all users" and "Show processes in all session".</em><br/>
+    Find the process of the application to debug in the list and double click it.
+    <img src="/assets/img/blog/attach-to-remote-2.png" style="margin: 0;" title="Choose the app to debug" />
+    <div class="caption" style="text-align: left;">Choose the app to debug (click for full size screenshot)</div>
+    </li>
+    <li>Approve attaching to the remote process on the following dialog:<br/>
+        <img src="/assets/img/blog/approve-attach.png" style="margin: 0;" title="Approve the attachment to the remote process" />
+        <div class="caption" style="text-align: left;">Approve the attachment to the remote process</div>   
+    </li>
+    <li>Now we are debugging it! (click to see animated screen capture)<br/>
+        <a href="/assets/img/blog/debug-3.gif" data-lightbox="image-1" data-title="Ah! Here is my error!"><img class="nolightbox" src="/assets/img/blog/debug-play.png" /></a>
+        <div class="caption">Ah! Here is my error! (click for full size screen capture)</div>
+    </li>
+</ol>
+
+<h2>Bizzaro world - Running Remote Debugger as a service</h2>
+<p>
+    In some cases it's needed to remote debug a service (such as ASP.NET over IIS), or a process which runs on <a href="https://techcommunity.microsoft.com/t5/ask-the-performance-team/application-compatibility-session-0-isolation/ba-p/372361" target="_blank">Session 0</a>, or there may be a scenario where we don't want or, for some reason, can't run the Remote Debugger as a regular application. In such cases we can run Remote Debugger as a service.<br/>
+    Remote Debugger service can also work for debugging regular applications, not just the cases described above.
+</p>
+
+<h3>Setting up the user's rights</h3>
+<p>
+    We need to connect the debugger user account to the Remote Debugger service, in order to allow the two sides of the remote debugging session to connect.  This is a similar requirement to the one I mentioned in the above paragraphs.<br/>
+    The first thing needed here is to allow the user to log on as service:
+    <ol>
+        <li>Go to the Control Panel <i class="fa-solid fa-arrow-right"></i> Administrative Tools</li>
+        <li>Open Local Security Policy.</li>
+        <li>On the   left hand side tree navigate to: Security Settings <i class="fa-solid fa-arrow-right"></i> Local Policies <i class="fa-solid fa-arrow-right"></i> User Rights Assignment.</li>
+        <li>On the right hand side list, under the Policy column, locate "<en>Log on as a service</en>" and double-click it.<br/>
+            <img src="/assets/img/blog/log-on-as-service-small.png" style="margin: 0;" title="Log on as a service" />
+            <div class="caption" style="text-align: left;">Log on as a service</div>   
+        </li>
+        <li>In the dialog that pops up, click "<em>Add User or Group...</em>", then choose the user to allow logging on as a service.<br/>
+            <img src="/assets/img/blog/add-the-userII.png" style="margin: 0;" title="Add the user" />
+            <div class="caption" style="text-align: left;">Add the user</div>   
+        </li>
+    </ol>
+</p>
+
+<h3>Setting up the service</h3>
+<p>
+<ol>
+    <li>Setting up the service is as easy as running the "<em>Visual Studio 2010 Remote Debugger Configuration Wizard</em>" which resides in the start menu.<br/>
+        <img src="/assets/img/blog/start-config-wizard.png" style="margin: 0;" title="Start the Visual Studio 2010 Remote Debugger Configuration Wizard" />
+        <div class="caption" style="text-align: left;">Start the Visual Studio 2010 Remote Debugger Configuration Wizard</div>   
+    </li>
+    <li>The wizard allows setting the user under whom the service will run, so I can associate it with the local <em>debugger</em> user account.<br/>
+        <img src="/assets/img/blog/set-user- in-the-wizard.png" style="margin: 0;" title="Run the service under the right user account" />
+        <div class="caption" style="text-align: left;">Run the service under the right user account</div>
+    </li>
+    <li>Another setting the wizard configures is the option to allow computers outside the network to remote debug. This may be required in scenarios of isolated environments, such as the one discussed here.<br/>
+        <img src="/assets/img/blog/allow-any-computer.png" style="margin: 0;" title="Allow any computer to debug" />
+        <div class="caption" style="text-align: left;">Allow any computer to debug</div>
+    </li>
+    <li>Now the service is in place.<br/>
+        <img src="/assets/img/blog/service-is-set.png" style="margin: 0;" title="The service is set" />
+        <div class="caption" style="text-align: left;">The service is set</div>
+    </li>
+</ol>
+</p>
+
+<h3>Troubleshooting the service I - Kerberos authentication error</h3>
+<p>If you're trying to connect Visual Studio to the Remote Debugger on the virtual machine, while it's running as a service, you may encounter the following error message:</p>
+<p>
+    
+    <em>"Unable to connect to the Microsoft Visual Studio Remote Debugging Monitor named '&lt;IP Address&gt;. The Visual Studio Remote Debugger on the target computer cannot connect back to this computer. Kerberos authentication failed. Please see Help for assistance."</em><br/>
+    <img src="/assets/img/blog/kerberos.png" title="Kerberos Authentication failed" />
+    <div class="caption">Kerberos Authentication failed</div>
+
+</p>
+<p>
+    The reason for this error is a mismatch between the user account running the service and user account trying to connect to it from Visual Studio.<br/>
+    As stated above, the user account name and password must match between Visual Studio on the host machine and the Remote Debugger service on the virtual machine.
+</p>
+<p>
+    
+    The easiest way to set the service account credentials is to use the Remote Debugger configuration wizard as explained above.<br/>
+    Another option is to locate the service in the list of services:
+</p>
+<ol>
+    <li>Control Panel <i class="fa-solid fa-arrow-right"></i> Administrative Tools <i class="fa-solid fa-arrow-right"></i> Services.</li>
+    <li>Double-click the Visual Studio 10 Remote Debugger service,</li>
+    <li>Go to the Log On tab, and set the right user account:<br/>
+        <img src="/assets/img/blog/set-service-user.png" style="margin: 0;" title="Set the service user account" />
+        <div class="caption" style="text-align: left;">Set the service user account</div>
+    </li>
+</ol>
+
+
+<h3>Troubleshooting the service II - 32/64 Bit application debugging</h3>
+<p>
+    
+    If you're trying to connect Visual Studio to the Remote Debugger on the virtual machine, while it's running as a service, you may encounter the following error message:
+    <br/>
+    <em>"Unable to attach to the process. The 64-bit version of the Visual Studio Remote Debugging Monitor (MSVSMON.EXE) cannot be used to debug 32-bit processes or 32-bit dumps. Please use the 32-bit version instead."</em>
+    <br/>
+    <img src="/assets/img/blog/debug-32-64.png" title="32 bit applications cannot be debugged by 64 bit Remote Debugger" />
+    <div class="caption">32 bit applications cannot be debugged by 64 bit Remote Debugger</div>
+
+    
+</p>
+<p>
+    
+    This means the service is using the wrong version of the Remote Debugger executable. It's possible to replace the service executable to match the debugged application.<br/>
+    This can be done with the Service Controller application, SC.EXE, which resides by default in the System32 folder.
+</p>
+
+<ol>
+    <li>The 64-bit of Remote Debugger installs both 32 and 64 versions.<br/>
+    Those, by default, reside in separate folders, x86 and x64, under "<em>%programfiles%\Microsoft Visual Studio 10.0\Common7\IDE\Remote Debugger</em>".</li>
+    <li>There are 2 executables used on the Remote Debugger service:<br/>
+    <strong>rdbgservice.exe</strong> - is used to run the debugger in service mode.<br/>
+    <strong>msvsmon100.exe</strong> - is the Remote Debugger service executable.<br/>
+    (note: 100 denotes the version: Remote Debugger 10.0, which matches Visual Studio 2010. The previous version, for example was msvsmon90.exe).</li>
+    If is  <strong>rdbgservice.exe</strong>  missing in one of the folders, x86 or x64, it needs to be copied manually to where it's missing.</li>
+    <li>Stop the service. In command prompt, this can be achieved with the SC utility:<br/>
+        <pre><code class="language-batch line-numbers remove-initial-line-feed">sc.exe stop msvsmon100</code></pre></li>
+    <li>Replace the service path:<br/>
+    (Note the <strong><em>space</em></strong> between <strong>binPath=</strong> and the actual path).<br/>
+    To set 32 bit debugging:<br/>
+    <pre><code class="language-batch line-numbers remove-initial-line-feed">sc.exe config msvsmon100 binPath= "%programfiles%\Microsoft Visual Studio 10.0\Common7\IDE\Remote Debugger\<strong>x86</strong>\rdbgservice.exe msvsmon100"</code></pre><br/>
+    To set 64 bit debugging:<br/>
+    <pre><code class="language-batch line-numbers remove-initial-line-feed">sc.exe config msvsmon100 binPath= "%programfiles%\Microsoft Visual Studio 10.0\Common7\IDE\Remote Debugger\x64\rdbgservice.exe msvsmon100"</code></pre><br/>
+    Start the service:<br/>
+    <pre><code class="language-batch line-numbers remove-initial-line-feed">sc.exe start msvsmon100</code></pre>
+</li>
+</ol>

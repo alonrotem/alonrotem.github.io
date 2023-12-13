@@ -1,0 +1,283 @@
+---
+title: A Word About Floating Point Numbers + 2 Lecture Recordings
+tags:
+    - .NET
+    - Academy
+    - C#
+    - Lecturing
+    - Telerik
+redirect_from: /2012/01/word-about-floating-point-numbers-2.html
+image: /assets/img/blog/numbers-tunnel.jpg
+hidden: false
+subtitle: Auto object-relational mapping with ease
+---
+On my last lecture at the <a href="https://www.telerikacademy.com/" target="_blank">Telerik Academy</a> on January 5th, 2012, the students were presented with various numeral systems (the usual base 10, the binary base 2 and the hexadecimal base 16).<br/>
+In my humble opinion, this presentation came a bit too late, since the students have already been handling variables of all primitive types (after the "<a href="/blog/2011/11/13/teaching-at-telerik-school-academy.html">Primitive data types and variables</a>" lecture) and manipulating them quite on a low binary level (after the "<a href="/blog/2011/11/24/3-more-lecture-recordings.html">Operators and Expressions</a>" lecture).<br/>
+If anything, this lecture, which includes explanations of the basic count systems and memory representation of primitive types, should have been presented before learning about the various types themselves.
+
+<h2>The Complexity Of Floating Point Numerals</h2>
+<p>
+One part of the numerical systems lecture, regarding floating point numbers and their memory representation, was not well explained in the PowerPoint slides, and in the lack of pre-built live samples, I felt a deeper explanation of the <a href="http://en.wikipedia.org/wiki/IEEE_754" target="_blank">IEEE 754 standard</a> may be in order. This is not quite light to grasp, especially for beginners.
+</p><p>
+The original lecture redirected the curious students to Wikipedia's "<a href="https://en.wikipedia.org/wiki/Floating-point_arithmetic" target="_blank">Floating point</a>" article, which I felt may complicate things even more (I mentioned the possibility of brain explosions in such case). It's possible to also read Berkeley's actual IEE 754 specifications (<a href="https://people.eecs.berkeley.edu/~wkahan/ieee754status/IEEE754.PDF" target="_blank">PDF link</a>), which I suspect wouldn't really do much good either.
+</p><p>
+I felt the best way to convey the subject would probably be using the power a step-by-step breakdown of a binary floating number, to see which parts it consists of and how it's constructed, and so I did.
+</p><p>
+Once the subject becomes more clear, I can recommend websites such as <a href="https://babbage.cs.qc.cuny.edu/ieee-754/" target="_blank">IEEE-754 Analysis</a>, which converts any given real number to its binary representation, or the <a href="https://www.h-schmidt.net/FloatConverter/IEEE754.html" target="_blank">Floating Point IEEE 754 Converter</a>, which can do the opposite (construct a number from a given binary structure) using a Java applet.
+</p>
+
+<h2>Break-Down By Example</h2>
+<p>
+Here is the example I provided in class, and its step by step break-down process. I decided to share this in a post, for the interest of the students who want to review it.
+</p>
+<h3>Particles of a Floating Point Number</h3>
+<p>
+The trick of representing any real number (or a number close-enough to it), is breaking the representation into 3 main parts:
+</p>
+
+<style>
+    table {
+        margin: 30px auto 30px auto;
+    }
+    table td {
+        border: 1px solid black;
+        padding: 10px;
+        text-align: center;
+    }
+
+    table.narrow-table td {
+        padding: 3px;
+    }
+</style>
+<table>
+    <tbody>
+    <tr><td style="background-color: yellow;">(-1)<sup>Symbol bit</sup></td><td>x</td><td style="background-color: #f2dbdb;">2<sup>(Exponent - 127)</sup></td><td>x</td><td style="background-color: #b6dde8;">(1 + Mantissa)</td></tr>
+    <tr><td style="background-color: yellow;">± Symbol
+    </td><td></td><td style="background-color: #f2dbdb;">Exponent
+    </td><td></td><td style="background-color: #b6dde8;">Fraction
+    </td></tr>
+    </tbody>
+</table>
+<p>
+The floating point number would normally be split into 3 segments:
+<ul>
+<li>The ± symbol, represented by 1 bit, rendering the number positive (the default, when the bit is set to 0), or negative (if the bit is set to 1).</li>
+<li>An exponent  which roughly produces the main part of the number.<br/>
+The exponent is always subtracted 127.<br/>
+This "always" is usually referred to as a "bias", and the exponent is called a "<strong>biased exponent</strong>" (because it is always affected).
+</li>
+<li>The fraction, which helps flow the point and make the number more accurate, usually referred to by geeks as the Mantissa.<br/>
+The mantissa is a number between 0 and 1 (smaller than 1), to which an integer of 1 is forcefully added. This forceful addition is referred to as "<strong>normalization</strong>".<br/>
+This value of 1 could have been stored in the binary representation, but since it's implicitly added, there is no need to store it. It's referred to as the "<strong>hidden bit</strong>".
+</li>
+<li>The hidden bit is always 1, thus the fraction is calculated as "1.Mantissa", <strong>unless</strong> the <strong>biased exponent</strong> is 0. In that case the hidden bit would have a value of 0, and the mantissa is not added anything.<br/>
+When the hidden bit is 0, the number is referred to as "<strong>denormalized</strong>". This may produce very small numbers, close to 0.
+</li>
+</ul>
+</p>
+
+<h3>Bit-wise</h3>
+<p>
+We'll start with a 32-bit number: 11000001100000000000000001100001.<br/>
+Following IEEE-754 standard, we have:
+<ul>
+<li>1 Bit for the symbol</li>
+<li>8 Bits for the exponent (would be 11 bits if we had a 64 bit number)</li>
+<li>23 Bits for the mantissa (would be 52 bits  if we had a 64 bit number)</li>
+<li>A hidden bit, added to the mantissa. Its value is 1 in our case.</li>
+</ul>
+</p>
+<p>
+Thus we can represent it by the following bit structure:
+</p>
+
+<table class="narrow-table" style="background-color: #b6dde8;">
+    <tbody>
+    <tr>
+    <td style="background-color: yellow;">0</td>
+    <td style="background-color: #f2dbdb;">1</td>
+    <td style="background-color: #f2dbdb;">2</td>
+    <td style="background-color: #f2dbdb;">3</td>
+    <td style="background-color: #f2dbdb;">4</td>
+    <td style="background-color: #f2dbdb;">5</td>
+    <td style="background-color: #f2dbdb;">6</td>
+    <td style="background-color: #f2dbdb;">7</td>
+    <td style="background-color: #f2dbdb;">8</td>
+    <td style="background-color: #b6dde8;">9</td>
+    <td>10</td>
+    <td>11</td>
+    <td>12</td>
+    <td>13</td>
+    <td>14</td>
+    <td>15</td>
+    <td>16</td>
+    <td>17</td>
+    <td>18</td>
+    <td>19</td>
+    <td>20</td>
+    <td>21</td>
+    <td>22</td>
+    <td>23</td>
+    <td>24</td>
+    <td>25</td>
+    <td>26</td>
+    <td>27</td>
+    <td>28</td>
+    <td>29</td>
+    <td>30</td>
+    <td>31</td>
+    </tr>
+    <tr>
+    <td style="background-color: yellow;">1</td>
+    <td style="background-color: #f2dbdb;">1</td>
+    <td style="background-color: #f2dbdb;"></td>
+    <td style="background-color: #f2dbdb;"></td>
+    <td style="background-color: #f2dbdb;"></td>
+    <td style="background-color: #f2dbdb;"></td>
+    <td style="background-color: #f2dbdb;"></td>
+    <td style="background-color: #f2dbdb;">1</td>
+    <td style="background-color: #f2dbdb;">1</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>1</td>
+    <td>1</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td>1</td>
+    </tr>
+    <tr>
+    <td style="background-color: yellow;">S</td>
+    <td colspan="8" style="background-color: #f2dbdb;">Exponent</td>
+    <td colspan="23">Mantissa</td>
+    </tr>
+    </tbody></table>
+<p>
+    As can be seen in the broken-down particles, the exponent (bits 1..8 in our sample) part is treated as-is, then biased with a subtraction of 127.<br/>
+    The mantissa part, however (bits 9..31 in our sample) is parsed from right to left, each bit representing 2 in the power of the negative position (2<sup>-1</sup>, 2<sup>-2</sup>, 2<sup>-3</sup> and so on), so we get:    
+</p>
+<table style="background-color: #b6dde8;">
+    <tbody>
+    <tr>
+    <td>Bit 9</td>
+    <td>Bit 10</td>
+    <td>Bit 11</td>
+    <td>&nbsp;&nbsp;...&nbsp;&nbsp;</td>
+    </tr>
+    <tr>
+    <td>2<sup>-1</sup> = 1 / 2<sup>1</sup> = 0.5</td>
+    <td>2<sup>-2</sup> = 1 / 2<sup>2</sup> = 0.25</td>
+    <td>2<sup>-3</sup> = 1 / 2<sup>3</sup> = 0.125</td>
+    <td>&nbsp;&nbsp;...&nbsp;&nbsp;</td>
+    </tr>
+    </tbody></table>
+
+<p>As pointed above, we are adding the hidden bit to the mantissa, as a value of an integer 1.</p>
+
+<h3>Putting everything in place</h3>
+<p>
+So now our number 11000001100000000000000001100001 can be broken down:
+<ul>
+<li>The symbol bit is 1, so we are clearly dealing with a negative number.</li>
+<li>The exponent is 10000011.</li>
+<li>The mantissa is 00000000000000001100001.</li>
+<li>The hidden bit is 1, thus we will add a value of 1 to the mantissa.</li>
+</ul>
+Putting the parts in place we get:
+-(2<sup>(10000011 - 127)</sup> x (1 + 00000000000000001100001))
+</p>
+
+<h3>Parsing the particles</h3>
+<p>
+Our 8 bit exponent 10000011 is equal to decimal 131.<br>
+Our 23 bits mantissa has 1's in its 17th, 18th and 23rd places. Thus its calculation is:<br>
+<div style="text-align: center;">2<sup>-17</sup> + 2<sup>-18</sup> + 2<sup>-23</sup> = (0.00000762 + 0.00000318 + 0.000000119) = 0.00001156</div>
+</p>
+<p>
+And our number becomes a bit more clear:<br/>
+<div style="text-align: center;">-(2 <sup>(131 - 127)</sup> x (1 + 0.00001156)) = - (2<sup>(131 - 127)</sup> x (1.00001156))</div>
+</p>
+<p>
+Which means:<br/>
+<div style="text-align: center;">- (2<sup>4</sup> x (1.00001156)) = -(16 x 1.00001156)</div>
+</p>
+<p>
+And our binary number 11000001100000000000000001100001 is decimal:<br/>
+<div style="text-align: center;">-16.00018496 = ~ -16.000185</div>
+</p>
+
+
+<h3>Special cases</h3>
+<p>
+There are a few cases where the fraction or mantissa binary parts have specific values. Those produce special floating-point number values:
+</p>
+<table>
+    <tbody>
+    <tr style="background-color: yellow;">
+    <td style="text-align: center;"><b>Sign bit</b></td>
+    <td style="text-align: center;"><b>Exponent bits</b></td>
+    <td style="text-align: center;"><b>Mantissa bits</b></td>
+    <td style="text-align: center;"><b>Value</b></td>
+    </tr>
+    <tr>
+    <td style="text-align: center;">0</td>
+    <td style="text-align: center;">All zeros</td>
+    <td style="text-align: center;">All zeros</td>
+    <td>+0 (positive zero)</td>
+    </tr>
+    <tr>
+    <td style="text-align: center;">1</td>
+    <td style="text-align: center;">All zeros</td>
+    <td style="text-align: center;">All zeros</td>
+    <td>-0 (negative zero)</td>
+    </tr>
+    <tr>
+    <td style="text-align: center;">0</td>
+    <td style="text-align: center;">All ones</td>
+    <td style="text-align: center;">All zeros</td>
+    <td>+∞ (positive infinity)</td>
+    </tr>
+    <tr>
+    <td style="text-align: center;">0</td>
+    <td style="text-align: center;">All ones</td>
+    <td style="text-align: center;">All zeros</td>
+    <td>-∞ (negative infinity)</td>
+    </tr>
+    <tr>
+    <td style="text-align: center;">Whatever</td>
+    <td style="text-align: center;">All ones</td>
+    <td style="text-align: center;">Non zero</td>
+    <td>NaN (not a number)</td>
+    </tr>
+    </tbody></table>
+
+    <h2>Lecutre Recordings</h2>
+    <p>
+    Recordings of the last 2 lectures:
+    </p>
+    <h3>Multidimensional arrays</h3>
+    <p>
+    This one covers the topic of complex multidimensional arrays, jagged arrays and how to handle them in C#.
+    </p>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/5EuFyvgyNSg?si=4D0HZh780VnKn8gU" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>    
+    
+    <h3>Numerical systems</h3>
+    <p>
+    As written, and in relation to the example above, this short lecture covers the basics of non-decimal counting systems and explores how various numeric data is represented in memory.
+    </p>
+    <iframe width="560" height="315" src="https://www.youtube.com/embed/vp-POPg6JRc?si=XlPaKwqeqDrDXH-v" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>

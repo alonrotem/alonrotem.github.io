@@ -13,7 +13,7 @@ image: /assets/img/blog/Entity-Framework.jpg
 hidden: false
 subtitle: Auto object-relational mapping with ease
 attachment:
-    url: https://github.com/alonrotem/alonrotem.github.io/raw/main/assets/attachments/EF_41_Concept.zip
+    url: /assets/attachments/EF_41_Concept.zip
     title: Download the sample project
 ---
 <h2>WTF and Why?!!</h2>
@@ -58,7 +58,8 @@ The approach I'm implementing here assumes you have the data classes created fir
 <p>
 The simpler of the two is the company class, which consists of 2 properties: an ID and a name.
 </p>
-<pre><code class="language-csharp line-numbers">public class Company
+<pre><code class="language-csharp line-numbers remove-initial-line-feed">
+public class Company
 {
     public Company()
     {
@@ -94,7 +95,8 @@ The simpler of the two is the company class, which consists of 2 properties: an 
 </p><p>
     Hence the following enum is also defined:
 </p>
-<pre><code class="language-csharp line-numbers">public enum Prefix 
+<pre><code class="language-csharp line-numbers remove-initial-line-feed">
+public enum Prefix 
 { 
     Mr,
     Ms,
@@ -106,7 +108,8 @@ The simpler of the two is the company class, which consists of 2 properties: an 
 <p>
     The Person class: 
 </p>
-<pre><code class="language-csharp line-numbers">public class Person
+<pre><code class="language-csharp line-numbers remove-initial-line-feed">
+public class Person
 {
     public Person()
     {
@@ -139,7 +142,8 @@ The simpler of the two is the company class, which consists of 2 properties: an 
         get { return (int)NamePrefix; }
         set { NamePrefix = (Prefix)value; }
     }
-}</code></pre>
+}
+</code></pre>
 <p>
     <ul>
         <li>A more complex class. It has a member of type Company.</li>
@@ -152,15 +156,16 @@ The simpler of the two is the company class, which consists of 2 properties: an 
 <p>
 This class is required as a management context for our persisted objects against the framework. It inherits DbContext and its properties, which are of the generic DbSet type represent the queryable collections of the persisted objects.
 </p>
-<pre><code class="language-csharp line-numbers">public class PersonsContext : DbContext
+<pre><code class="language-csharp line-numbers remove-initial-line-feed">
+public class PersonsContext : DbContext
 {
     public PersonsContext()
         : base(PersonsContext.ConnectionString)
     {
     }
     
-    public DbSet<Person> Persons { get; set; }
-    public DbSet<Company> Companies { get; set; }
+    public DbSet&lt;Person&gt; Persons { get; set; }
+    public DbSet&lt;Company&gt; Companies { get; set; }
     
     public static string ConnectionString
     {
@@ -181,7 +186,8 @@ This class is required as a management context for our persisted objects against
                 + @"\\people.sdf";
         }
     }
-}</code></pre>
+}
+</code></pre>
 <p>
 Furthermore:
 <ul>
@@ -201,7 +207,8 @@ Many times when we run a newly built database-oriented application, we'd want to
 If we generate the database manually with some SQL script, we could easily include some INSERT statements in order to generate and store the initial data.<br/>
 In the case of Entity Framework, we can generate and store our initial data by creating the following class:
 </p>
-<pre><code class="language-csharp line-numbers">public class DatabaseInitializer : CreateDatabaseIfNotExists<PersonsContext>
+<pre><code class="language-csharp line-numbers remove-initial-line-feed">
+public class DatabaseInitializer : CreateDatabaseIfNotExists<PersonsContext>
 {
     protected override void Seed(PersonsContext context)
     {
@@ -213,7 +220,8 @@ In the case of Entity Framework, we can generate and store our initial data by c
     
         context.SaveChanges();
     }
-}</code></pre>
+}
+</code></pre>
 <p>
     Notice:
     <ul>
@@ -227,7 +235,8 @@ In the case of Entity Framework, we can generate and store our initial data by c
 <p></p>
 Now almost <a href="https://www.youtube.com/watch?v=VrpGhEVyrk0" target="_blank">everything is in its right place</a>. We will need to tie everything together, though.<br/>
 <strong>I love helper classes.</strong> They are just so damn helpful. I've created this helper class in order to simplify and wrap the interaction with the data context nicely.
-<pre><code class="language-csharp line-numbers">public class DataManager
+<pre><code class="language-csharp line-numbers remove-initial-line-feed">
+public class DataManager
 {
     public static PersonsContext DataContext
     {
@@ -247,13 +256,14 @@ Now almost <a href="https://www.youtube.com/watch?v=VrpGhEVyrk0" target="_blank"
                     Database.SetInitializer(new DatabaseInitializer());
                 }
                 else
-                    Database.SetInitializer<PersonsContext>(null);
+                    Database.SetInitializer&lt;PersonsContext&gt;(null);
             }
             return DataManager.dataContext;
         }
     }
     private static PersonsContext dataContext = null;
-}</code></pre>
+}
+</code></pre>
 <p>
     About this class:
     <ul>
@@ -269,7 +279,8 @@ Now almost <a href="https://www.youtube.com/watch?v=VrpGhEVyrk0" target="_blank"
 <p>
 To demonstrate the ease of use of this shameless production and manipulation through basic CRUD operations, I've constructed a small console application. Here is its main function:
 </p>
-<pre><code class="language-csharp line-numbers">class Program
+<pre><code class="language-csharp line-numbers remove-initial-line-feed">
+class Program
 {
     static void Main(string[] args)
     {
@@ -280,7 +291,7 @@ To demonstrate the ease of use of this shameless production and manipulation thr
     
         //C(reate)
         if (DataManager.DataContext.Companies.FirstOrDefault(
-        c => c.CompanyName == "Microsoft") == null)
+        c =&gt; c.CompanyName == "Microsoft") == null)
         {
             DataModel.Company microsoft = new DataModel.Company(Guid.NewGuid(), "Microsoft");
             DataManager.DataContext.Companies.Add(microsoft);
@@ -300,13 +311,13 @@ To demonstrate the ease of use of this shameless production and manipulation thr
         }
     
         //R(ead)
-        IQueryable<DataModel.Person> microsoftWorkers = DataManager.DataContext.Persons.Where(
-            person => person.Workplace.CompanyName == "Microsoft");
+        IQueryable&lt;DataModel.Person&gt; microsoftWorkers = DataManager.DataContext.Persons.Where(
+            person =&gt; person.Workplace.CompanyName == "Microsoft");
         Console.WriteLine("{0} persons are working in Microsoft.\n", microsoftWorkers.Count());
     
         //U(pdate)
         DataModel.Person johnDoe = DataManager.DataContext.Persons.FirstOrDefault(
-            p => p.Name == "John Doe");
+            p =&gt; p.Name == "John Doe");
         if (johnDoe != null)
         {
             johnDoe.Name = "Changed Name";
@@ -315,7 +326,7 @@ To demonstrate the ease of use of this shameless production and manipulation thr
     
         //D(elete)
         DataModel.Person klark = DataManager.DataContext.Persons.FirstOrDefault(
-            p => p.Name == "Klark Kent");
+            p =&gt; p.Name == "Klark Kent");
         if (klark != null)
         {
             DataManager.DataContext.Persons.Remove(klark);
@@ -325,7 +336,8 @@ To demonstrate the ease of use of this shameless production and manipulation thr
         //Done.
         Console.ReadKey();
     }
-}</code></pre>
+}
+</code></pre>
 
 <h2>Where is my data?</h2>
 <p>

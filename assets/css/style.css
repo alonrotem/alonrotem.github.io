@@ -32,6 +32,10 @@ html, body {
 	min-height: 100%;
 }
 
+html {
+	scroll-padding-top: 81px;
+}
+
 body {
   margin: 0;
   padding:0;
@@ -108,7 +112,7 @@ h4 small {
 	opacity:1;
 }
 section {
-	padding:120px 0 40px 0;
+	padding:36px 0 40px 0;
 }
 
 iframe, embed, object {
@@ -1443,6 +1447,13 @@ Blog posts
 	font-family: Arial, Tahoma, Verdana, sans-serif;
 	font-weight: 800;
 	margin: 30px 0px;
+}
+
+.blogpost h3 {
+	font-family: Arial, Tahoma, Verdana, sans-serif;
+    font-weight: 800;
+    margin: 40px 0 20px 0px;
+    font-size: 22px;
 }
 
 .blogpost img:not(.post-image) {
