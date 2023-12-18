@@ -44,13 +44,13 @@ layout: page
     display:none;
   }
 }
-/*
+
 #timeline {
   padding: 100px 0;
   background: #f7f7f7;
   border-top: 1px solid rgba(191, 191, 191, 0.4);
   border-bottom: 1px solid rgba(191, 191, 191, 0.4);
-}*/
+}
 #timeline h1 {
   text-align: center;
   font-size: 3rem;
@@ -275,39 +275,6 @@ layout: page
     column-count: 3;
   }
 }
-.year {
-  background-color: white;
-  padding: 2px 5px;
-  margin: 0px 10px;
-  font-size: 12px;
-  text-decoration: none;
-}
-
-.year a {
-  color: rgb(102, 102, 102);
-}
-
-.year.active, .year.active a {
-  color: white;
-  font-weight: 700;
-  background-color: #3498db;
-  text-decoration: none;
-}
-
-.year a:hover {
-  text-decoration: none;
-}
-
-.year:first-child {
-    border-top-left-radius: 7px;
-    border-top-right-radius: 7px;
-}
-
-
-.year:last-child {
-    border-bottom-left-radius: 7px;
-    border-bottom-right-radius: 7px;
-}
 
 </style>
 <!-- each is 400px -->
@@ -322,131 +289,94 @@ layout: page
 {% endif %}
 {% assign height = height_factor | times: 500 | plus: 200 %}
 
-{% assign companies = site.experience | sort: "start-date" | reverse %}
-
-<div class="container-fluid" style="padding-top: 100px; background-color: #1c1a21; background-image: url(/assets/img/bg/morphing-diamonds.svg);">
-<div style="display: flex; ">
-  <span>
-  
-    <span id="years-indicator" style="background-color: white; position: sticky; top: 110px;">
-      {% assign min_year = 9999 %}
-      {% assign max_year = -1 %}
-      {% assign years = "" %}
-      {% assign cards_by_years = "" %}
-      {% for entry in companies %}
-        {% if entry.start-date %}
-          {% assign year = entry.start-date | date: "%Y" | plus: 0 %}
-          {% unless years contains year %}
-            {% assign years = years | append: "," | append: year %}
-          {% endunless %}
-          {% if year < min_year %}
-            {% assign min_year = year %}
-          {% endif %}
-        {% endif %}
-        {% if entry.end-date %}
-          {% assign year = entry.end-date | date: "%Y" | plus: 0 %}
-          {% unless years contains year %}
-            {% assign years = years | append: "," | append: year %}
-          {% endunless %}
-          {% if year > max_year %}
-            {% assign max_year = year %}
-          {% endif %}          
-        {% else %}
-          {% assign year = "now" | date: "%Y" | plus: 0 %}
-          {% unless years contains year %}
-            {% assign years = years | append: "," | append: year %}
-          {% endunless %}
-          {% if year > max_year %}
-            {% assign max_year = year %}
-          {% endif %}          
-        {% endif %}
-      {% endfor %}
-      {% assign card_ids = cards_by_years | split: "," %}
-      {% assign yearsarr = years | split: "," | sort  | reverse %}
-      {% for y in (min_year..max_year) reversed %}
-        <div id="year-{{y}}" class="year"><a href="#">{{ y }}</a></div>
-      {% endfor %}
-    </span>
-  
+<div class="container-fluid" style="margin-top:90px">
+<div style="display: flex;">
+  <span style="background-color: lightcoral;">one</span>
+  <span style="background-color: lightgoldenrodyellow; flex-grow: 1">
+    <div class="contaienr">
+      hello 2
+    </div>
   </span>
-  <span style="flex-grow: 1">
-    <div  id=timeline class="contaienr">
-      <h1 style="color: white;">My Experience Timeline</h1>
-      <p class="leader" style="color: white; font-size: 21px;"><i class="fa-solid fa-file-pdf"></i> Get my full CV (in <a href="https://europa.eu/europass/en" target="_blank">EU format</a>) <a href="/assets/attachments/Alon%20Rotem%20CV%20English.pdf" target="_blank">here</a>!</p>
+</div>
+</div>
 
-      <div class="demo-card-wrapper" style="height: {{ height }}px">
-        
-        {% assign oddcounter = 1 %}
-        {% assign evencounter = height_factor | plus: 1 %}
-        
-        {% for exp in companies %}
-        {% assign mod = forloop.index | modulo: 2 %}
-        <!--odd-->
-        {% if mod == 1 %}
-          {% assign ord = oddcounter %}
-          {% assign oddcounter = oddcounter | plus: 1 %}
-        <!--even-->
-        {% else %}
-          {% assign ord = evencounter %}
-          {% assign evencounter = evencounter | plus: 1 %}
-      {% endif %}
-      
-        <div id="experience-card-{{forloop.index}}" data-aos="fade-up" class="demo-card" style="order: {{ord}};" data-start-date="{{ exp.start-date }}" data-end-date="{{ exp.end-date }}">
-          <div class="hover-card">
-          <div class="head" style="background-color: #6c6065;">
-            <div class="number-box">
-              <span><img src="{{ exp.company-logo }}" style="width: 55px; height: auto; margin: 0;" /></span>
-            </div>
-            <div class="entry-basic">
-              <div class="company-name">{{ exp.company-name }}</div>
-              <div class="position">{{ exp.position }}</div>
-              <div class="dates"><span>{{ exp.start-date | date: "%m/%Y" }} - {% if exp.end-date %}{{ exp.end-date | date: "%m/%Y" }}{% else %}Present{% endif %}</span></div>
-            </div>
-            <!--<h2><span class="small">{{ exp.position }}</span>{{ exp.company-name }}<br/><span class="small">10/2000 - 20/2000</span></h2>-->
-          </div>
-          <span class="pointer" style="border-color: #6c6065; background-color: #6c6065;"></span>
-          <div class="body">
-            <div class="list-container" style="width: 100%;
-            height: 100%;
-            overflow: hidden;
-            display: flex;
-        flex-direction: column;
-        flex-wrap: nowrap;
-        justify-content: center;
-        align-items: flex-start;
-        align-content: flex-start;">
-              <ul class="list">
-                
-                {% if exp.what-i-did %}
-                  {% for what in exp.what-i-did %}
+<section id=timeline style="background-color: #1c1a21;background-image: url(/assets/img/bg/morphing-diamonds.svg);">
+	<h1>A Flexbox Timeline</h1>
+  <p><a href="/assets/attachments/Alon%20Rotem%20CV%20English.pdf" target="_blank">My CV</a></p>
+  
+
+
+	<p class="leader">All cards must be the same height and width for space calculations on large screens.</p>
+	<div class="demo-card-wrapper" style="height: {{ height }}px">
+    {% assign companies = site.experience | sort: "start-date" | reverse %}
+    {% assign oddcounter = 1 %}
+    {% assign evencounter = height_factor | plus: 1 %}
+    
+    {% for exp in companies %}
+    {% assign mod = forloop.index | modulo: 2 %}
+    <!--odd-->
+    {% if mod == 1 %}
+      {% assign ord = oddcounter %}
+      {% assign oddcounter = oddcounter | plus: 1 %}
+    <!--even-->
+    {% else %}
+      {% assign ord = evencounter %}
+      {% assign evencounter = evencounter | plus: 1 %}
+  {% endif %}
+  
+    <div id="experience-card-{{forloop.index}}" data-aos="fade-up" class="demo-card" style="order: {{ord}};" data-start-date="{{ exp.start-date }}" data-end-date="{{ exp.end-date }}">
+      <div class="hover-card">
+			<div class="head" style="background-color: #6c6065;">
+				<div class="number-box">
+					<span><img src="{{ exp.company-logo }}" style="width: 55px; height: auto; margin: 0;" /></span>
+				</div>
+        <div class="entry-basic">
+          <div class="company-name">{{ exp.company-name }}</div>
+          <div class="position">{{ exp.position }}</div>
+          <div class="dates"><span>{{ exp.start-date | date: "%m/%Y" }} - {% if exp.end-date %}{{ exp.end-date | date: "%m/%Y" }}{% else %}Present{% endif %}</span></div>
+        </div>
+				<!--<h2><span class="small">{{ exp.position }}</span>{{ exp.company-name }}<br/><span class="small">10/2000 - 20/2000</span></h2>-->
+			</div>
+      <span class="pointer" style="border-color: #6c6065; background-color: #6c6065;"></span>
+			<div class="body">
+        <div class="list-container" style="width: 100%;
+        height: 100%;
+        overflow: hidden;
+        display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: flex-start;
+    align-content: flex-start;">
+          <ul class="list">
+            
+            {% if exp.what-i-did %}
+              {% for what in exp.what-i-did %}
+              <li>{{ what }}</li>
+              {% endfor %}
+            {% endif%}
+
+            {% if exp.what-i-did-multi %}
+            {% assign multi-items = exp.what-i-did-multi | sort: "start-date" | reverse %}
+              {% for multi-item in exp.what-i-did-multi %}
+                {% for what in multi-item.what %}
                   <li>{{ what }}</li>
-                  {% endfor %}
-                {% endif%}
-    
-                {% if exp.what-i-did-multi %}
-                {% assign multi-items = exp.what-i-did-multi | sort: "start-date" | reverse %}
-                  {% for multi-item in exp.what-i-did-multi %}
-                    {% for what in multi-item.what %}
-                      <li>{{ what }}</li>
-                    {% endfor %}
-                  {% endfor %} 
-                {% endif %}
-    
-              </ul>
-              </div>
-            <div class="dialog-link" style="margin: auto;">Click to see more <i class="fa-solid fa-square-arrow-up-right"></i></div>
+                {% endfor %}
+              {% endfor %} 
+            {% endif %}
+
+          </ul>
           </div>
-        </div>
-        </div>
-    
-       
-        {% endfor %}
-    
-      </div>
-        </div>
-  </span>
-</div>
-</div>
+        <div class="dialog-link" style="margin: auto;">Click to see more <i class="fa-solid fa-square-arrow-up-right"></i></div>
+			</div>
+    </div>
+		</div>
+
+   
+    {% endfor %}
+
+  </div>
+</section>
 
 
 {% for exp in companies %}
@@ -629,48 +559,9 @@ function whichYearsAreVisible()
       }
     }
   }
-  //console.log("Visible: " + (visibleFrom.getMonth() + 1) + "/" + visibleFrom.getFullYear() + " - " + (visibleTo.getMonth() + 1) + "/" + visibleTo.getFullYear());
-  var yearFrom = visibleFrom.getFullYear();
-  var yearTo = visibleTo.getFullYear();
-  var years_indicator = document.getElementById("years-indicator");
-  var years = years_indicator.getElementsByClassName("year");
-  for(var i=0; i < years.length; i++)
-  {
-    var yearId = parseInt(years[i].id.substring("year-".length));
-    if(yearId >= yearFrom && yearId <= yearTo)
-    {
-      years[i].classList.add("active");
-    }
-    else
-    {
-      years[i].classList.remove("active");
-    }
-  }
+  console.log("Visible: " + (visibleFrom.getMonth() + 1) + "/" + visibleFrom.getFullYear() + " - " + (visibleTo.getMonth() + 1) + "/" + visibleTo.getFullYear());
+  var indicator = document.getElementById("indicator");
   //indicator.textContent =  (visibleFrom.getMonth() + 1) + "/" + visibleFrom.getFullYear() + " - " + (visibleTo.getMonth() + 1) + "/" + visibleTo.getFullYear();
-}
-
-function assignIndicatorLinksToYearCards(){
-  var cards = document.getElementsByClassName("demo-card");
-  for(var c=0; c < cards.length; c++)
-  {
-      var cardFrom = cards[c].getAttribute("data-start-date");
-      var cardTo = cards[c].getAttribute("data-end-date");
-      var cardFromYear = new Date(cardFrom).getFullYear();
-      var cardToYear = (cardTo)? new Date(cardTo).getFullYear() : new Date().getFullYear();
-
-      for (var y=cardFromYear; y <= cardToYear; y++)
-      {
-        var yearDiv = document.getElementById("year-" + y);
-        if(yearDiv)
-        {
-          var as = yearDiv.getElementsByTagName("a");
-          if(as && as.length > 0)
-          {
-            as[0].setAttribute("href", "#" + cards[c].id);
-          }
-        }
-      }
-  }
 }
 
 window.addEventListener('load', function(event) {
@@ -678,7 +569,7 @@ window.addEventListener('load', function(event) {
   calculateOverflowingBulletsInContainers();
   attachBoxClicksToModals();
   whichYearsAreVisible();
-  assignIndicatorLinksToYearCards();
+  
 }); //onload
 
 window.addEventListener('resize', function(event) {

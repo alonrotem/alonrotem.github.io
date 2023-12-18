@@ -2,9 +2,15 @@
   {% if page.url contains "/blog/" %}
     {% assign blogactive = "active" %}
   {% endif %}
+
+  {% assign cvactive = "" %}
+  {% if page.url contains "/resume" %}
+    {% assign cvactive = "active" %}
+  {% endif %}
+  
   
   <!-- start top -->
-  <header id="topnav" class="navbar navbar-fixed-top default" style="/*visibility:hidden*/">
+  <header id="topnav" class="navbar navbar-fixed-top default">
     <div class="container">
     <nav class="container-fluid navbar navbar-expand-lg navbar-dark">
       <div class="container-fluid">
@@ -22,6 +28,7 @@
             <!-- originals -->
             <li class="nav-item"><a class="nav-link" href="/{{ site.homepage }}#intro">Home</a></li>
             <li class="nav-item"><a class="nav-link" href="/{{ site.homepage }}#about">Who am I?</a></li>
+            <li class="nav-item"><a class="nav-link {{ cvactive }}" href="/resume">Resume</a></li>
             <li class="nav-item"><a class="nav-link {{ blogactive }}" href="/blog">Blog</a></li>
             <li class="nav-item"><a class="nav-link" href="/{{ site.homepage }}#services">Services</a></li>
             <li class="nav-item"><a class="nav-link" href="/{{ site.homepage }}#works">Works</a></li>
