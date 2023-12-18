@@ -58,6 +58,12 @@ collections:
         - beltekovi.html
         - babylon.html
         - is-it-six.html
+    
+    experience:
+      output: false
+
+    technologies:
+      output: false
 
 markdown: kramdown
 highlighter: rouge

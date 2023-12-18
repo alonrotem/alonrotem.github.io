@@ -117,9 +117,9 @@ function showhide_scrolltop() {
 $(window).scroll(function() {
   "use strict";
   if ($(window).scrollTop() < 10) {
-    $('.fade').stop(true, true).fadeTo("slow", 1);
+    $('*:not(.modal):not(.modal-backdrop).fade').stop(true, true).fadeTo("slow", 1);
   } else {
-    $('.fade').stop(true, true).fadeTo("slow", 0.33);
+    $('*:not(.modal):not(.modal-backdrop).fade').stop(true, true).fadeTo("slow", 0.33);
   }
 });
 

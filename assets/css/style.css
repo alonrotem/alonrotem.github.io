@@ -107,7 +107,7 @@ h4 small {
 }
 
 
-.fade{
+*:not(.modal):not(.modal-backdrop).fade{
     position: relative;
 	opacity:1;
 }

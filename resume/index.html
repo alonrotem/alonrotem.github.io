@@ -1,0 +1,512 @@
+---
+title: Curriculum Vitae
+layout: page
+---
+<style>
+
+@media (min-width: 1000px) {
+  /*#timeline .demo-card:nth-child(even) span.pointer, */
+  /*#timeline .demo-card:nth-child(odd) */ 
+  span.pointer
+  {
+    position: absolute;
+    content: "";
+    width: 0;
+    height: 0;
+    border-top: 15px solid transparent;
+    border-bottom: 15px solid transparent;
+    --angle-width: 18px;
+}
+
+  #timeline .demo-card:nth-child(even) span.pointer
+  {
+    clip-path: polygon(100% 0, 0 50%, 100% 100%);
+    top: 29px;
+  }
+  #timeline .demo-card:nth-child(odd) span.pointer
+  {
+    clip-path: polygon(100% 50%, 0 0, 0 100%);
+    top: 27px;
+  }
+  
+  /*#timeline .demo-card:nth-child(even) .head::before, 
+  #timeline .demo-card:nth-child(odd)*/ .head::before {
+    position: absolute;
+    content: "";
+    width: 9px;
+    height: 9px;
+    background-color: #bdbdbd;
+    border-radius: 9px;
+    box-shadow: 0px 0px 2px 8px #f7f7f7;
+  }
+
+  .hover-card:hover .head::before {
+    display:none;
+  }
+}
+
+#timeline {
+  padding: 100px 0;
+  background: #f7f7f7;
+  border-top: 1px solid rgba(191, 191, 191, 0.4);
+  border-bottom: 1px solid rgba(191, 191, 191, 0.4);
+}
+#timeline h1 {
+  text-align: center;
+  font-size: 3rem;
+  font-weight: 200;
+  margin-bottom: 20px;
+}
+#timeline p.leader {
+  text-align: center;
+  max-width: 90%;
+  margin: auto;
+  margin-bottom: 45px;
+}
+#timeline .demo-card-wrapper {
+  position: relative;
+  margin: auto;
+}
+@media (min-width: 1000px) {
+  #timeline .demo-card-wrapper {
+    display: flex;
+    flex-flow: column wrap;
+    width: 1170px;
+    height: 1650px;
+    margin: 0 auto;
+  }
+}
+#timeline .demo-card-wrapper::after {
+  z-index: 1;
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  border-left: 1px solid rgba(191, 191, 191, 0.4);
+}
+@media (min-width: 1000px) {
+  #timeline .demo-card-wrapper::after {
+    border-left: 1px solid #bdbdbd;
+  }
+}
+#timeline .demo-card {
+  position: relative;
+  display: block;
+  margin: 10px auto 80px;
+  max-width: 94%;
+  z-index: 2;
+}
+@media (min-width: 480px) {
+  #timeline .demo-card {
+    max-width: 60%;
+    box-shadow: 0px 1px 22px 4px rgba(0, 0, 0, 0.07);
+  }
+}
+@media (min-width: 720px) {
+  #timeline .demo-card {
+    max-width: 40%;
+  }
+}
+
+
+@media (min-width: 1000px) {
+  #timeline .demo-card {
+    max-width: 450px;
+    height: 400px;
+    margin: 90px;
+    margin-top: 45px;
+    margin-bottom: 45px;
+  }
+  #timeline .demo-card:nth-child(odd) {
+    margin-right: 45px;
+  }
+
+  #timeline .demo-card:nth-child(odd) span.pointer
+  {
+    border-left-width: 15px;
+    border-left-style: solid;
+    left: 100%;
+  }
+
+  #timeline .demo-card:nth-child(odd) .head::before {
+    left: 491.5px;
+  }
+  #timeline .demo-card:nth-child(even) {
+    margin-left: 45px;
+  }
+  #timeline .demo-card:nth-child(even) span.pointer
+  {
+    border-right-width: 15px;
+    border-right-style: solid;
+    right: 100%;
+  }
+  #timeline .demo-card:nth-child(even) .head::before {
+    right: 489.5px;
+  }
+  #timeline .demo-card:nth-child(2) {
+    margin-top: 180px;
+  }
+}
+#timeline .demo-card .head {
+  position: relative;
+  display: flex;
+  align-items: center;
+  color: #fff;
+  font-weight: 400;
+}
+#timeline .demo-card .head .number-box {
+  display: inline;
+  float: left;
+  margin: 15px;
+  font-size: 35px;
+  line-height: 35px;
+  font-weight: 600;
+  /*background: rgba(0, 0, 0, 0.17);*/
+}
+/*
+#timeline .demo-card .head h2 {
+  text-transform: uppercase;
+  font-size: 1.3rem;
+  font-weight: inherit;
+  letter-spacing: 2px;
+  margin: 0;
+  line-height: 1rem;
+}*/
+/*
+@media (min-width: 480px) {
+  #timeline .demo-card .head h2 {
+    font-size: 20px;
+    line-height: 1.2rem;
+    letter-spacing: -3px;    
+  }
+}
+#timeline .demo-card .head h2 span {
+  display: block;
+  font-size: 0.6rem;
+  margin: 0;
+}
+@media (min-width: 480px) {
+  #timeline .demo-card .head h2 span {
+    font-size: 0.8rem;
+  }
+}*/
+#timeline .demo-card .body {
+  background: #fff;
+  border: 1px solid rgba(191, 191, 191, 0.4);
+  border-top: 0;
+  padding: 15px;
+
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    align-items: flex-start;  
+}
+@media (min-width: 1000px) {
+  #timeline .demo-card .body {
+    height: 315px;
+    width: 450px;
+  }
+}
+#timeline .demo-card .body p {
+  font-size: 14px;
+  line-height: 18px;
+  margin-bottom: 15px;
+}
+#timeline .demo-card .body img {
+  display: block;
+  width: 100%;
+}
+
+/* shading */
+.demo-card
+{
+  -webkit-box-shadow: 0px 0px 93px -3px rgba(156,156,156,1) !important;
+  -moz-box-shadow: 0px 0px 93px -3px rgba(156,156,156,1) !important;
+  box-shadow: 0px 0px 93px -3px rgba(156,156,156,1) !important;
+  /**/
+}
+.hover-card
+{
+  transition: transform 0.2s ease;
+  cursor: pointer;
+
+}
+
+.hover-card:hover {
+  transform: scale(1.1);
+  z-index: 1000000 !important;
+}
+
+.hover-card:hover .dialog-link {
+  color: #3498db;
+  font-weight: 800;
+  font-size: 18px;
+}
+
+.position {
+  font-weight: 700;
+  font-size: 20px;
+}
+.dates span {
+  background-color: #827081;
+    color: white;
+    padding: 2px 7px;
+    border-radius: 6px;
+}
+
+
+.experience-modal h2 {
+  font-family: Arial, Tahoma, Verdana, sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+}
+.experience-modal h2 .dates {
+  font-size: 14px;
+  font-weight: normal;
+}
+.experience-modal .tech-list {
+  column-count: 2;
+}
+
+@media (min-width: 992px) {
+  .experience-modal .tech-list {
+    column-count: 3;
+  }
+}
+
+</style>
+<!-- each is 400px -->
+{% assign num_of_items = site.experience | size %}
+{% assign mod = num_of_items | modulo: 2 %}
+<!--odd-->
+{% if mod == 1 %}
+  {% assign height_factor = num_of_items | minus: 1 | divided_by: 2 | plus: 1 %}
+<!--even-->
+{% else %}
+  {% assign height_factor = num_of_items | divided_by: 2 %}
+{% endif %}
+{% assign height = height_factor | times: 500 | plus: 200 %}
+
+<section id=timeline style="background-color: #1c1a21;background-image: url(/assets/img/bg/morphing-diamonds.svg);">
+	<h1>A Flexbox Timeline</h1>
+  <p><a href="/assets/attachments/Alon%20Rotem%20CV%20English.pdf" target="_blank">My CV</a></p>
+	<p class="leader">All cards must be the same height and width for space calculations on large screens.</p>
+	<div class="demo-card-wrapper" style="height: {{ height }}px">
+    {% assign companies = site.experience | sort: "start-date" | reverse %}
+    {% assign oddcounter = 1 %}
+    {% assign evencounter = height_factor | plus: 1 %}
+    {% for exp in companies %}
+    {% assign mod = forloop.index | modulo: 2 %}
+    <!--odd-->
+    {% if mod == 1 %}
+      {% assign ord = oddcounter %}
+      {% assign oddcounter = oddcounter | plus: 1 %}
+    <!--even-->
+    {% else %}
+      {% assign ord = evencounter %}
+      {% assign evencounter = evencounter | plus: 1 %}
+  {% endif %}
+  
+    <div id="experience-card-{{forloop.index}}" data-aos="fade-up" class="demo-card" style="order: {{ord}};">
+      <div class="hover-card">
+			<div class="head" style="background-color: {{ exp.color }};">
+				<div class="number-box">
+					<span><img src="{{ exp.company-logo }}" style="width: 55px; height: auto; margin: 0;" /></span>
+				</div>
+        <div class="entry-basic">
+          <div class="company-name">{{ exp.company-name }}</div>
+          <div class="position">{{ exp.position }}</div>
+          <div class="dates"><span>{{ exp.start-date | date: "%d/%Y" }} - {% if exp.end-date %}{{ exp.end-date | date: "%d/%Y" }}{% else %}Present{% endif %}</span></div>
+        </div>
+				<!--<h2><span class="small">{{ exp.position }}</span>{{ exp.company-name }}<br/><span class="small">10/2000 - 20/2000</span></h2>-->
+			</div>
+      <span class="pointer" style="border-color: {{ exp.color }}; background-color: {{ exp.color }};"></span>
+			<div class="body">
+        <div class="list-container" style="width: 100%;
+        height: 100%;
+        overflow: hidden;
+        display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: flex-start;
+    align-content: flex-start;">
+          <ul class="list">
+            
+            {% if exp.what-i-did %}
+              {% for what in exp.what-i-did %}
+              <li>{{ what }}</li>
+              {% endfor %}
+            {% endif%}
+
+            {% if exp.what-i-did-multi %}
+            {% assign multi-items = exp.what-i-did-multi | sort: "start-date" | reverse %}
+              {% for multi-item in exp.what-i-did-multi %}
+                {% for what in multi-item.what %}
+                  <li>{{ what }}</li>
+                {% endfor %}
+              {% endfor %} 
+            {% endif %}
+
+          </ul>
+          </div>
+        <div class="dialog-link" style="margin: auto;">Click to learn more <i class="fa-solid fa-square-arrow-up-right"></i></div>
+			</div>
+    </div>
+		</div>
+
+   
+    {% endfor %}
+
+  </div>
+</section>
+
+{% for exp in companies %}
+<div id="experience-modal-{{forloop.index}}" class="modal modal-lg fade experience-modal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header" style="background-color: {{ exp.color  }}; color: white;">
+        <!--<h5 class="modal-title">Modal #{{forloop.index}}</h5>-->
+        <div style="    display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        /* align-content: center; */
+        justify-content: flex-start;
+        align-items: center;">
+          <img src="{{ exp.company-logo }}" style="width: 55px; height: auto; margin: 0; margin: 0px 13px 0px 0px;" />
+          <div class="entry-basic">
+            <div class="company-name">{{ exp.company-name }}</div>
+            <div class="position">{{ exp.position }}</div>
+            <div class="dates"><span>{{ exp.start-date | date: "%d/%Y" }} - {% if exp.end-date %}{{ exp.end-date | date: "%d/%Y" }}{% else %}Present{% endif %}</span></div>
+          </div>          
+        </div>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <p>
+          <h2>About {{ exp.company-name}}</h2>
+          <p>
+            <strong><i class="fa-solid {{ exp.industry-icon }}"></i> Industry:</strong> {{ exp.company-industry }}<br/>
+            <strong><i class="fa-solid fa-map-location-dot"></i> Location:</strong> {{ exp.company-location }}<br/>
+            <strong><i class="fa-solid fa-link"></i> Website:</strong> <a href="{{ exp.company-link }}" target="_blank">{{ exp.company-link }}</a>
+          </p>
+            {% for about in exp.company-about %}
+              <p>{{ about }}</p>
+            {% endfor %}
+            {% if exp.later-info %}
+            <p><strong>{{ exp.later-info }}</strong></p>
+            {% endif %}
+        </p>
+        <p>
+          {% if exp.what-i-did %}
+            <h2>My job as a {{ exp.position }}</h2>
+            <ul>
+            {% for what in exp.what-i-did %}
+            <li>{{what}}</li>
+            {% endfor %}
+            </ul>
+          {% endif %}
+          {% if exp.what-i-did-multi %}
+            {% assign multi-items = exp.what-i-did-multi | sort: "start-date" | reverse %}
+            {% for multi-item in exp.what-i-did-multi %}
+              <h2>{{ multi-item.title }} <span class="dates">({{ multi-item.start-date | date: "%d/%Y" }} - {% if multi-item.end-date %}{{ multi-item.end-date | date: "%d/%Y" }}{% else %}Present{% endif %})</span></h2>
+              <ul>
+                {% for what in multi-item.what %}
+                <li>{{ what }}</li>
+                {% endfor %}
+              </ul>
+            {% endfor %}
+          {% endif %}
+        </p>
+        <p>
+          <h2>Tech Stack</h2>
+          <div class="tech-list">
+          {% for tech in exp.tech-stack %}
+            {% assign icon = "" %}
+            {% assign tech_info = site.technologies | where: "name", tech | first %}
+            {% if tech_info and tech_info.icon %}
+              {% assign icon = tech_info.icon %}
+            {% endif %}
+            <div style="margin: 10px 0;">
+              {% if icon %}
+                <img src="{{ icon }}" style="width:20px; height: auto; margin: 0px 5px 0px 0px;" />
+              {% endif %}
+              {{ tech }}
+            </div>
+          {% endfor %}
+          </div>
+        </p>
+      </div>
+      <div class="modal-footer" style="justify-content: center;">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background-color: #3498db; color: white;">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+<script>
+
+function calculateOverflowingBulletsInContainers()
+{
+  var listContainers = document.getElementsByClassName('list-container');
+  for(var i=0; i < listContainers.length; i++) {
+    var listContainer = listContainers[i];
+    var lists = listContainer.getElementsByClassName("list");
+    var list = null; 
+    if(lists.length > 0)  {
+      list = lists[0];
+    }
+    if (list) {
+      while (listContainer.scrollHeight > listContainer.offsetHeight) {
+        var items = list.getElementsByTagName('li');
+        var lastItem = items[items.length - 1];
+        
+        if (lastItem.innerText !== '...') {
+          lastItem.remove();
+          var ellipsis = document.createElement('li');
+          ellipsis.innerText = '...';
+          list.appendChild(ellipsis);
+        } else {
+          lastItem.previousSibling.remove();
+        }
+      }
+    }
+  }
+}
+
+function attachBoxClicksToModals()
+{
+  var cards = document.getElementsByClassName('demo-card');
+  for(var i=0; i< cards.length; i++){
+    cards[i].addEventListener('click', function (event) {
+      var initiator = event.target;
+      var partialID = "experience-card-";
+      while(initiator.className.indexOf("demo-card") < 0 && initiator.tagName != "body")
+      {
+        initiator = initiator.parentElement;
+      }
+      if(initiator.className.indexOf("demo-card") >= 0 && initiator.id.indexOf(partialID) == 0)
+      {
+        var id = initiator.id.substring(partialID.length);
+        let modal = new bootstrap.Modal('#experience-modal-' + id);
+        modal.show();
+      }
+    });
+  }
+}
+
+window.addEventListener('load', function(event) {
+
+  calculateOverflowingBulletsInContainers();
+  attachBoxClicksToModals();
+  
+}); //onload
+
+window.addEventListener('resize', function(event) {
+  calculateOverflowingBulletsInContainers();
+}, true); //onresize
+
+</script>
