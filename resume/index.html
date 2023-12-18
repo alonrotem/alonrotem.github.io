@@ -292,11 +292,17 @@ layout: page
 <section id=timeline style="background-color: #1c1a21;background-image: url(/assets/img/bg/morphing-diamonds.svg);">
 	<h1>A Flexbox Timeline</h1>
   <p><a href="/assets/attachments/Alon%20Rotem%20CV%20English.pdf" target="_blank">My CV</a></p>
+  
+  <div style="position:sticky; background-color: white; display: inline; top: 150px">
+    2020
+  </div>
+
 	<p class="leader">All cards must be the same height and width for space calculations on large screens.</p>
 	<div class="demo-card-wrapper" style="height: {{ height }}px">
     {% assign companies = site.experience | sort: "start-date" | reverse %}
     {% assign oddcounter = 1 %}
     {% assign evencounter = height_factor | plus: 1 %}
+    
     {% for exp in companies %}
     {% assign mod = forloop.index | modulo: 2 %}
     <!--odd-->
@@ -309,9 +315,9 @@ layout: page
       {% assign evencounter = evencounter | plus: 1 %}
   {% endif %}
   
-    <div id="experience-card-{{forloop.index}}" data-aos="fade-up" class="demo-card" style="order: {{ord}};">
+    <div id="experience-card-{{forloop.index}}" data-aos="fade-up" class="demo-card" style="order: {{ord}};" data-start-date="{{ exp.start-date }}" data-end-date="{{ exp.end-date }}">
       <div class="hover-card">
-			<div class="head" style="background-color: {{ exp.color }};">
+			<div class="head" style="background-color: #a79ca1;">
 				<div class="number-box">
 					<span><img src="{{ exp.company-logo }}" style="width: 55px; height: auto; margin: 0;" /></span>
 				</div>
@@ -322,7 +328,7 @@ layout: page
         </div>
 				<!--<h2><span class="small">{{ exp.position }}</span>{{ exp.company-name }}<br/><span class="small">10/2000 - 20/2000</span></h2>-->
 			</div>
-      <span class="pointer" style="border-color: {{ exp.color }}; background-color: {{ exp.color }};"></span>
+      <span class="pointer" style="border-color: #a79ca1; background-color: #a79ca1;"></span>
 			<div class="body">
         <div class="list-container" style="width: 100%;
         height: 100%;
@@ -367,7 +373,7 @@ layout: page
 <div id="experience-modal-{{forloop.index}}" class="modal modal-lg fade experience-modal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
-      <div class="modal-header" style="background-color: {{ exp.color  }}; color: white;">
+      <div class="modal-header" style="background-color: #a79ca1; color: white;">
         <!--<h5 class="modal-title">Modal #{{forloop.index}}</h5>-->
         <div style="    display: flex;
         flex-direction: row;
@@ -390,14 +396,14 @@ layout: page
           <p>
             <strong><i class="fa-solid {{ exp.industry-icon }}"></i> Industry:</strong> {{ exp.company-industry }}<br/>
             <strong><i class="fa-solid fa-map-location-dot"></i> Location:</strong> {{ exp.company-location }}<br/>
-            <strong><i class="fa-solid fa-link"></i> Website:</strong> <a href="{{ exp.company-link }}" target="_blank">{{ exp.company-link }}</a>
-          </p>
+            {% if exp.company-link %}<strong><i class="fa-solid fa-link"></i> Website:</strong> <a href="{{ exp.company-link }}" target="_blank">{{ exp.company-link }}</a>{% endif %}
             {% for about in exp.company-about %}
               <p>{{ about }}</p>
             {% endfor %}
             {% if exp.later-info %}
             <p><strong>{{ exp.later-info }}</strong></p>
             {% endif %}
+          </p>
         </p>
         <p>
           {% if exp.what-i-did %}
@@ -420,6 +426,7 @@ layout: page
             {% endfor %}
           {% endif %}
         </p>
+        {% if exp.tech-stack %}
         <p>
           <h2>Tech Stack</h2>
           <div class="tech-list">
@@ -438,6 +445,7 @@ layout: page
           {% endfor %}
           </div>
         </p>
+        {% endif %}
       </div>
       <div class="modal-footer" style="justify-content: center;">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background-color: #3498db; color: white;">Close</button>
@@ -498,15 +506,68 @@ function attachBoxClicksToModals()
   }
 }
 
+function isInViewport(element) {
+  var rect = element.getBoundingClientRect();
+  var html = document.documentElement;
+  return (
+    rect.top >= 0 &&
+    rect.left >= 0 &&
+    rect.bottom <= (window.innerHeight || html.clientHeight) &&
+    rect.right <= (window.innerWidth || html.clientWidth)
+  );
+}
+
+function whichYearsAreVisible()
+{
+  var visibleFrom = new Date("1980-01-01");
+  var visibleTo = new Date();
+  var cards = document.getElementsByClassName("demo-card");
+  for(var i = 0; i < cards.length; i++)
+  {
+    if(isInViewport(cards[i]))
+    {
+      var cardFrom = cards[i].getAttribute("data-start-date");
+      var cardTo = cards[i].getAttribute("data-start-date");
+      if(cardFrom)
+      {
+        var cardFromDate = new Date(cardFrom);
+        if(cardFromDate > visibleFrom)
+        {
+          visibleFrom = cardFromDate;
+        }
+      }
+      if(cardTo)
+      {
+        var cardToDate = new Date(cardTo);        
+      }
+      else
+      {
+        cardToDate = new Date();
+      }
+      if(cardToDate < visibleTo)
+      {
+        visibleTo = cardToDate;
+      }      
+    }
+  }
+  console.log("Visible: " + (visibleFrom.getMonth() + 1) + "/" + visibleFrom.getFullYear() + " - " + (visibleTo.getMonth() + 1) + "/" + visibleTo.getFullYear())
+}
+
 window.addEventListener('load', function(event) {
 
   calculateOverflowingBulletsInContainers();
   attachBoxClicksToModals();
+  whichYearsAreVisible();
   
 }); //onload
 
 window.addEventListener('resize', function(event) {
   calculateOverflowingBulletsInContainers();
 }, true); //onresize
+
+window.addEventListener('scroll', function(event) {
+  whichYearsAreVisible();
+}, true); //onscroll
+
 
 </script>
