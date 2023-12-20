@@ -12,14 +12,13 @@ layout: page
 {% else %}
   {% assign height_factor = num_of_items | divided_by: 2 %}
 {% endif %}
-{% assign height = height_factor | times: 500 | plus: 200 %}
-{% assign height_narrow = num_of_items | times: 500  | plus: 200 %}
 
 <style>
+a:hover {
+  text-decoration: none;
+}
 
 @media (min-width: 1075px) {
-  /*#timeline .experience-card:nth-child(even) span.pointer, */
-  /*#timeline .experience-card:nth-child(odd) */ 
   span.pointer
   {
     position: absolute;
@@ -42,8 +41,7 @@ layout: page
     top: 27px;
   }
   
-  /*#timeline .experience-card:nth-child(even) .head::before, 
-  #timeline .experience-card:nth-child(odd)*/ .head::before {
+ .head::before {
     position: absolute;
     content: "";
     width: 9px;
@@ -57,13 +55,7 @@ layout: page
     display:none;
   }
 }
-/*
-#timeline {
-  padding: 100px 0;
-  background: #f7f7f7;
-  border-top: 1px solid rgba(191, 191, 191, 0.4);
-  border-bottom: 1px solid rgba(191, 191, 191, 0.4);
-}*/
+
 #timeline h1 {
   text-align: center;
   font-size: 3rem;
@@ -76,28 +68,21 @@ layout: page
   margin: auto;
   margin-bottom: 45px;
 }
-#timeline .experience-card-wrapper {
+#timeline .timeline-cards-wrapper {
   position: relative;
   margin: auto;
   
 
 }
 @media (min-width: 1075px) {
-  #timeline .experience-card-wrapper {
+  #timeline .timeline-cards-wrapper {
     display: flex;
     flex-flow: column wrap;
-    /*width: 1170px;*/
-    height: {{ height }} px;
     margin: 0 auto;
   }
 }
 
-@media (max-width: 990px) {
-  #timeline .experience-card-wrapper {
-    height: {{ height_narrow }} px;
-  }
-}
-#timeline .experience-card-wrapper::after {
+#timeline .timeline-cards-wrapper::after {
   z-index: 1;
   content: "";
   position: absolute;
@@ -106,12 +91,13 @@ layout: page
   left: 50%;
   border-left: 1px solid rgba(191, 191, 191, 0.4);
 }
+
 #years-indicator {
     display: none;
 }
 
 @media (min-width: 1075px) {
-  #timeline .experience-card-wrapper::after {
+  #timeline .timeline-cards-wrapper::after {
     border-left: 1px solid #bdbdbd;
   }
 }
@@ -142,7 +128,6 @@ layout: page
   #timeline .experience-card {
     max-width: 450px;
     height: 400px;
-    /*margin: 90px;*/
     margin-top: 45px;
     margin-bottom: 45px;
   }
@@ -190,35 +175,8 @@ layout: page
   font-size: 35px;
   line-height: 35px;
   font-weight: 600;
-  /*background: rgba(0, 0, 0, 0.17);*/
 }
-/*
-#timeline .experience-card .head h2 {
-  text-transform: uppercase;
-  font-size: 1.3rem;
-  font-weight: inherit;
-  letter-spacing: 2px;
-  margin: 0;
-  line-height: 1rem;
-}*/
-/*
-@media (min-width: 480px) {
-  #timeline .experience-card .head h2 {
-    font-size: 20px;
-    line-height: 1.2rem;
-    letter-spacing: -3px;    
-  }
-}
-#timeline .experience-card .head h2 span {
-  display: block;
-  font-size: 0.6rem;
-  margin: 0;
-}
-@media (min-width: 480px) {
-  #timeline .experience-card .head h2 span {
-    font-size: 0.8rem;
-  }
-}*/
+
 #timeline .experience-card .body {
   background: #fff;
   border: 1px solid rgba(191, 191, 191, 0.4);
@@ -253,24 +211,26 @@ layout: page
   -webkit-box-shadow: 0px 0px 93px -3px rgba(156,156,156,1) !important;
   -moz-box-shadow: 0px 0px 93px -3px rgba(156,156,156,1) !important;
   box-shadow: 0px 0px 93px -3px rgba(156,156,156,1) !important;
-  /**/
 }
+
 .hover-card
 {
   transition: transform 0.2s ease;
   cursor: pointer;
-
 }
 
 .hover-card:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
   z-index: 1000000 !important;
 }
 
 .hover-card:hover .dialog-link {
-  color: #3498db;
+  background-color: #3498db;
+  color: white;
   font-weight: 800;
   font-size: 18px;
+  padding: 3px 10px;
+  border-radius: 4px;
 }
 
 .position {
@@ -283,7 +243,6 @@ layout: page
     padding: 2px 7px;
     border-radius: 6px;
 }
-
 
 .experience-modal h2 {
   font-family: Arial, Tahoma, Verdana, sans-serif;
@@ -326,6 +285,10 @@ layout: page
   text-decoration: none;
 }
 
+.year:not(.active):hover {
+  background-color: yellow;
+}
+
 .year:first-child {
     border-top-left-radius: 7px;
     border-top-right-radius: 7px;
@@ -337,15 +300,44 @@ layout: page
     border-bottom-right-radius: 7px;
 }
 
+.custom-tooltip {
+  --bs-tooltip-bg: #3498db;
+}
+
+/*
+.custom-tooltip:hover + .hover-card{
+  background-color: yellow;
+  transform: scale(3.05);
+}*/
+
+.custom-tooltip:hover + div .hover-card
+{
+  --bs-tooltip-bg: yellow;
+  background-color: green;
+  transform: scale(4.05);
+}
+/*
+.hover-card > div.body > div > .custom-tooltip:hover {
+  transform: scale(1.05);
+  z-index: 1000000 !important;
+  background-color: red;
+}
+*/
+.professional-link
+{
+  white-space: nowrap;
+}
+
 </style>
 
 
 {% assign companies = site.experience | sort: "start-date" | reverse %}
 
-<div class="container-fluid" style="padding-top: 100px; background-color: #1c1a21; background-image: url(/assets/img/bg/morphing-diamonds.svg);">
+<div class="container-fluid" style="padding-top: 100px; padding-bottom: 25px; background-color: #1c1a21; background-image: url(/assets/img/bg/morphing-diamonds.svg);">
 <div style="display: flex; ">
   <span  style="display: block">
   
+    <!-- populate the years indicator list-->
     <span id="years-indicator" style="position: sticky; top: 110px;">
       {% assign min_year = 9999 %}
       {% assign max_year = -1 %}
@@ -391,13 +383,23 @@ layout: page
     <div  id=timeline class="contaienr">
       <h1 style="color: white;">My Experience Timeline</h1>
       <p class="leader" style="color: white; font-size: 21px;"><i class="fa-solid fa-file-pdf"></i> Get my full CV (in <a href="https://europa.eu/europass/en" target="_blank">EU format</a>) <a href="/assets/attachments/Alon%20Rotem%20CV%20English.pdf" target="_blank">here</a>!</p>
+      <p class="leader" style="color: white; font-size: 18px;">
+        See my professional profiles on 
+        <span class="professional-link"><a href="https://www.linkedin.com/in/alrotem/" target="_blank"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>,</span>
+        <span class="professional-link"><a href="https://www.xing.com/profile/Alon_Rotem/" target="_blank"><i class="fa-brands fa-square-xing"></i> Xing</a>,</span>
+        <span class="professional-link"><a href="https://github.com/alonrotem" target="_blank"><i class="fa-brands fa-square-github"></i> Github</a></span> and
+        <span class="professional-link"><a href="https://gitlab.com/alonrotem" target="_blank"><i class="fa-brands fa-square-gitlab"></i> Gitlab</a></span>.<br/>
+        Click to see <a href="/{{ site.homepage }}#about">more about me</a> and <a href="/{{ site.homepage }}#contact">more ways to contact me</a>.
+      </p>
 
-      <div id="experience-card-wrapper" class="experience-card-wrapper" style="height: {{ height }}px">
+      <div id="timeline-cards-wrapper" class="timeline-cards-wrapper" style="height: 4000px; ">
         
-        {% assign oddcounter = 1 %}
-        {% assign evencounter = height_factor | plus: 1 %}
-        
-        {% for exp in companies %}
+      <!-- counter to keep track each item's order, to split into 2 columns  when needed-->
+      {% assign oddcounter = 1 %}
+      {% assign evencounter = height_factor | plus: 1 %}
+      
+      <!-- loop to create the cards -->
+      {% for exp in companies %}
         {% assign mod = forloop.index | modulo: 2 %}
         <!--odd-->
         {% if mod == 1 %}
@@ -407,8 +409,9 @@ layout: page
         {% else %}
           {% assign ord = evencounter %}
           {% assign evencounter = evencounter | plus: 1 %}
-      {% endif %}
+        {% endif %}
       
+        <!-- card -->
         <div id="experience-card-{{forloop.index}}" data-aos="fade-up" class="experience-card" style="order: {{ord}};" data-start-date="{{ exp.start-date }}" data-end-date="{{ exp.end-date }}">
           <div class="hover-card">
           <div class="head" style="background-color: #6c6065;">
@@ -416,11 +419,10 @@ layout: page
               <span><img src="{{ exp.company-logo }}" style="width: 55px; height: auto; margin: 0;" /></span>
             </div>
             <div class="entry-basic">
-              <div class="company-name">{{ exp.company-name }}</div>
+              <div class="company-name">{{ exp.company-name }} <i class="fa-solid {{ exp.industry-icon }}" data-bs-toggle="tooltip" data-bs-title="{{ exp.company-industry }}" data-bs-custom-class="custom-tooltip"></i></div>
               <div class="position">{{ exp.position }}</div>
               <div class="dates"><span>{{ exp.start-date | date: "%m/%Y" }} - {% if exp.end-date %}{{ exp.end-date | date: "%m/%Y" }}{% else %}Present{% endif %}</span></div>
             </div>
-            <!--<h2><span class="small">{{ exp.position }}</span>{{ exp.company-name }}<br/><span class="small">10/2000 - 20/2000</span></h2>-->
           </div>
           <span class="pointer" style="border-color: #6c6065; background-color: #6c6065;"></span>
           <div class="body">
@@ -452,11 +454,32 @@ layout: page
     
               </ul>
               </div>
+              <div style="    height: 30px;
+              display: flex;
+              flex-direction: row;
+              flex-wrap: wrap;
+              align-content: center;
+              justify-content: space-evenly;
+              align-items: center;
+              width: 100%;
+              margin: 10px 0;">
+                {% for tech in exp.tech-stack %}
+                  {% assign icon = "" %}
+                  {% assign tech_info = site.technologies | where: "name", tech | first %}
+                  {% if tech_info and tech_info.icon %}
+                    {% assign icon = tech_info.icon %}
+                  {% endif %}
+                    {% if icon %}
+                      <img src="{{ icon }}" style="width:20px; height: auto; margin: 0px 5px 0px 0px;" data-bs-toggle="tooltip" data-bs-title="{{ tech }}" data-bs-custom-class="custom-tooltip" />
+                    {% endif %}
+                    <!--{{ tech }}-->
+                {% endfor %}
+              </div>
             <div class="dialog-link" style="margin: auto;">Click to see more <i class="fa-solid fa-square-arrow-up-right"></i></div>
           </div>
         </div>
         </div>
-    
+        <!--/card -->
        
         {% endfor %}
     
@@ -466,13 +489,12 @@ layout: page
 </div>
 </div>
 
-
 {% for exp in companies %}
+<!-- modal -->
 <div id="experience-modal-{{forloop.index}}" class="modal modal-lg fade experience-modal" tabindex="-1">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header" style="background-color: #6c6065; color: white;">
-        <!--<h5 class="modal-title">Modal #{{forloop.index}}</h5>-->
         <div style="    display: flex;
         flex-direction: row;
         flex-wrap: nowrap;
@@ -551,12 +573,12 @@ layout: page
     </div>
   </div>
 </div>
+<!--/modal -->
 {% endfor %}
 
 <script>
 
-function calculateOverflowingBulletsInContainers()
-{
+function calculateOverflowingBulletsInContainers() {
   var listContainers = document.getElementsByClassName('list-container');
   for(var i=0; i < listContainers.length; i++) {
     var listContainer = listContainers[i];
@@ -583,8 +605,7 @@ function calculateOverflowingBulletsInContainers()
   }
 }
 
-function attachBoxClicksToModals()
-{
+function attachBoxClicksToModals() {
   var cards = document.getElementsByClassName('experience-card');
   for(var i=0; i< cards.length; i++){
     cards[i].addEventListener('click', function (event) {
@@ -604,37 +625,18 @@ function attachBoxClicksToModals()
   }
 }
 
-/*
-function isInViewport(element) {
-  var rect = element.getBoundingClientRect();
-  var html = document.documentElement;
-  return (
-    rect.top >= 0 &&
-    rect.left >= 0 &&
-    rect.bottom <= (window.innerHeight || html.clientHeight) &&
-    rect.right <= (window.innerWidth || html.clientWidth)
-  );
-}
-*/
 function isInViewport (el) {
-  var percentVisible = 15;
-  var
-    rect = el.getBoundingClientRect(),
+  var rect = el.getBoundingClientRect(),
     windowHeight = (window.innerHeight || document.documentElement.clientHeight);
 
-  return !(
-    Math.floor(100 - (((rect.top >= 0 ? 0 : rect.top) / +-rect.height) * 100)) < percentVisible ||
-    Math.floor(100 - ((rect.bottom - windowHeight) / rect.height) * 100) < percentVisible ||
-    rect-top < 0
-  )
+    return (rect.top > 0 && rect.top <= windowHeight);
 }
 
-function whichYearsAreVisible()
-{
+function highlightVisibleYears() {
   var visibleFrom = new Date();
   var visibleTo = new Date("1980-01-01");
   var cards = document.getElementsByClassName("experience-card");
-  console.log("----------------")
+
   for(var i = 0; i < cards.length; i++)
   {
     if(isInViewport(cards[i]))
@@ -661,7 +663,6 @@ function whichYearsAreVisible()
       }
     }
   }
-  console.log("Visible: " + (visibleFrom.getMonth() + 1) + "/" + visibleFrom.getFullYear() + " - " + (visibleTo.getMonth() + 1) + "/" + visibleTo.getFullYear());
   var yearFrom = visibleFrom.getFullYear();
   var yearTo = visibleTo.getFullYear();
   var years_indicator = document.getElementById("years-indicator");
@@ -678,10 +679,52 @@ function whichYearsAreVisible()
       years[i].classList.remove("active");
     }
   }
-  //indicator.textContent =  (visibleFrom.getMonth() + 1) + "/" + visibleFrom.getFullYear() + " - " + (visibleTo.getMonth() + 1) + "/" + visibleTo.getFullYear();
+  bringActiveYearIntoView();
 }
 
-function assignIndicatorLinksToYearCards(){
+//makes sure that years marked as "active" in the indicator are visible
+function bringActiveYearIntoView() {
+  var years_indicator = document.getElementById("years-indicator"),
+      top_marg = 110,
+      years = years_indicator.getElementsByClassName("year"),
+      highestVisibleYearDiv  = null,
+      lowestVisibleYearDiv = null;
+
+      for(i=years.length-1; i>=0; i--){ 
+        if(years[i].classList.contains("active")) { 
+          if(!lowestVisibleYearDiv)
+            lowestVisibleYearDiv = years[i];
+          if(i == 0 || !years[i-1].classList.contains("active"))
+          {
+            highestVisibleYearDiv = years[i];
+            break
+          }
+        } 
+      }
+  
+    if(lowestVisibleYearDiv)
+    {
+      var highest_rect = highestVisibleYearDiv.getBoundingClientRect();
+      var lowest_rect = lowestVisibleYearDiv.getBoundingClientRect();
+      var highest_point = highest_rect.top;
+      var lowestPoint = lowest_rect.top + lowest_rect.height;
+      var windowHeight = (window.innerHeight || document.documentElement.clientHeight);
+
+      if(lowestPoint > windowHeight)
+      {
+        var gap = (lowestPoint - windowHeight) + 50;
+	      top_marg -= gap;
+        years_indicator.style.top = (parseInt(years_indicator.style.top.replace("px","")) - gap) + "px";
+      }
+      else if (highest_point < 110)
+      {
+        years_indicator.style.top = "110px"
+      }
+    }
+}
+
+//sets the href/hash property of each indicator's year, to the proper card
+function assignIndicatorLinksToYearCards() {
   var cards = document.getElementsByClassName("experience-card");
   for(var c=0; c < cards.length; c++)
   {
@@ -705,7 +748,8 @@ function assignIndicatorLinksToYearCards(){
   }
 }
 
-function realHeight(el) //with margins
+
+function getElementActualHeight(el) //with margins
 {
 	return el.offsetHeight + 
     parseInt(window.getComputedStyle(el).getPropertyValue('margin-top')) +
@@ -713,12 +757,12 @@ function realHeight(el) //with margins
 }
 
 
-
+//Make sure the cards wrapper has the height to contain them all in 1 column (narrow), or 2 columns (wide)
 function adjustCardWrapperHeight() {
-  var experience_card_wrapper = document.getElementById("experience-card-wrapper");
+  var experience_card_wrapper = document.getElementById("timeline-cards-wrapper");
   if(window.innerWidth < 1075) //wide enough for 2 columns
   {
-    var h = Array.from(document.querySelectorAll('.experience-card')).map(el => realHeight(el)).reduce((a, b) => a + b, 0);
+    var h = Array.from(document.querySelectorAll('.experience-card')).map(el => getElementActualHeight(el)).reduce((a, b) => a + b, 0);
   }
   else {
     var cards = document.getElementsByClassName("experience-card");
@@ -730,8 +774,8 @@ function adjustCardWrapperHeight() {
     {
       var split = ((cards.length -1) /2) + 1;
     }
-    var col1 = Array.from(document.querySelectorAll('.experience-card')).slice(0, split).map(el => realHeight(el)).reduce((a, b) => a + b, 0);
-    var col2 = Array.from(document.querySelectorAll('.experience-card')).slice(split).map(el => realHeight(el)).reduce((a, b) => a + b, 0);
+    var col1 = Array.from(document.querySelectorAll('.experience-card')).slice(0, split).map(el => getElementActualHeight(el)).reduce((a, b) => a + b, 0);
+    var col2 = Array.from(document.querySelectorAll('.experience-card')).slice(split).map(el => getElementActualHeight(el)).reduce((a, b) => a + b, 0);
     var h = Math.max(col1, col2);
   }
   experience_card_wrapper.style.height = h + "px";
@@ -739,19 +783,25 @@ function adjustCardWrapperHeight() {
 
 window.addEventListener('load', function(event) {
   calculateOverflowingBulletsInContainers();
-  attachBoxClicksToModals();
-  whichYearsAreVisible();
-  assignIndicatorLinksToYearCards();
   adjustCardWrapperHeight();
+
+  attachBoxClicksToModals();
+  highlightVisibleYears();
+  assignIndicatorLinksToYearCards();
+
+  //document.getElementById("timeline-cards-wrapper").style.opacity = 1;
 }); //onload
 
 window.addEventListener('resize', function(event) {
   calculateOverflowingBulletsInContainers();
   adjustCardWrapperHeight();
+  highlightVisibleYears();
+  
 }, true); //onresize
 
 window.addEventListener('scroll', function(event) {
-  whichYearsAreVisible();
+  highlightVisibleYears();
+  
 }, true); //onscroll
 
 
