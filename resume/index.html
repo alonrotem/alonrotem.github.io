@@ -2,11 +2,24 @@
 title: Curriculum Vitae
 layout: page
 ---
+<!-- each is 400px -->
+{% assign num_of_items = site.experience | size %}
+{% assign mod = num_of_items | modulo: 2 %}
+<!--odd-->
+{% if mod == 1 %}
+  {% assign height_factor = num_of_items | minus: 1 | divided_by: 2 | plus: 1 %}
+<!--even-->
+{% else %}
+  {% assign height_factor = num_of_items | divided_by: 2 %}
+{% endif %}
+{% assign height = height_factor | times: 500 | plus: 200 %}
+{% assign height_narrow = num_of_items | times: 500  | plus: 200 %}
+
 <style>
 
-@media (min-width: 1000px) {
-  /*#timeline .demo-card:nth-child(even) span.pointer, */
-  /*#timeline .demo-card:nth-child(odd) */ 
+@media (min-width: 1075px) {
+  /*#timeline .experience-card:nth-child(even) span.pointer, */
+  /*#timeline .experience-card:nth-child(odd) */ 
   span.pointer
   {
     position: absolute;
@@ -18,19 +31,19 @@ layout: page
     --angle-width: 18px;
 }
 
-  #timeline .demo-card:nth-child(even) span.pointer
+  #timeline .experience-card:nth-child(even) span.pointer
   {
     clip-path: polygon(100% 0, 0 50%, 100% 100%);
     top: 29px;
   }
-  #timeline .demo-card:nth-child(odd) span.pointer
+  #timeline .experience-card:nth-child(odd) span.pointer
   {
     clip-path: polygon(100% 50%, 0 0, 0 100%);
     top: 27px;
   }
   
-  /*#timeline .demo-card:nth-child(even) .head::before, 
-  #timeline .demo-card:nth-child(odd)*/ .head::before {
+  /*#timeline .experience-card:nth-child(even) .head::before, 
+  #timeline .experience-card:nth-child(odd)*/ .head::before {
     position: absolute;
     content: "";
     width: 9px;
@@ -63,20 +76,28 @@ layout: page
   margin: auto;
   margin-bottom: 45px;
 }
-#timeline .demo-card-wrapper {
+#timeline .experience-card-wrapper {
   position: relative;
   margin: auto;
+  
+
 }
-@media (min-width: 1000px) {
-  #timeline .demo-card-wrapper {
+@media (min-width: 1075px) {
+  #timeline .experience-card-wrapper {
     display: flex;
     flex-flow: column wrap;
-    width: 1170px;
-    height: 1650px;
+    /*width: 1170px;*/
+    height: {{ height }} px;
     margin: 0 auto;
   }
 }
-#timeline .demo-card-wrapper::after {
+
+@media (max-width: 990px) {
+  #timeline .experience-card-wrapper {
+    height: {{ height_narrow }} px;
+  }
+}
+#timeline .experience-card-wrapper::after {
   z-index: 1;
   content: "";
   position: absolute;
@@ -85,12 +106,16 @@ layout: page
   left: 50%;
   border-left: 1px solid rgba(191, 191, 191, 0.4);
 }
-@media (min-width: 1000px) {
-  #timeline .demo-card-wrapper::after {
+#years-indicator {
+    display: none;
+}
+
+@media (min-width: 1075px) {
+  #timeline .experience-card-wrapper::after {
     border-left: 1px solid #bdbdbd;
   }
 }
-#timeline .demo-card {
+#timeline .experience-card {
   position: relative;
   display: block;
   margin: 10px auto 80px;
@@ -98,64 +123,67 @@ layout: page
   z-index: 2;
 }
 @media (min-width: 480px) {
-  #timeline .demo-card {
-    max-width: 60%;
+  #timeline .experience-card {
+    max-width: 80%;
     box-shadow: 0px 1px 22px 4px rgba(0, 0, 0, 0.07);
+  }
+  #years-indicator {
+    display: block;
   }
 }
 @media (min-width: 720px) {
-  #timeline .demo-card {
-    max-width: 40%;
+  #timeline .experience-card {
+    max-width: 80%;
   }
 }
 
 
-@media (min-width: 1000px) {
-  #timeline .demo-card {
+@media (min-width: 1075px) {
+  #timeline .experience-card {
     max-width: 450px;
     height: 400px;
-    margin: 90px;
+    /*margin: 90px;*/
     margin-top: 45px;
     margin-bottom: 45px;
   }
-  #timeline .demo-card:nth-child(odd) {
+  #timeline .experience-card:nth-child(odd) {
     margin-right: 45px;
   }
 
-  #timeline .demo-card:nth-child(odd) span.pointer
+  #timeline .experience-card:nth-child(odd) span.pointer
   {
     border-left-width: 15px;
     border-left-style: solid;
     left: 100%;
   }
 
-  #timeline .demo-card:nth-child(odd) .head::before {
+  #timeline .experience-card:nth-child(odd) .head::before {
     left: 491.5px;
   }
-  #timeline .demo-card:nth-child(even) {
+  #timeline .experience-card:nth-child(even) {
     margin-left: 45px;
   }
-  #timeline .demo-card:nth-child(even) span.pointer
+  #timeline .experience-card:nth-child(even) span.pointer
   {
     border-right-width: 15px;
     border-right-style: solid;
     right: 100%;
   }
-  #timeline .demo-card:nth-child(even) .head::before {
+  #timeline .experience-card:nth-child(even) .head::before {
     right: 489.5px;
   }
-  #timeline .demo-card:nth-child(2) {
+  #timeline .experience-card:nth-child(2) {
     margin-top: 180px;
   }
 }
-#timeline .demo-card .head {
+#timeline .experience-card .head {
   position: relative;
   display: flex;
   align-items: center;
   color: #fff;
   font-weight: 400;
 }
-#timeline .demo-card .head .number-box {
+#timeline .experience-card .head .number-box {
   display: inline;
   float: left;
   margin: 15px;
@@ -165,7 +193,7 @@ layout: page
   /*background: rgba(0, 0, 0, 0.17);*/
 }
 /*
-#timeline .demo-card .head h2 {
+#timeline .experience-card .head h2 {
   text-transform: uppercase;
   font-size: 1.3rem;
   font-weight: inherit;
@@ -175,23 +203,23 @@ layout: page
 }*/
 /*
 @media (min-width: 480px) {
-  #timeline .demo-card .head h2 {
+  #timeline .experience-card .head h2 {
     font-size: 20px;
     line-height: 1.2rem;
     letter-spacing: -3px;    
   }
 }
-#timeline .demo-card .head h2 span {
+#timeline .experience-card .head h2 span {
   display: block;
   font-size: 0.6rem;
   margin: 0;
 }
 @media (min-width: 480px) {
-  #timeline .demo-card .head h2 span {
+  #timeline .experience-card .head h2 span {
     font-size: 0.8rem;
   }
 }*/
-#timeline .demo-card .body {
+#timeline .experience-card .body {
   background: #fff;
   border: 1px solid rgba(191, 191, 191, 0.4);
   border-top: 0;
@@ -203,24 +231,24 @@ layout: page
     justify-content: space-between;
     align-items: flex-start;  
 }
-@media (min-width: 1000px) {
-  #timeline .demo-card .body {
+@media (min-width: 1075px) {
+  #timeline .experience-card .body {
     height: 315px;
     width: 450px;
   }
 }
-#timeline .demo-card .body p {
+#timeline .experience-card .body p {
   font-size: 14px;
   line-height: 18px;
   margin-bottom: 15px;
 }
-#timeline .demo-card .body img {
+#timeline .experience-card .body img {
   display: block;
   width: 100%;
 }
 
 /* shading */
-.demo-card
+.experience-card
 {
   -webkit-box-shadow: 0px 0px 93px -3px rgba(156,156,156,1) !important;
   -moz-box-shadow: 0px 0px 93px -3px rgba(156,156,156,1) !important;
@@ -310,25 +338,15 @@ layout: page
 }
 
 </style>
-<!-- each is 400px -->
-{% assign num_of_items = site.experience | size %}
-{% assign mod = num_of_items | modulo: 2 %}
-<!--odd-->
-{% if mod == 1 %}
-  {% assign height_factor = num_of_items | minus: 1 | divided_by: 2 | plus: 1 %}
-<!--even-->
-{% else %}
-  {% assign height_factor = num_of_items | divided_by: 2 %}
-{% endif %}
-{% assign height = height_factor | times: 500 | plus: 200 %}
+
 
 {% assign companies = site.experience | sort: "start-date" | reverse %}
 
 <div class="container-fluid" style="padding-top: 100px; background-color: #1c1a21; background-image: url(/assets/img/bg/morphing-diamonds.svg);">
 <div style="display: flex; ">
-  <span>
+  <span  style="display: block">
   
-    <span id="years-indicator" style="background-color: white; position: sticky; top: 110px;">
+    <span id="years-indicator" style="position: sticky; top: 110px;">
       {% assign min_year = 9999 %}
       {% assign max_year = -1 %}
       {% assign years = "" %}
@@ -374,7 +392,7 @@ layout: page
       <h1 style="color: white;">My Experience Timeline</h1>
       <p class="leader" style="color: white; font-size: 21px;"><i class="fa-solid fa-file-pdf"></i> Get my full CV (in <a href="https://europa.eu/europass/en" target="_blank">EU format</a>) <a href="/assets/attachments/Alon%20Rotem%20CV%20English.pdf" target="_blank">here</a>!</p>
 
-      <div class="demo-card-wrapper" style="height: {{ height }}px">
+      <div id="experience-card-wrapper" class="experience-card-wrapper" style="height: {{ height }}px">
         
         {% assign oddcounter = 1 %}
         {% assign evencounter = height_factor | plus: 1 %}
@@ -391,7 +409,7 @@ layout: page
           {% assign evencounter = evencounter | plus: 1 %}
       {% endif %}
       
-        <div id="experience-card-{{forloop.index}}" data-aos="fade-up" class="demo-card" style="order: {{ord}};" data-start-date="{{ exp.start-date }}" data-end-date="{{ exp.end-date }}">
+        <div id="experience-card-{{forloop.index}}" data-aos="fade-up" class="experience-card" style="order: {{ord}};" data-start-date="{{ exp.start-date }}" data-end-date="{{ exp.end-date }}">
           <div class="hover-card">
           <div class="head" style="background-color: #6c6065;">
             <div class="number-box">
@@ -567,16 +585,16 @@ function calculateOverflowingBulletsInContainers()
 
 function attachBoxClicksToModals()
 {
-  var cards = document.getElementsByClassName('demo-card');
+  var cards = document.getElementsByClassName('experience-card');
   for(var i=0; i< cards.length; i++){
     cards[i].addEventListener('click', function (event) {
       var initiator = event.target;
       var partialID = "experience-card-";
-      while(initiator.className.indexOf("demo-card") < 0 && initiator.tagName != "body")
+      while(initiator.className.indexOf("experience-card") < 0 && initiator.tagName != "body")
       {
         initiator = initiator.parentElement;
       }
-      if(initiator.className.indexOf("demo-card") >= 0 && initiator.id.indexOf(partialID) == 0)
+      if(initiator.className.indexOf("experience-card") >= 0 && initiator.id.indexOf(partialID) == 0)
       {
         var id = initiator.id.substring(partialID.length);
         let modal = new bootstrap.Modal('#experience-modal-' + id);
@@ -586,6 +604,7 @@ function attachBoxClicksToModals()
   }
 }
 
+/*
 function isInViewport(element) {
   var rect = element.getBoundingClientRect();
   var html = document.documentElement;
@@ -596,12 +615,25 @@ function isInViewport(element) {
     rect.right <= (window.innerWidth || html.clientWidth)
   );
 }
+*/
+function isInViewport (el) {
+  var percentVisible = 15;
+  var
+    rect = el.getBoundingClientRect(),
+    windowHeight = (window.innerHeight || document.documentElement.clientHeight);
+
+  return !(
+    Math.floor(100 - (((rect.top >= 0 ? 0 : rect.top) / +-rect.height) * 100)) < percentVisible ||
+    Math.floor(100 - ((rect.bottom - windowHeight) / rect.height) * 100) < percentVisible ||
+    rect-top < 0
+  )
+}
 
 function whichYearsAreVisible()
 {
   var visibleFrom = new Date();
   var visibleTo = new Date("1980-01-01");
-  var cards = document.getElementsByClassName("demo-card");
+  var cards = document.getElementsByClassName("experience-card");
   console.log("----------------")
   for(var i = 0; i < cards.length; i++)
   {
@@ -629,7 +661,7 @@ function whichYearsAreVisible()
       }
     }
   }
-  //console.log("Visible: " + (visibleFrom.getMonth() + 1) + "/" + visibleFrom.getFullYear() + " - " + (visibleTo.getMonth() + 1) + "/" + visibleTo.getFullYear());
+  console.log("Visible: " + (visibleFrom.getMonth() + 1) + "/" + visibleFrom.getFullYear() + " - " + (visibleTo.getMonth() + 1) + "/" + visibleTo.getFullYear());
   var yearFrom = visibleFrom.getFullYear();
   var yearTo = visibleTo.getFullYear();
   var years_indicator = document.getElementById("years-indicator");
@@ -650,7 +682,7 @@ function whichYearsAreVisible()
 }
 
 function assignIndicatorLinksToYearCards(){
-  var cards = document.getElementsByClassName("demo-card");
+  var cards = document.getElementsByClassName("experience-card");
   for(var c=0; c < cards.length; c++)
   {
       var cardFrom = cards[c].getAttribute("data-start-date");
@@ -673,16 +705,49 @@ function assignIndicatorLinksToYearCards(){
   }
 }
 
-window.addEventListener('load', function(event) {
+function realHeight(el) //with margins
+{
+	return el.offsetHeight + 
+    parseInt(window.getComputedStyle(el).getPropertyValue('margin-top')) +
+    parseInt(window.getComputedStyle(el).getPropertyValue('margin-bottom'));
+}
 
+
+
+function adjustCardWrapperHeight() {
+  var experience_card_wrapper = document.getElementById("experience-card-wrapper");
+  if(window.innerWidth < 1075) //wide enough for 2 columns
+  {
+    var h = Array.from(document.querySelectorAll('.experience-card')).map(el => realHeight(el)).reduce((a, b) => a + b, 0);
+  }
+  else {
+    var cards = document.getElementsByClassName("experience-card");
+    if(cards.length % 2 == 0)
+    {
+      var split = cards.length /2;
+    }
+    else
+    {
+      var split = ((cards.length -1) /2) + 1;
+    }
+    var col1 = Array.from(document.querySelectorAll('.experience-card')).slice(0, split).map(el => realHeight(el)).reduce((a, b) => a + b, 0);
+    var col2 = Array.from(document.querySelectorAll('.experience-card')).slice(split).map(el => realHeight(el)).reduce((a, b) => a + b, 0);
+    var h = Math.max(col1, col2);
+  }
+  experience_card_wrapper.style.height = h + "px";
+}
+
+window.addEventListener('load', function(event) {
   calculateOverflowingBulletsInContainers();
   attachBoxClicksToModals();
   whichYearsAreVisible();
   assignIndicatorLinksToYearCards();
+  adjustCardWrapperHeight();
 }); //onload
 
 window.addEventListener('resize', function(event) {
   calculateOverflowingBulletsInContainers();
+  adjustCardWrapperHeight();
 }, true); //onresize
 
 window.addEventListener('scroll', function(event) {
