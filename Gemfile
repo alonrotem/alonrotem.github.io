@@ -52,8 +52,8 @@ group :jekyll_plugins do
     gem 'jekyll-feed'
     gem 'jekyll-sitemap'
     gem 'jekyll-archives'
-    gem 'jekyll-paginate'
-    #em "jekyll-paginate-v2"
+    # gem 'jekyll-paginate'
+    gem "jekyll-paginate-v2"
     gem 'jekyll-redirect-from'
 end
 

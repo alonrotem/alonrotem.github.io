@@ -1,46 +1,24 @@
 ---
-title: Blog
+title: Home
 layout: page
+pagination: 
+    enabled: true
 ---
-<style>
-    .postbox a, .postbox a:hover {
-        text-decoration: none;
-    }
-</style>
-
 <div class="container" style="margin-top: 90px;">
     <div class="row">
         <h1 style="text-align: center; margin: 30px 0px;"><span style="color: #3498db">Alon in the World:</span> The blog</h1>
     </div>
+    <p class="breadcrumb" style="margin-bottom: 40px;">
+        <a href="/{{ site.homepage }}">Home</a>
+        <span>&gt;</span>
+        <a href="/blog/">Blog</a>
+    </p>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-3 g-3">
-        {% assign visible_posts = site.posts | where: "hidden", "false" %}
+        {% assign visible_posts = paginator.posts %}
         {% for post in visible_posts %}
-        {% assign datestr = post.date | date: "%d %B %Y" %}
-        <div class="col postbox">
-            <a href="{{ post.url }}">
-            <div class="card h-100 bg-dark text-white">
-              <div class="card-body d-flex flex-column">
-                <!--<div class="text-center"><img src="{{ post.image }}" class="card-img-top" style="height: 15vw;
-                    object-fit: cover; border-radius: 12px; width: 100%;"></div>-->
-                    <div class="text-center" bis_skin_checked="1" style="
-                    background-image: url({{ post.image }});
-                    height: 300px;
-                    background-position: top;
-                    background-size: cover; margin-bottom: 18px;
-                "></div>
-
-
-                <h5 class="card-title" style="    font-size: 18px;
-                font-family: Arial, Tahoma, Verdana, sans-serif;
-                font-weight: bold;">{{ post.title }}</h5>
-                <p class="card-text" style="margin-bottom: auto;">
-                    {{ post.subtitle }}
-                </p>
-                <p style="color: #3498db">{{ datestr }}</p>
-              </div>
-            </div>
-        </a>
-          </div>
-          {% endfor %}
+            {% assign datestr = post.date | date: "%d %B %Y" %}
+            {% include blog/postbox.html post=post datestr=datestr %}
+        {% endfor %}
     </div>
+    {% include blog/paginator.html %}
 </div>

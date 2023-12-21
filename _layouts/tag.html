@@ -2,26 +2,37 @@
 layout: page
 ---
 {% assign posts = page.posts  %}
+<div class="container" style="margin-top: 90px;">
+    <div class="row">
+        <h1 style="text-align: center; margin: 30px 0px;"><span style="color: #3498db">Alon in the World:</span> The blog</h1>
+        <h2 style="    text-align: center;
+        /* margin: 30px 0px; */
+        letter-spacing: -5px;"><span style="color: #3498db">Tag:</span> {{ page.title }} ({{ posts | size }})</h2>
+    </div>
+    <p class="breadcrumb" style="margin-bottom: 40px;">
+        <a href="/{{ site.homepage }}">Home</a>
+        <span>&gt;</span>
+        <a href="/blog/">Blog</a>
+        <span>&gt;</span>
+        <a href="/blog/tags">Tags</a>
+        <span>&gt; {{ page.title }} ({{ posts | size }})</span>
+    </p>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-3 g-3">
+        {% assign visible_posts = page.posts %}
+        {% for post in visible_posts %}
+            {% assign datestr = post.date | date: "%d %B %Y" %}
+            {% include blog/postbox.html post=post datestr=datestr %}
+        {% endfor %}
+    </div>
+    {% include blog/paginator.html %}
+</div>
+
+
+<div class="container" style="margin-top: 90px;">
 
 <div style="margin-bottom: 20px;">
     <a class="alltagslink" href="/tags.html" title="Всички тагове"><img src="/assets/images/bookmark-color.png"></a>
     <span class="tagpagetitle">
         {{ page.title }} ({{ posts | size }})</span>
 </div>
-
-<div class="article-post">
-    <div class="categorylist">
-        <div class="container">
-            {% if posts %}
-            {% for post in posts %}
-            {% assign counter = forloop.length %}
-            {{ post.title }}<br/>
-            { % include postlistitem.html % }
-            {% endfor %}
-            {% endif %}
-            {% if counter == 0 %}
-            Няма публикувани статии под {{site.data.categoriestext[page.category].text}}
-            {% endif %}
-        </div>
-    </div>
 </div>

@@ -1,0 +1,14 @@
+<div class="col postbox">
+    <a href="{{ include.post.url }}">
+    <div class="card h-100 bg-dark text-white">
+      <div class="card-body d-flex flex-column">
+            <div class="post-iamge text-center" style="background-image: url({{ include.post.image }});"></div>
+        <h5 class="card-title">{{ include.post.title }}</h5>
+        <p class="card-text">
+            {{ include.post.subtitle }}
+        </p>
+        <p class="date">{{ include.datestr }}</p>
+      </div>
+    </div>
+    </a>
+</div>

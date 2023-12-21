@@ -35,8 +35,23 @@ homepage: index_new.html
 
 collections_dir: info
 
+
+# Pagination Settings
+pagination:
+  enabled: true
+  per_page: 9
+  offset: 2
+  permalink: '/page/:num/'
+  title: ':title - page :num of :max'
+  limit: 0
+  sort_field: 'date'
+  sort_reverse: true
+  trail: 
+    before: 2 # The number of links before the current page
+    after: 2  # The number of links after the current page
+
 collections:
-  
+ 
     skills:
       output: false
       order:
@@ -79,8 +94,8 @@ defaults:
 # Plugins
 plugins:
   - jekyll-feed
-#  - jekyll-paginate-v2
-  - jekyll-paginate
+  - jekyll-paginate-v2
+#  - jekyll-paginate
   - jekyll-archives
 
 

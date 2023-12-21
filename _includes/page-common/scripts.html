@@ -64,7 +64,24 @@
 
     AOS.init();
 
-    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
+    var tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    for(var i=0; i < tooltipTriggerList.length; i++)
+    {
+      var tooltip_element = tooltipTriggerList[i];
+      var tooltip_container = tooltip_element;
+      //var tooltip_direction = "bottom";//tooltip_element.classList.contains("industry-icon")?"bottom":"top";
+      while ((tooltip_container = tooltip_container.parentElement) && !tooltip_container.classList.contains("tooltip-container"));
+      if(tooltip_container)
+      {
+        //attach each tooltip to its over-card, so that the zoom effect doesn't get lost when hovering over the tooltip (annoying bug)
+        new bootstrap.Tooltip(tooltip_element, { container: tooltip_container });
+      }
+      else
+      {
+        //default container (body)
+        new bootstrap.Tooltip(tooltip_element, { });
+      }
+    }
+
   });
   </script>

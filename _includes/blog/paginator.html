@@ -1,0 +1,30 @@
+{% if paginator.page_trail %}
+<div class="paginator">
+    <ul>            
+        {% if paginator.previous_page %}
+            {% assign previous_exists_class = "visible" %}
+        {% else %}
+            {% assign previous_exists_class = "invisible" %}
+        {% endif %}
+        {% if paginator.next_page %}
+            {% assign next_exists_class = "visible" %}
+        {% else %}
+            {% assign next_exists_class = "invisible" %}
+        {% endif %}
+
+        <li class="{{ previous_exists_class }}"><a href="{{ paginator.first_page_path }}"><i class="fa-solid fa-backward-step"></i></a></li>
+        <li class="{{ previous_exists_class }}"><a href="{{ paginator.previous_page_path }}"><i class="fa-solid fa-caret-left"></i></a></li>
+        {% for trail in paginator.page_trail %}
+        <li {% if page.url == trail.path %}class="selected"{% endif %}>
+            {% if page.url == trail.path %}
+                <span>{{ trail.num }}</span>
+            {% else %}
+                <a href="{{ trail.path }}" title="{{trail.title}}">{{ trail.num }}</a>
+            {% endif %}
+        </li>
+        {% endfor %}
+        <li class="{{ next_exists_class }}"><a href="{{ paginator.next_page_path }}"><i class="fa-solid fa-caret-right"></a></i></li>
+        <li class="{{ next_exists_class }}"><a href="{{ paginator.last_page_path }}"><i class="fa-solid fa-forward-step"></i></a></li>
+    </ul>
+</div>
+{% endif %}

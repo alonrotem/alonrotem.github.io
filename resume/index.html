@@ -304,25 +304,6 @@ a:hover {
   --bs-tooltip-bg: #3498db;
 }
 
-/*
-.custom-tooltip:hover + .hover-card{
-  background-color: yellow;
-  transform: scale(3.05);
-}*/
-
-.custom-tooltip:hover + div .hover-card
-{
-  --bs-tooltip-bg: yellow;
-  background-color: green;
-  transform: scale(4.05);
-}
-/*
-.hover-card > div.body > div > .custom-tooltip:hover {
-  transform: scale(1.05);
-  z-index: 1000000 !important;
-  background-color: red;
-}
-*/
 .professional-link
 {
   white-space: nowrap;
@@ -413,13 +394,13 @@ a:hover {
       
         <!-- card -->
         <div id="experience-card-{{forloop.index}}" data-aos="fade-up" class="experience-card" style="order: {{ord}};" data-start-date="{{ exp.start-date }}" data-end-date="{{ exp.end-date }}">
-          <div class="hover-card">
+          <div class="hover-card tooltip-container">
           <div class="head" style="background-color: #6c6065;">
             <div class="number-box">
               <span><img src="{{ exp.company-logo }}" style="width: 55px; height: auto; margin: 0;" /></span>
             </div>
             <div class="entry-basic">
-              <div class="company-name">{{ exp.company-name }} <i class="fa-solid {{ exp.industry-icon }}" data-bs-toggle="tooltip" data-bs-title="{{ exp.company-industry }}" data-bs-custom-class="custom-tooltip"></i></div>
+              <div class="company-name">{{ exp.company-name }} <span class="industry-icon" data-bs-toggle="tooltip" data-bs-title="{{ exp.company-industry }}" data-bs-custom-class="custom-tooltip"><i class="fa-solid {{ exp.industry-icon }}"></i></span></div>
               <div class="position">{{ exp.position }}</div>
               <div class="dates"><span>{{ exp.start-date | date: "%m/%Y" }} - {% if exp.end-date %}{{ exp.end-date | date: "%m/%Y" }}{% else %}Present{% endif %}</span></div>
             </div>
@@ -789,7 +770,6 @@ window.addEventListener('load', function(event) {
   highlightVisibleYears();
   assignIndicatorLinksToYearCards();
 
-  //document.getElementById("timeline-cards-wrapper").style.opacity = 1;
 }); //onload
 
 window.addEventListener('resize', function(event) {
