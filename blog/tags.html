@@ -1,6 +1,75 @@
 ---
 layout: page
 ---
+<style>
+    ul.tags-cloud {
+        list-style: none;
+        padding-left: 0;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        margin: auto;        
+        /*line-height: 2.5rem;*/
+        margin-bottom: 100px;
+    }
+
+    ul.tags-cloud a {
+        /*color: #a33;*/
+        display: block;
+        /*font-size: 1.5rem;*/
+        padding: 0.125rem 0.25rem;
+        text-decoration: none;
+        position: relative;
+        line-height: normal;
+    }
+    ul.tags-cloud li:nth-child(2n+1) a { color: #181; }
+    ul.tags-cloud li:nth-child(3n+1) a { color: #33a; }
+    ul.tags-cloud li:nth-child(4n+1) a { color: #c38; }
+    ul.tags-cloud li:nth-child(5n+1) a { color: #a33; }
+    ul.tags-cloud li:nth-child(6n+1) a { color: #086375 }
+
+    ul.tags-cloud a:hover {
+        filter: brightness(75%);
+    }
+
+    ul.tags-cloud .counter {
+        font-size: 1rem;
+    }
+
+</style>
 <div class="container" style="margin-top: 90px;">
-    All tags
+    <div class="row">
+        <h1 style="text-align: center; margin: 30px 0px;"><span style="color: #3498db">Alon in the World:</span> The blog</h1>
+        <h2 style="text-align: center;
+        /* margin: 30px 0px; */
+        font-size: 23px;
+        font-family: Arial, Tahoma, Verdana, sans-serif;
+        font-weight: bold;
+        /* letter-spacing: -5px;"><span style="color: #3498db"><i class="fa-solid fa-tags"></i> All Tags</span></h2>
+    </div>
+
+<p class="breadcrumb" style="margin-bottom: 40px;">
+    <a href="/{{ site.homepage }}">Home</a>
+    <span>&gt;</span>
+    <a href="/blog/">Blog</a>
+    <span>&gt;</span>
+    <span>Tags</span>
+</p>
+
+<div>
+    <ul class="tags-cloud">        
+        {% for tag in site.tags %}
+            {% assign condition= "post.tags contains '" | append: tag[0] | append: "'" %}
+            {% assign visibleposts = site.posts | where_exp: "post", condition | where:"hidden","false" | size %}
+            {% assign hiddenposts = site.posts | where_exp: "post", condition | where:"hidden","true" | size %}
+            {%if visibleposts > 0 %}
+                {% assign fontsize = visibleposts | times: 6  | plus: 12 %}
+                {% assign fontsize = visibleposts | times: 0.35  | plus: 0.8 %}
+                <li><a href="/blog/tag/{{ tag[0] | slugify }}" data-weight="{{ visibleposts }}" style="font-size: {{fontsize}}rem">{{ tag[0] }} <span class="counter">({{visibleposts}})</span></a></li>
+            {% endif %}
+        {% endfor  %}
+      </ul>
+    </div>
 </div>

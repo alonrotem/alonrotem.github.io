@@ -5,9 +5,12 @@ layout: page
 <div class="container" style="margin-top: 90px;">
     <div class="row">
         <h1 style="text-align: center; margin: 30px 0px;"><span style="color: #3498db">Alon in the World:</span> The blog</h1>
-        <h2 style="    text-align: center;
+        <h2 style="text-align: center;
         /* margin: 30px 0px; */
-        letter-spacing: -5px;"><span style="color: #3498db">Tag:</span> {{ page.title }} ({{ posts | size }})</h2>
+        font-size: 23px;
+        font-family: Arial, Tahoma, Verdana, sans-serif;
+        font-weight: bold;
+        /* letter-spacing: -5px;"><span style="color: #3498db"><i class="fa-solid fa-tags"></i> Tag:</span> {{ page.title }} ({{ posts | size }})</h2>
     </div>
     <p class="breadcrumb" style="margin-bottom: 40px;">
         <a href="/{{ site.homepage }}">Home</a>
@@ -25,14 +28,4 @@ layout: page
         {% endfor %}
     </div>
     {% include blog/paginator.html %}
-</div>
-
-
-<div class="container" style="margin-top: 90px;">
-
-<div style="margin-bottom: 20px;">
-    <a class="alltagslink" href="/tags.html" title="Всички тагове"><img src="/assets/images/bookmark-color.png"></a>
-    <span class="tagpagetitle">
-        {{ page.title }} ({{ posts | size }})</span>
-</div>
 </div>

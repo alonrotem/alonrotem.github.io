@@ -1,0 +1,46 @@
+{% if include.placeholder_text %}
+    {% assign placeholder = include.placeholder_text %}
+{% else %}
+    {% assign placeholder = "Search..." %}
+{% endif %}
+{% if include.width %}
+    {% assign width = include.width %}
+{% else %}
+    {% assign width = "190px" %}
+{% endif %}
+
+
+<style>
+    .search-box-wrapper {
+        /*
+        border: 1px solid black;
+        border-radius: 10px;
+        padding: 0px 9px;
+        */
+        border: 1px solid black;
+    border-radius: 10px;
+    padding: 0px 9px;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: center;
+    justify-content: flex-start;
+    align-items: center;        
+    }
+    .search-box-wrapper input {
+        border: 0; 
+        height: 40px; 
+        width: {{ width }};
+        flex: 1;
+    }
+    .search-box-wrapper input:focus {
+        background-color: transparent;
+    }
+    #search-glass {
+        cursor: pointer;
+    }
+</style>
+<div class="search-box-wrapper">
+    <i id="search-glass" class="fa-solid fa-magnifying-glass" title="{{ placeholder }}"></i>
+    <input type="text" id="search-input" placeholder="{{ placeholder }}" />
+</div>

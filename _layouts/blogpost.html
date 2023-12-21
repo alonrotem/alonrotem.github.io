@@ -30,9 +30,9 @@ comments: true
             {% endif %}
             
             <div class="tags-section">
-                <i class="fa-solid fa-tags"></i> 
+                <a href="/blog/tags" title="All tags" style="font-size: 24px; margin: 0px 25px 0px 0px;"><i class="fa-solid fa-tags"></i></a>
                 {% for tag in page.tags %}
-                    <a href="/blog/tag/{{ tag | slugify }}">{{ tag }}</a>
+                    <a class="tag" href="/blog/tag/{{ tag | slugify }}">{{ tag }}</a>
                 {% endfor %}
             </div>
             <!-- disqus-->

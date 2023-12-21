@@ -1,0 +1,109 @@
+---
+title: Search
+layout: page
+---
+<div class="container" style="margin-top: 90px;">
+    <div class="row">
+        <h1 style="text-align: center; margin: 30px 0px;"><span style="color: #3498db">Alon in the World:</span> The blog</h1>
+        <h2 style="text-align: center;
+        /* margin: 30px 0px; */
+        font-size: 23px;
+        font-family: Arial, Tahoma, Verdana, sans-serif;
+        font-weight: bold;
+        /* letter-spacing: -5px;"><span style="color: #3498db"><i class="fa-solid fa-magnifying-glass"></i> Search Results</span></h2>        
+    </div>
+    <p class="breadcrumb" style="margin-bottom: 40px;">
+        <a href="/{{ site.homepage }}">Home</a>
+        <span>&gt;</span>
+        <a href="/blog/">Blog</a>
+        <span>&gt;</span>
+        <span>Search</span>
+    </p>
+    <div style="margin-bottom: 50px;">
+        {% include blog/search-box.html placeholder_text = "Search posts..." %}
+    </div>
+    <ul id="results-container"></ul>
+    <div class="container-fluid">
+    <div class="row">
+        <div style="display:flex">
+            <div style="background-image: url(/assets/img/blog/csharp-book-cover.png); width: 100px;
+            height: 100px;
+            background-size: cover;"></div>
+            <div>Title</div>
+        </div>
+    </div>
+    </div>
+</div>
+
+<script src="/blog/search.json" type="text/javascript"></script>
+<script>
+
+var itemTemplate = `
+
+<div class="postlistitem row">
+    <div class="col-6 col-lg-2 col-md-4 col-sm-6 col-xs-6 postlistitem-imagecontainer">
+        <a href="{url}">
+        <div class="square postlistitemimage {category}" style="background-image: url('{image}');"></div>
+        </a>
+    </div>
+
+    <div class="col-6 col-lg-10 col-md-8 col-sm-6 col-xs-6 postlistitem-infocontainer">
+        <div class="align-self-start">
+            <a href="{url}">
+            <div class="postlistitem-title">{title}</div>
+
+            <div class="postlistitem-subtitle">
+                <span class="postlistitem-subtitle-concat">
+                    {subtitle}
+                </span></div>
+            </a>
+        </div>
+        <div class="postlistitem-bottominfo" style="width:100%; padding-right:25px;">
+            {author}
+            <span class="post-date">
+                {date}
+            </span>
+            <span class="postcategory">{category}</span>
+        </div>
+    </div>
+</div>`;
+
+function getUrlParameter(name) {
+    name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+    var regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+    var results = regex.exec(location.search);
+    return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+  }
+
+window.addEventListener('load', function(event) {
+    var searchTerm = getUrlParameter("what");
+    if(searchTerm)
+    {
+      document.getElementById("search-input").value = searchTerm;
+    }
+
+    window.simpleJekyllSearch = new SimpleJekyllSearch({
+                searchInput: document.getElementById('search-input'),
+                resultsContainer: document.getElementById('results-container'),
+                json: search_json_index,
+                searchResultTemplate: itemTemplate,
+                //templateMiddleware: searchresultMiddleware,
+                noResultsText: '<p style="font-family: B52; font-size: 17pt;">No results.</p>',
+                fuzzy: false
+            });
+            setTimeout(() => {
+                window.simpleJekyllSearch.search(getUrlParameter("what"));
+                $("#loading").hide();
+                $("#search-container").show();
+                $("#search-text").focus();
+            }, 500);
+
+            var search_input = document.getElementById("search-input");
+            search_input.addEventListener('keyup', function(e) {
+                window.history.replaceState({}, "ttt", window.location.pathname + "?what=" + search_input.value);
+                console.log("se: " + search_input.value)
+            });             
+
+}); //onload
+
+</script>

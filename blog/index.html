@@ -8,10 +8,26 @@ pagination:
     <div class="row">
         <h1 style="text-align: center; margin: 30px 0px;"><span style="color: #3498db">Alon in the World:</span> The blog</h1>
     </div>
-    <p class="breadcrumb" style="margin-bottom: 40px;">
+    <div style="display: flex;
+    flex-wrap: nowrap;
+    /* align-content: center; */
+    justify-content: space-between;
+    align-items: center;">
+    <p class="breadcrumb" style="margin-bottom: 0px;">
         <a href="/{{ site.homepage }}">Home</a>
         <span>&gt;</span>
         <a href="/blog/">Blog</a>
+    </p>
+    <div>
+        <form id="search-form" action="#" style="display:inline">
+            {% include blog/search-box.html placeholder_text = "Search posts..." %}
+        </form>
+    </div>
+    </div>
+    <p>
+        <!-- HTML elements for search -->
+    
+
     </p>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-3 g-3">
         {% assign visible_posts = paginator.posts %}
@@ -22,3 +38,23 @@ pagination:
     </div>
     {% include blog/paginator.html %}
 </div>
+
+<script>
+
+    function perform_search()
+    {
+        window.location.href = "/blog/search?what=" + encodeURIComponent(document.getElementById("search-input").value);
+    }
+    window.addEventListener('load', function(event) {
+        
+        document.getElementById("search-glass").onclick = function(e) {
+            perform_search();
+        }
+
+        document.getElementById("search-form").onsubmit = function(e) {
+            e.preventDefault(); // Otherwise the form will be submitted
+            perform_search();
+        }
+
+    }); //onload
+</script>

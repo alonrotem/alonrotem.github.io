@@ -1,0 +1,19 @@
+---
+---
+var search_json_index = [
+  {% for post in site.posts %}
+    {% unless post.hidden %}    
+      {
+          "title": "{{ post.title | escape }}",
+          "url": "{{ site.baseurl }}{{ post.url }}",
+          "tags": "{{ post.tags | join: ', ' }}",
+          "date": "{{ post.date }}",
+          "image": "{{ post.image }}",
+          "subtitle": "{{ post.subtitle | escape }}",
+          "content"  : "{{ post.content | strip_html | strip_newlines | replace: '"', '' }}"
+      } 
+      {% unless forloop.last %},
+      {% endunless %}
+  {% endunless %}
+{% endfor %}
+];
