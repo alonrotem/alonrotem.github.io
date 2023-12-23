@@ -1,6 +1,20 @@
   {% assign blogactive = "" %}
+  {% assign bloghomeactive = "" %}
+  {% assign blogsearchactive = "" %}
+  {% assign blogtagsactive = "" %}
   {% if page.url contains "/blog/" %}
     {% assign blogactive = "active" %}
+    {% if page.url contains "/blog/tags" or page.url contains "/blog/tag/"  %}
+      {% assign blogtagsactive = "active" %}
+    {% endif  %}
+
+    {% if page.url contains "/blog/search"  %}
+      {% assign blogsearchactive = "active" %}
+    {% endif  %}
+
+    {% if blogsearchactive == "" and blogtagsactive ==""  %}
+      {% assign bloghomeactive = "active" %}
+    {% endif %}
   {% endif %}
 
   {% assign cvactive = "" %}
@@ -29,20 +43,20 @@
             <li class="nav-item"><a class="nav-link" href="/{{ site.homepage }}#intro">Home</a></li>
             <li class="nav-item"><a class="nav-link" href="/{{ site.homepage }}#about">Who am I?</a></li>
             <li class="nav-item"><a class="nav-link {{ cvactive }}" href="/resume">Resume</a></li>
-            <li class="nav-item"><a class="nav-link {{ blogactive }}" href="/blog">Blog</a></li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle {{ blogactive }}" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                Blog
+              </a>
+              <ul class="dropdown-menu dropdown-menu-dark">
+                <li><a class="dropdown-item {{ bloghomeactive }}" href="/blog/">Home</a></li>
+                <li><a class="dropdown-item {{ blogsearchactive }}" href="/blog/search">Search</a></li>
+                <li><a class="dropdown-item {{ blogtagsactive }}" href="/blog/tags">Tags</a></li>
+              </ul>
+            </li> 
             <li class="nav-item"><a class="nav-link" href="/{{ site.homepage }}#services">Services</a></li>
             <li class="nav-item"><a class="nav-link" href="/{{ site.homepage }}#works">Works</a></li>
-            <li class="nav-item"><a class="nav-link" href="/{{ site.homepage }}#contact">Contact</a></li>
-            <li class="dropdown">
-              <a href="#">Features <i class="icon-angle-down"></i></a>
-              <ul class="dropdown-menu">
-                <li><a href="components.html" class="external">Components</a></li>
-                <li><a href="icons.html" class="external">Icons</a></li>
-                <li><a href="animations.html" class="external">56 Animations</a></li>
-              </ul>
-            </li>
+            <li class="nav-item"><a class="nav-link" href="/{{ site.homepage }}#contact">Contact</a></li>          
             <!-- /originals -->
-
           </ul>
         </div>
       </div>

@@ -5,9 +5,9 @@ var search_json_index = [
     {% unless post.hidden %}    
       {
           "title": "{{ post.title | escape }}",
-          "url": "{{ site.baseurl }}{{ post.url }}",
+          "url": "{{ post.url }}",
           "tags": "{{ post.tags | join: ', ' }}",
-          "date": "{{ post.date }}",
+          "date": "{{ post.date | date: '%d %B %Y' }}",
           "image": "{{ post.image }}",
           "subtitle": "{{ post.subtitle | escape }}",
           "content"  : "{{ post.content | strip_html | strip_newlines | replace: '"', '' }}"

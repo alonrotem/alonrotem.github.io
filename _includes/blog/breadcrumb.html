@@ -1,0 +1,34 @@
+<!--<p>[{{ page.url }}]</p>-->
+<p class="breadcrumb" style="margin-bottom: 0px;">
+    <a href="/{{ site.homepage }}">Home</a>
+    
+    <!-- blog section-->
+    {% if page.url contains "/blog" %}
+
+        <span>&gt;</span>
+
+        {% if page.url == "/blog/" or page.url == "/blog" or page.url=="/blog/index.html" or page.url contains "/blog/page/"%}
+            <span>Blog</span>
+        {% else %}
+            <a href="/blog">Blog</a>
+            {% if page.url contains "/blog/search" %}    
+                <span>&gt;</span>
+                <span>Search</span>
+            {% elsif page.url contains "/blog/tags" %}
+                <span>&gt;</span>
+                <span>Tags</span>
+            {% elsif page.url contains "/blog/tag/" %}
+                <span>&gt;</span>
+                <a href="/blog/tags">Tags</a>
+                <span>&gt;</span>
+                <span>{{ page.title }} ({{ page.posts | size }})</span>
+            {% else %}
+                <span>&gt;</span>
+                <span>{{ page.title }}</span>
+            {% endif %}
+        {% endif %}
+
+    {% endif %}
+    
+    <!--/blog section-->
+</p>

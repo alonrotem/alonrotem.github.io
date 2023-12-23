@@ -6,12 +6,12 @@ comments: true
 
 <!-- https://customer.io/blog/easy-date-formatting-with-liquid/ -->
 {% assign datestr = page.date | date: "%d %B %Y" %}
-<div class="container blogpost" style="margin-top: 100px;">
+<div class="container blogpost" style="margin-top: 90px;">
+    <p>{% include blog/breadcrumb.html %}</p>
     <div class="row">
         <div class="col">
             <h1>{{ page.title }}</h1>
             <p style="font-weight: 900;">{{ page.subtitle }}</p>
-            <p class="breadcrumb"><a href="/{{ site.homepage }}">Home</a> <span>&gt;</span> <a href="/blog/">Blog</a> <span>&gt;</span> <a href="{{ page.url }}">{{ page.title }}</a></p>
             <div class="post-date"><a href="{{ page.url }}">{{ datestr }}</a></div>
 
             {% if page.image %}
