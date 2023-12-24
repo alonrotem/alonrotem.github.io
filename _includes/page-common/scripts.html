@@ -40,6 +40,7 @@
     //if the image has a title attribute, it will be used for the lightbox display.
     //otherwise, the page title (post title) will be used.
     $(function() {
+
     $('.blogpost img:not(.nolightbox)')
       .wrap(function(index) { 
         return '<a href="'+$(this).attr('src')+'" data-lightbox="image-1" '+
@@ -48,22 +49,13 @@
 
     
     //collapse the hamburger menu, on scrollpy links
-    $('.nav-link').click(function(){
+    $('.nav-link:not(.dropdown-toggle)').click(function(){
       $("#navbarSupportedContent").removeClass("show");
       if($("#flippin").length > 0) {
         $("#flippin")[0].classList.remove("active");
       }
     });
-/*
-    // Optional
-    Prism.plugins.NormalizeWhitespace.setDefaults({
-      'remove-initial-line-feed': true,
-      
-      'remove-trailing': true,
-      'remove-indent': true,
-      'left-trim': true,
-      'right-trim': true,
-    });    */
+
 
     AOS.init();
 
