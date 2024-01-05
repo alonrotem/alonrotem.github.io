@@ -1508,6 +1508,14 @@ Blog posts
 	width: 35%;
 }
 
+.blogpost img:not(.post-image) {
+	border: 1px solid black;
+}
+
+.blogpost .slider-container img {
+	border: 0;
+}
+
 .blogpost h2 {
 	font-family: Arial, Tahoma, Verdana, sans-serif;
 	font-weight: 800;
@@ -1592,4 +1600,19 @@ Blog posts
 }
 .blogpost .attachment a:hover {
 	text-decoration: none;
+}
+
+code.wrap-code {
+	white-space: pre-wrap !important;       /* css-3 */
+    white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap !important;      /* Opera 4-6 */
+    white-space: -o-pre-wrap !important;    /* Opera 7 */
+    word-wrap: break-word !important;       /* Internet Explorer 5.5+ */
+}
+
+.bookmarklet {
+    border: 1px solid black;
+    padding: 10px;
+    margin: 10px 0;
+    display: inline-block;
 }

@@ -1,0 +1,53 @@
+---
+title: "Bookmarklets FTW"
+tags:
+    - Bookmarklets
+    - Javascript
+    - You should have found this out for youself
+redirect_from: /2012/02/bookmarklets-ftw-preview-your-blogspot.html
+image: /assets/img/blog/js-logo.png
+hidden: false
+subtitle: Preview Your Blogspot Posts Like a Boss! A small demonstration
+---
+<h2>Bookmarklets FTW!</h2>
+<p>
+    
+    Bookmarklets are little (and sometimes not so little) script snippets which are stored as browser bookmarks, thus they can be invoked easily and quickly. They are tremendous help, especially for a lazy programmer like the one I always claim to be, always seeking shortcuts, scripts and automation. Let the computer do the work for you when possible, I say.<br/>
+    I keep a collection of my own home-made bookmarklets which I find handy, and I will share at least some of them here occasionally.<br/>
+    Bookmarklets work on all web browsers except on Internet Explorer, which means they work on all web browsers.<br/>
+    For Google Chrome there is even a option to <a href="http://sandbox.self.li/bookmarklet-to-extension/" target="_blank">convert bookmarklets into Chrome extensions</a>!<br/>
+</p>
+<p>
+    {% include blog/slider.html percents=20 info="You should have found this out for youself!" %}
+</p>
+
+<h2>Previewing Blogger (Blogspot) posts</h2>
+<p>
+    Blogger (the free service on which I'm running this blog (<strong>note:</strong> <em>not anymore</em>), also referred to by the domain name Blogspot) is quite a comfortable free platform. When editing a post there is an option to preview its live layout, with all relevant styles applied, just as it will eventually appear when published.<br/>
+    However, all clicks are blocked on this blog post preview. Clicking images, tags, hyperlinks does not work. This can be quite annoying, for example in order to check my links or to see if the Lightboxed images open properly (I do not use the built-in Google lightbox in my posts, but <a href="http://www.digitalia.be/software/slimbox" target="_blank">a different one based on jQuery</a>).
+</p>
+
+<h2>The code</h2>
+<p>    
+    Here is the code used in this bookmarklet:
+</p>
+<pre ><code class="language-csharp line-numbers remove-initial-line-feed wrap-code">
+    javascript: (function() { var alldivs=document.getElementsByTagName("div"); var clickTrapDiv=null; for(var i=0; i < alldivs.length; i++) { if (alldivs[i].className == "blogger-clickTrap") {clickTrapDiv = alldivs[i]; break;}} if(clickTrapDiv == null) { alert("Couldn't find the div with class blogger-clickTrap. Better luck next time..."); } else { clickTrapDiv.style.display = "none"; alert("Click-blocking div removed successfully."); } })()   
+</code></pre>
+<p>As always,corrections/improvements are welcome :-)</p>
+
+<h2>
+    Add it to your browser
+</h2>
+<p>To add it to your browser, drag the following link to your browser's bookmarks bar:<br/>
+    <span class="bookmarklet"><a href="javascript: (function() { var alldivs=document.getElementsByTagName('div'); var clickTrapDiv=null; for(var i=0; i < alldivs.length; i++) { if (alldivs[i].className == 'blogger-clickTrap') {clickTrapDiv = alldivs[i]; break;}} if(clickTrapDiv == null) { alert('Couldn\'t find the div with class blogger-clickTrap. Better luck next time...'); } else { clickTrapDiv.style.display = 'none'; alert('Click-blocking div removed successfully.'); } })()">Remove the preview div</a></span>
+</p>
+
+<h2>Use it</h2>
+<p>
+    To use the bookmarklet while previewing a post, just click it!
+    Click to see this screen capture demo:
+</p>
+<p>
+    <a href="/assets/img/blog/remove-preview-bookmarklet-demo.gif" data-lightbox="image-1" data-title="Ah! Here is my error!"><img class="nolightbox" src="/assets/img/blog/remove-preview-bookmarklet.jpg" /></a>    
+</p>

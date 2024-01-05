@@ -1,0 +1,281 @@
+---
+title: "Using Babylon-based dictionaries on your Kindle"
+tags:
+    - .NET
+    - Console applications
+    - eBooks
+    - Kindle
+    - Reasonably moderate
+    - Sample projects
+redirect_from: /2012/06/using-babylon-based-dictionaries-on.html
+image: /assets/img/blog/babylon.png
+hidden: false
+subtitle: Never get lost in translation
+---
+<div style="border: 1px solid black; display: inline-block; padding: 5px;">
+<em><strong>UPDATE! A Follow-Up Post on this Project</strong></em><br/>
+Since this post got wide attention, I've decided to follow-up on this project.<br/>
+See my new Babylon-based dictionaries on Kindle - Round 2 post.<br/>
+Now the project is shared as open-source and pre-built dictionaries are organized and shared.
+</div>
+
+<h2>Lost in translation</h2>
+<h3>The problem</h3>
+<p>
+    Addressing this issue started by by trying to purchase an Italian-English dictionary for my 2nd generation Kindle, running Kindle software v2.5.3.<br/>
+    One dictionary was offered for sale  (as an ebook) on Amazon's website. The problem was that the dictionary was not actually available for the device for another whole year..
+</p>
+
+<h3>Good translations</h3>
+<p>Babylon, on the other hand, offers high-quality dictionaries, spanning over pretty much every language. Babylon Translator is a paid software for Windows. Its dictionary files (.BGL) are offered as free downloads.</p>
+
+<h3>In a perfect universe</h3>
+<p>If I only had a way to import Babylon's free content dictionary into my Kindle and use it as the built-in dictionary, it would have been perfect..</p>
+
+<p>The solution presented here was tested on my <strong>Kindle 2</strong>. I'm pretty sure it should work on newer versions of Kindle as well.</p>
+
+<img src="/assets/img/blog/BabylonInKindleSideBySide.png" title="The same Babylon dictionary, used on my PC (Left) and on my Kindle (Right)"/>
+<div class="caption">The same Babylon dictionary, used on my PC (Left) and on my Kindle (Right)</div>
+<p>
+    {% include blog/slider.html percents=50 info="Reasonably moderate" %}    
+</p>
+
+<h2>Cracking the Unicode codepage code</h2>
+<h3>Spoilt Kindle 2</h3>
+<p>
+    There are a few things to know about multilingual support and Kindle (if you wish to view non-Latin international texts):<br/>
+    Kindle 2 <em><strong>does not</strong></em> natively support non-Latin unicode characters. This means if you try to view an ebook which contains non-Latin text (e.g. Cyrillic), you will see blank squares instead of letters.<br/>
+    This is a huge miss on Amazon's side for 2 reasons:
+
+    <ol>
+        <li>Unicode characters are already supported on all platforms, computers, tablets, phones, websites, etc. All modern devices can natively display any character set. All except the Kindle 2, that is.</li>
+        <li>
+            Kindle is not a laptop, nor a tablet, nor a smartphone.<br/>
+            It's one and only purpose is to be an electronic book reader. The only thing it should do well is display texts. Why not have it natively support any text in any language? Especially since the resources for that are so common and so obvious already.. It isn't 1994 anymore...<br/>
+            There is a workaround (a hack) which enables Kindle 2 to display all unicode characters. It's described in detail in this great blog post, which includes links to all the necessary files to make it work, elaborate instructions and links to alternative fonts which may be installed for improved readability as well.<br/>
+            I am not sure how right-to-left books are displayed (e.g. ebooks in Hebrew), in terms of text-alignment and order of characters, because I have not tested such books yet. For left-to-right (e.g. in Bulgarian) languages everything seems to be OK.
+        </li>
+    </ol>
+</p>
+<p>
+    There is a workaround (a hack) which enables Kindle 2 to display all unicode characters. It's described in detail in <a href="https://ereadertech.com/unicode-fonts-hack/" target="_blank">this great blog post</a>, which includes links to all the necessary files to make it work, elaborate instructions and links to alternative fonts which may be installed for improved readability as well.<br/>
+    I am not sure how right-to-left books are displayed (e.g. ebooks in Hebrew), in terms of text-alignment and order of characters, because I have not tested such books yet. For left-to-right (e.g. in Bulgarian) languages everything seems to be OK.
+</p>
+
+<h3>And there's more..</h3>
+Three more points to take into account:
+<ul>
+    <li>
+        Kindle models of generation 3 and above do support unicode natively.<br/>
+        This means that they properly display ebooks in any non-Latin language.<br/>
+    </li>
+    <li>
+        Even after hacking my Kindle 2 to display non-Latin characters, I didn't manage to use the integrated dictionary to look up words in non-Latin languages.<br/>
+        For example, if I'm reading a Bulgarian book and I wish to use a Bulgarian to English translator as the default integrated dictionary (i.e. point the cursor on a word to look it up), the solution described in this post doesn't seem to work (the lookup functionality does not look up).<br/>
+        It seems that the integrated dictionary look-up functionality supports Latin characters only. Perhaps newer generations of Kindle don't suffer from this problem.<br/>
+        I'd love to get enlightened by anyone who has succeeded to achieve this with a Kindle of any generation.<br/>
+    </li>
+    <li>
+        Setting a new default dictionary worked nicely on my Kindle device itself.<br/>
+        However, I found it difficult to use my custom dictionary on my computer running Kindle for PC or on my phone running Kindle for Android app.
+    </li>
+</ul>
+<img src="/assets/img/blog/MyKindle800.png" title="My Kindle 2"/>
+<div class="caption">My Kindle 2</div>
+
+<h2>Ingredients</h2>
+A quick download list to the tools you will need:
+<ul>
+    <li>
+        A Babylon .BGL dictionary.<br/>
+        Get a dictionary you wish to convert and use from <a href="http://www.babylon.com/free-dictionaries/" target="_blank">Babylon's free content section</a>.
+    </li>
+    <li>
+        BabylonToHtml<br/>
+        This is a tool I've made which converts Babylon dictionaries (.BGL files) to HTML files.
+        You may download <a href="/assets/attachments/BabylonToHtml.exe.rar">just the executable file</a>, or the <a href="/assets/attachments/BabylonToHtml.rar">full C# solution source code</a> (or <a href="https://github.com/alonrotem/BabylonToHtml" target="_blank">clone from Github</a>), as you prefer.
+    </li>
+    <li>
+        <a href="https://download.cnet.com/mobipocket-creator/3000-13455_4-75451639.html" target="_blank">Mobipocket Creator</a>.<br/>
+        This tool converts files of many common formats into Kindle compatible eBooks. This includes HTML dictionary files.
+    </li>
+</ul>
+
+<h2>Step 1: Get the dictionary file</h2>
+<p>
+    In order to create your custom Babylon dictionary file for Kindle you will need a Babylon dictionary file.<br/>
+    Go to <a href="http://www.babylon.com/free-dictionaries/" target="_blank">Babylon's free dictionaries page</a>, choose one (or more) and download it. All done, right? Not quite.
+</p>
+
+<p>
+    The dictionary file you've downloaded from Babylon's site is actually an .EXE installer, which contains the dictionary file archived in it.<br/>
+    There are some suggestions that it may be possible to extract the .BGL file from the installer with <a href="http://www.7-zip.org/" target="_blank">7-Zip</a>, but I did not manage to do so. The easiest way to get the dictionary file out is to run the installer, which will install Babylon (at least in trial mode).<br/>
+    Once Babylon is installed the .BGL file resides in <strong>%LOCALAPPDATA%\Babylon</strong> (Windows Vista/7). You may repeat the process for as many dictionaries as you require. Copy out the precious .BGL file(s) and keep or uninstall Babylon as you wish.
+</p>
+
+
+<h2>Step 2: Use my magic tool: BabylonToHtml</h2>
+<p>The next step is to convert the binary .BGL dictionary to textual HTML file (of a very specific structure, of course) which will be used as the source of the eBook.</p>
+
+<h3>About my magic tool</h3>
+<p>The binary structure of .BGL files has already been cracked (not by me). This knowledge is commonly out in the open and shared across various open-source projects. I have combined a few of those resources into one easy-to-use command-line utility.</p>
+<ul>
+    <li>One source was <a href="http://freecode.com/projects/dictconv" target="_blank">dictconv</a>, a dictionary conversion tool for Linux which comes with its full C++ source. I used parts of this code (ported by me into C#) in order to analyse the meta-data of the dictionary file (text encoding, author etc).</li>
+    <li>Another resource is is an open-source project named <a href="http://code.google.com/p/thailanguagetools/source/browse/trunk/ThaiLanguageTools/?r=15" target="_blank">ThaiLanguageTools</a>. It's written in C# but the contents of the code looks suspiciously similar to the code of dictconv mentioned above (similar variable names, comments etc) which suggests it's a porting as well.</li>
+    <li>The content of Babylon's .BGL files is encoded in compressed GZip format. In order to decompress the data, I have incorporated the free open-source <a href="http://www.icsharpcode.net/opensource/sharpziplib/" target="_blank">SharpZipLib</a> into the project as well (as source code, so there is only one executable needed to run my app in the end. no additional DLLs).</li>
+</ul>
+To all the above I added my very own simple HTML generator. It structures the entries from the dictionary file in a markup compatible with the next step (converting it into an eBook).
+
+<h3>Get the tool (with or without the source code)</h3>
+<p>
+    If you wish to browse through the sources (and improve them!), you can download in the full Visual Studio solution from <a href="/assets/attachments/BabylonToHtml.rar">this link</a>.<br/>
+    You may just want to get the executable itself and this can be done with <a href="/assets/attachments/BabylonToHtml.exe.rar">this link</a>.
+</p>
+
+<h3>Use it</h3>
+<p>
+    You'll need to run my BabylonToHtml tool in a command prompt window.<br/>
+    If you run it without any additional parameters, you'll receive some basic help:
+</p>
+
+<img src="/assets/img/blog/BabylonToHtmlHelp.png" title="A handy message for the perplexed user.."/>
+<div class="caption">A handy message for the perplexed user..</div>
+
+<p>
+    Command line parameters:
+    <ul>
+        <li>In most cases all you have to provide is the name (and potentially the path) of your .BGL file.</li>
+        <li>
+            The output .HTML is encoded in UTF-8 (Unicode).<br/>
+            However, the entries read from the .BGL dictionary are encoded with specific character sets (and sometimes with more than one).For example: in a Chinese - Bulgarian dictionary the source language entries are encoded with Chinese characters and the target language entries are encoded in Cyrillic.<br/>
+            <strong>BabylonToHtml</strong> will try, by default, to get the right encoding (this info is available in the meta-data of the .BGL file in most cases), but it may make mistakes.<br/>
+            These encodings can be enforced:<br/>
+            It is possible to set the codepage of the source language by specifying the <strong><em>-se</em></strong> command line argument.<br/>
+            It is possible to set the codepage of the target language by specifying the <strong><em>-te</em></strong> command line argument.
+        </li>
+    </ul>
+</p>
+<p>So something like the following should be sufficient in most cases:</p>
+<pre><code class="language-batch line-numbers remove-initial-line-feed">
+BabylonToHtml.exe English_Bulgarian.BGL</code></pre>
+
+<p>If your .BGL file does not reside in the same folder with the .EXE, a full path should be specified (may be wrapped with double-quotes if needed).</p>
+<p>The encoding (and other information about your dictionary) is be parsed and progress of the process is presented...</p>
+
+<img src="/assets/img/blog/BabylonToHtmlRunning.png" title="Running..."/>
+<div class="caption">Running...</div>
+
+<p>
+    Once the process is done, a new HTML file resides next to the original .BGL file<br/>
+    The new file's name matches the original .BGL file (just with .HTML extension):        
+</p>
+<img src="/assets/img/blog/BabylonToHtmlDone.png" title="All done. A new HTML file is generated. Magic!!All done. A new HTML file is generated. Magic!!"/>
+<div class="caption">All done. A new HTML file is generated. Magic!!</div>
+
+<h2>Step 3: Convert the dictionary to a Kindle compatible eBook</h2>
+<p>For this you will need to download, install and run the free Mobipocket Creator. The process itself is fairly simple. Here is the illustrated version:</p>
+<p>On the main window, under "Import From Existing File" click the "HTML document" link.</p>
+
+<img src="/assets/img/blog/MobiPocketSelectHtml.png" title="Import from: HTML (duh!)"/>
+<div class="caption">Import from: HTML (duh!)</div>
+
+<p>
+    On the next screen:<br/>
+    Click "Browse..." on the "Choose a file" field and select the HTML file generated by BabylonToHtml.<br/>
+    In the "Encoding" drop-down select "International (UTF8)".<br/>
+    Click the "Import" button..
+</p>
+<img src="/assets/img/blog/MobiPocketImportHtml.png" title="Import the HTML file"/>
+<div class="caption">Import the HTML file</div>
+
+<p>
+    Click "Book settings" on the left-hand-side list and set the fields:<br/>
+    Set the "Encoding" drop-down to "International (UTF8)".<br/>
+    <strong>Check the "This eBook is a dictionary" box.</strong><br/>
+    Set the Input language and the output language of your dictionary appropriately.<br/>
+    Click the "Update" button..
+</p>
+<img src="/assets/img/blog/MobiPocketSetAsDictionary.png" title="Dictionary settings.."/>
+<div class="caption">Dictionary settings..</div>
+
+<p>
+    Click "Metadata" on the left-hand-side list and set the mandatory fields:<br/>
+    Give a title for your eBook, set the author, language and main subject.<br/>
+    Now scroll all the way down...
+</p>
+<img src="/assets/img/blog/MobiPocketMetaData1.png" title="Metadata(1/2): Fill a title, author, language and main subject"/>
+<div class="caption">Metadata(1/2): Fill a title, author, language and main subject</div>
+
+<p>
+    At the bottom of the "Metadata" screen, fill the "Suggested Retail Price" field (it cannot be left empty, "0" is also fine).<br/>
+    Click the "Update" button..
+</p>
+<img src="/assets/img/blog/MobiPocketMetaData2.png" title="Metadata(2/2): Set the retail price :-)"/>
+<div class="caption">Metadata(2/2): Set the retail price :-)</div>
+
+<p>On the top bar click the "Build" icon...</p>
+<img src="/assets/img/blog/MobiPocketBuild1.png" title="Build(1/4): Click Build"/>
+<div class="caption">Build(1/4): Click Build</div>
+
+
+<p>In the "Build Publication" screen click the "Build" button...</p>
+<img src="/assets/img/blog/MobiPocketBuild2.png" title="Build(2/4): Click Build"/>
+<div class="caption">Build(2/4): Click Build</div>
+
+<p>Wait for the build.<br/>
+Depending on the size of your dictionary (and the size of the generated HTML file) this may take some time.</p>
+<img src="/assets/img/blog/MobiPocketBuild3.png" title="Build(3/4): Wait..."/>
+<div class="caption">Build(3/4): Wait...</div>
+
+<p>Once the process is finished, select the "Open folder containing eBook" radio button and click "OK" to get your dictionary eBook.</p>
+<img src="/assets/img/blog/MobiPocketBuild4.png" title="Build(4/4): All is done!"/>
+<div class="caption">Build(4/4): All is done!</div>
+
+<p>Your dictionary-eBook is a file with .prc extension:</p>
+<img src="/assets/img/blog/MobiPocketResult.png" title="Your eBook is produced with a .prc extetnsion"/>
+<div class="caption">Your eBook is produced with a .prc extetnsion</div>
+
+<h2>Step 4: Transfer the dictionary to your Kindle and start using it</h2>
+<h3>Transfer</h3>
+<p>Plug the Kindle to the computer (duh!). Transfer the new eBook to the usual Documents folder, alongside your other books, and unplug.</p>
+
+<strong>Note:</strong> In some newer versions of Kindle, the dictionaries have been moved from the <strong>Documents</strong> folder to the <strong>Documents/Dictionaries</strong> subfolder. If the dictionary is not recognized by your Kindle device, move it there.
+
+<h3>Set as default</h3>
+Click the "Home" button, then click "Menu" and go to "Settings" and Enter:
+
+<img src="/assets/img/blog/screen_shot-32248.gif" title="Home screen > Menu > Settings"/>
+<div class="caption">Home screen &gt; Menu &gt; Settings</div>
+
+<p>In the Settings screen click "Menu" again and go to "Change Primary Dictionary":</p>
+<img src="/assets/img/blog/screen_shot-32250.gif" title="Settings screen > Menu > Change Primary Dictionary"/>
+<div class="caption">Settings screen &gt; Menu &gt; Change Primary Dictionary</div>
+
+<p>Your newly created dictionary should appear next to the default Oxford one.<br/>
+Select it and Enter:</p>
+<img src="/assets/img/blog/screen_shot-32251.gif" title="Choose your custom dictionary"/>
+<div class="caption">Choose your custom dictionary</div>
+
+<p>Then Click Home to leave the Settings page.<br/>
+    Your dictionary is now the default translator whenever you select a word in a book:</p>
+<img src="/assets/img/blog/screen_shot-32252.gif" title="Babylon dictionary on Kindle!"/>
+<div class="caption">Babylon dictionary on Kindle!</div>
+
+<p>You may also manually look up words in your custom dictionary as you do with the default English one.</p>
+
+<p>
+    Bonus tip: Take screenshots from the Kindle
+    To take a screenshot from the Kindle device:
+    Press the Shift key () + ALT key + G simultaneously. The screen will flicker.
+</p>
+<p>
+    Plug the kindle to the computer, your screenshot files are in the Documents folder, named screen_shot*.gif.
+    Note: This process sometimes needs to be repeated. You may not find your screenshots every time. Not sure why.
+</p>
+<div style="border: 1px solid black; display: inline-block; padding: 5px;">
+    <em><strong>UPDATE! A Follow-Up Post on this Project</strong></em><br/>
+    Since this post got wide attention, I've decided to follow-up on this project.<br/>
+    See my new Babylon-based dictionaries on Kindle - Round 2 post.<br/>
+    Now the project is shared as open-source and pre-built dictionaries are organized and shared.
+</div>
+    
