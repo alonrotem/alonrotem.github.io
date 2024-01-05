@@ -66,6 +66,7 @@ collections:
     projects:
       output: false
       order:
+        - alonintheworld.html
         - literaturni.html
         - block-puzzle.html
         - yanivd.html

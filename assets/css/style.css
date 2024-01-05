@@ -1404,19 +1404,21 @@ img.pull-left{
 
 
 .project-preview {
-    margin-bottom: 25px;
+    margin-bottom: 50px;
 	transition: transform 0.2s ease;
 	z-index: 1000;
+	
 }
 
-.project-preview h5
+.project-preview h5, .project-preview h5 strong
 {
 	font-family: 'Roboto Condensed', sans-serif;
+	color: whitesmoke;
 }
 
 .project-preview a, .project-preview a:hover 
 {
-	color: #3a3a3a;block
+	color: whitesmoke;
 	text-decoration: none;
 }
 
