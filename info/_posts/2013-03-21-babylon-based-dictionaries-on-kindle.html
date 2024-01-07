@@ -1,0 +1,194 @@
+---
+title: "Babylon-based dictionaries on Kindle - Round 2"
+tags:
+    - .NET
+    - C#
+    - Console applications
+    - Kindle
+    - Sample projects
+    - Source control
+redirect_from: /2013/03/babylon-based-dictionaries-on-kindle.html
+image: /assets/img/blog/babylon.png
+hidden: false
+subtitle: Never get lost in translation - again!
+---
+
+<p>
+    My post "<a href="/blog/2012/06/29/using-babylon-based-dictionaries-on.html">Using Babylon-based dictionaries on your Kindle</a>" seems to have gotten relatively wide attention. Currently the statistics show that 2595 users have seen it, 31 of them commented, 2 more via Facebook and a number of emails I've received from readers.
+    People's interest in pre-built dictionaries which they can run on their Kindle devices (specifically English-Hebrew dictionaries, but not just) is understandable. There are some issues with the BabylonToHtml conversion tool I've put together.
+</p>
+
+<p>Due to lack of time for resolving the known issues with the project, or for production of pre-built dictionaries, I've decided to share BabylonToHtml publicly as an open-source project, for anyone who wishes to update/improve it.</p>
+
+<h2>Pre-Built Dictionaries in this post!</h2>
+
+I'm sharing some pre-built dictionaries in this post. Some were produced by me and some by others. They are shared here so that they can be freely downloaded and used by anyone.
+This section will be updated with dictionaries which the readers share with me over time.<br/>
+<p><a href="#prebuilt"><img src="/assets/img/blog/dictionary.png" class="d-inline nolightbox"> Jump to the pre-built dictionaries section!</a></p>
+
+<h2>BabylonToHtml is Now Open to the Public</h2>
+
+<h3>Why?</h3>
+<p>My lack of time to address the currently known issues with BabylonToHtml, got me to a decision to make this an open-source project for the benefit (and intervention) of the public.</p>
+
+<h3>Known issues</h3>
+At this time there are a few known issues which need to be addressed for better production of dictionaries. Here they are AFAIK:
+<ol>
+    <li>
+        <strong>Unresolved characters #1:</strong><br/>
+        There are unresolved portions of the produced dictionary, which are wrapped by<br/>
+        &lt;charset c=T&gt;****;&lt;/charset&gt; blocks. Those are probably unicode characters which need to be resolved. If left unresolved they appear as gibberish in the output dictionary (and distort the HTML structure).
+    </li>
+    
+    <li>
+        <strong>Unresolved characters #2:</strong><br/>
+        There are unresolved portions of the produced dictionary, which are delimited with dollar-signs, e.g: $506274$ or cos$531761$. Not 100% sure how those should be treated/resolved.<br/>
+        This would require some research (see "Additional resources for code-contributors" below).
+    </li>
+    
+    <li>
+        <strong>Bug in the project: Encoding is never really applied as requested:</strong><br/>
+        The encoding is actually force-resolved in the code, no matter what the user says (it gets overridden by the dictionary analysis code). This needs to be fixed.
+    </li>
+    
+    <li>
+        <strong>Potentially unresolvable bug with Hebrew and right-to-left dictionaries:</strong><br/>
+        Specifically for Hebrew dictionaries: Kindle (at least Kindle 2) always aligns the text from left-to-right.<br/>
+        Not just the letters (this is a feature which would be relatively easy to implement), but also the order of the words themselves. This means that no matter what you do, the words will be placed in their original order, only starting from the left and going right (as if they were written in English).<br/>
+        Simply reversing the word order will not work, because then the outcome would give the text from end to start (may work only if the definition's text is a single-line).<br/>
+        To know which word will appear where is impossible (this depends on the screen's size and selected Unicode font (in the case of Kindle 2, a hacked font needs to be installed, as explained <a href="http://blogkindle.com/unicode-fonts-hack/" target="_blank">here</a>).<br/>
+        <div style="    display: flex;
+        flex-direction: row;
+        flex-wrap: nowrap;
+        justify-content: center;
+        align-items: center;">
+            <img src="/assets/img/blog/screen_shot-410.gif" />
+            <img src="/assets/img/blog/screen_shot-412.gif" />
+        </div>
+        <div class="caption">Some problems with Hebrew dictionaries</div>
+    </li>
+    <li>
+        <strong>Image handling</strong><br/>
+        Some .bgl files seem to contain embedded images. This thread may have a hint about the right way to extract resources, written in C++.
+    </li>
+</ol>
+
+
+<h3>Where?</h3>
+<p>
+    The project's sources are now shared as open-source on <a href="https://github.com/" target="_blank">GitHub</a>, which supports unlimited open-source repositories (to learn a bit more about source-control, see my post "<a href="/blog/2012/04/11/setting-up-subversion-source-control.html">Setting Up Subversion Source-Control with Assembla and TortoiseSVN</a>". Although that post refers to Subversion and not Git, you can still get a general idea. Besides using <a href="http://windows.github.com/" target="_blank">GitHub's client on Windows</a> or <a href="http://mac.github.com/" target="_blank">Mac</a> is quite intuitive).<br/>
+    Everyone is now allowed to get a copy of the repository, apply changes and sync-in improvements.
+</p>
+
+<p>Here's a link to the repository: <a href="https://github.com/alonrotem/BabylonToHtml" target="_blank">BabylonToHtml</a> (or click the screenshot below).</p>
+
+<a href="https://github.com/alonrotem/BabylonToHtml" target="_blank"><img src="/assets/img/blog/github1.png" class="nolightbox" style="border: 1px solid black;"/></a>
+<div class="caption">BabylonToHtml on GitHub</div>
+
+<h2>Additional resources for code-contributors</h2>
+As I stated in the <a href="/blog/2012/06/29/using-babylon-based-dictionaries-on.html">original post</a>, Babylon's .bgl format is well known and there are other online projects which parse it, some of which were suggested by commentators of the post directly and some by email.<br/>
+Personally I suspect they all yield from one single reverse-engineered implementation, because of the suspicious similarity in names of variables and embedded comments.<br/>
+Here are a few of those projects, which may be useful for anyone who'd like to contribute to this project's code and its known issues listed above:
+<ul>
+    <li><a href="http://freecode.com/projects/dictconv" target="_blank">dictconv</a>: This is the code I've used in my BabylonToHtml, with slight modifications and changes.</li>
+    <li>Forum thread: <a href="http://www.woodmann.com/forum/showthread.php?7028#post44981" target="_blank">BGL (babylon glossary) to GLS (babylon glossary source)</a> (C++ implementation). This one may also handle resources, such as images, embedded into the .bgl file.</li>
+    <li><a href="https://github.com/mgreen/bgl-reverse" target="_blank">BGL-Reverse</a> - another open-source reverse engineered BGL parser (Python).</li>
+    <li><a href="http://sourceforge.net/projects/pyglossary/" target="_blank">PyGlossary</a> - yet another open-source reverse engineered BGL parser, this one is also in Python.</li>
+</ul>
+
+
+<h2 id="prebuilt">Pre-Built Dictionaries!</h2>
+<p>
+    I'll share here links to pre-built .prc files which were converted from Babylon .bgl files using my tool.<br/>
+    To deploy/use them, simply transfer them to your Kindle device, as explained on step 4 of the previous post, see <a href="/blog/2012/06/29/using-babylon-based-dictionaries-on.html">this link</a>.
+</p>
+
+<table class="gridded-table" border="1" bordercolor="black" cellpadding="3" cellspacing="0" style="width: 100%;">
+    <tbody>
+    <tr style="background-color: yellow;"><td><b>File</b></td><td><b>Source Language</b></td><td><b>Destination Language</b></td><td><b>Notes</b></td></tr>
+    
+    <!-- Babylon English Hebrew - Reversed Words.prc -->
+    <tr>
+        <td>
+            <a href="/assets/attachments/Babylon%20English%20Hebrew%20-%20Reversed%20Words.prc">
+                <div>
+                    <img src="/assets/img/blog/dictionary.png" class="d-inline nolightbox" style="margin-right: 10px;">
+                    Babylon English Hebrew - Reversed Words.prc
+                </div>
+            </a>
+        </td>
+        <td>English</td><td>Bulgarian</td><td>By Alon Rotem</td>
+    </tr>
+    
+    <!-- Babylon English-Hebrew Dictionary.prc -->
+    <tr>
+        <td>
+            <a href="/assets/attachments/Babylon%20English-Bulgarian%20dictionary.prc">
+                <div>
+                    <img src="/assets/img/blog/dictionary.png" class="d-inline nolightbox" style="margin-right: 10px;">
+                    Babylon English-Hebrew Dictionary.prc
+                </div>
+            </a>
+    </td><td>English</td><td>Hebrew</td><td>22/03/2013 Contributed by a reader of the blog, Made with <a href="http://sourceforge.net/projects/pyglossary/" target="_blank">pyglossary</a>.<br />
+    Text that has both Hebrew and non-Hebrew (like numbers, latin characters, parenthesis, etc.)  in the same paragraph is handled better, word aliasing (e.g. write/wrote/written --&gt; write) is added.
+    The Hebrew text is right aligned (still words still need to be read from bottom to top).<br />
+    <b>Tested on:</b> Kindle 3 with v3.4, Kindle Keyboard with v3.4</td></tr>
+    
+    <!-- Babylon English-Hebrew Dictionary (Kindle Voyage version).prc -->
+    <tr><td>
+        <a href="/assets/attachments/Babylon%20English-Hebrew%20Dictionary%20(Kindle%20Voyage%20version).prc">
+            <div>
+                <img src="/assets/img/blog/dictionary.png" class="d-inline nolightbox" style="margin-right: 10px;">
+                Babylon English-Hebrew Dictionary (Kindle Voyage version).prc
+            </div>
+        </a>        
+    </td><td>English</td><td>Hebrew</td><td>25/05/2015 Contributed by a reader of the blog, Made with <a href="http://sourceforge.net/projects/pyglossary/" target="_blank">pyglossary</a>.<br />
+    This dictionary had layout issues (lines were overflowing the width of the screen) when using the default Kindle Voyage font (Caecilia size 4), thus it was forced to break 40 character lines. It may have layout issues if a non-default font is used.<br />
+    <b>Tested on:</b> Kindle Voyage, Kindle Paperwhite (Firmware 5.6.1.1)</td></tr>
+    
+    <!-- Babylon English-Hebrew Dictionary - MG Reversed Words.prc -->
+    <tr><td>
+        <a href="/assets/attachments/Babylon%20English-Hebrew%20Dictionary%20-%20MG%20Reversed%20Words.prc">
+            <div>
+                <img src="/assets/img/blog/dictionary.png" class="d-inline nolightbox" style="margin-right: 10px;">
+                Babylon English-Hebrew Dictionary - MG Reversed Words.prc
+            </div>
+        </a>
+    </td><td>English</td><td>Hebrew</td><td>25/03/2013 Contributed by a reader of the blog, Made with <a href="http://sourceforge.net/projects/pyglossary/" target="_blank">pyglossary</a>.<br />
+    Similar to "Babylon English-Hebrew Dictionary.prc" from 22/03/2013 but the letters are reversed in each word (still words still need to be read from bottom to top).<br />
+    <b>Should be working on:</b> Kindle Paperwhite.</td></tr>
+    
+    <!-- Babylon Russian English.prc -->
+    <tr><td>
+        <a href="/assets/attachments/Babylon_Russian_English.prc">
+            <div>
+                <img src="/assets/img/blog/dictionary.png" class="d-inline nolightbox" style="margin-right: 10px;">
+                Babylon Russian English.prc
+            </div>
+        </a>
+    </td><td>Russian</td><td>English</td><td>09/07/2013 Contributed by Simon Brenncke.<br />
+    <b>Tested on:</b> Kindle 4</td></tr>
+    
+    <!-- A Spanish English Dictionary Granada University Spain.prc -->
+    <tr><td>
+        <a href="/assets/attachments/A_Spanish_English_Dictionary_Granada_University_Spain.prc">
+            <div>
+                <img src="/assets/img/blog/dictionary.png" class="d-inline nolightbox" style="margin-right: 10px;">
+                A Spanish English Dictionary Granada University Spain.prc
+            </div>
+        </a>
+    </td><td>Spanish</td><td>English</td><td>15/05/2013 Contributed by <a href="http://www.linkedin.com/in/claudioacevedocastillo" target="_blank">Claudio Acevedo</a>.<br />
+    <b>Tested on:</b> Kindle Paperwhite</td></tr>
+    
+    <!-- A Spanish English Dictionary Granada University Spain.prc -->
+    <tr><td>
+        <a href="/assets/attachments/An_English_Spanish_Dictionary_Granada_University_Spain.prc">
+            <div>
+                <img src="/assets/img/blog/dictionary.png" class="d-inline nolightbox" style="margin-right: 10px;">
+                An English Spanish Dictionary Granada University Spain.prc
+            </div>
+        </a>
+    </td><td>English</td><td>Spanish</td><td>15/05/2013 Contributed by <a href="http://www.linkedin.com/in/claudioacevedocastillo" target="_blank">Claudio Acevedo</a>.<br />
+    <b>Tested on:</b> Kindle Paperwhite<br />
+    <br /></td></tr>
+    </tbody></table>

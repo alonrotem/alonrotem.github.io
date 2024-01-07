@@ -40,7 +40,6 @@ collections_dir: info
 pagination:
   enabled: true
   per_page: 9
-  offset: 2
   permalink: '/page/:num/'
   title: ':title - page :num of :max'
   limit: 0

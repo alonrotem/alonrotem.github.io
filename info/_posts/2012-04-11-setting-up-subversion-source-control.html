@@ -34,57 +34,58 @@ subtitle: A full cycle
 </p>
 
 <p>
-<h2>Table of Contents</h2>
+<h2 id="toc">Table of Contents</h2>
 <p>
     Since this is quite an extensive post, I decided to include a table of contents.
 </p>
 <ul>
-    <li><a href="#">Particles of a Source-Control System</a></li>
-    <li><a href="#">Download List</a></li>
-    <li><a href="#">VCS for Cheap Bastards: Free Open-Source Solutions</a>
+    <li><a href="#particles">Particles of a Source-Control System</a></li>
+    <li><a href="#download">Download List</a></li>
+    <li><a href="#foss">VCS for Cheap Bastards: Free Open-Source Solutions</a>
         <ul>
-            <li><a href="#">My choice: Subversion</a></li>
+            <li><a href="#subver">My choice: Subversion</a></li>
         </ul>
     </li>
-    <li><a href="#">The Sky is not the Limit: Store It in the Cloud</a>
+    <li><a href="#cloudstore">The Sky is not the Limit: Store It in the Cloud</a>
     <ul>
-        <li><a href="#">My choice: Assembla</a></li>
+        <li><a href="#cloudwhere">Where?</a></li>
+        <li><a href="#cloudchoice">My choice: Assembla</a></li>
     </ul>
     </li>
-    <li><a href="#">Breakdown of the Procedure</a></li>
-    <li><a href="#">Getting Started: Create the Repository Locally</a>
+    <li><a href="#breakdown">Breakdown of the Procedure</a></li>
+    <li><a href="#createlocally">Getting Started: Create the Repository Locally</a>
         <ul>
-            <li><a href="#">Install preliminary tools</a></li>
-            <li><a href="#">Create a separate repository folder (server)</a></li>
-            <li><a href="#">Move your code to the repository</a></li>
-            <li><a href="#">Create a working folder (client)</a></li>
-            <li><a href="#">Don't keep unnecessary binaries in your repository!</a></li>
+            <li><a href="#installpreliminary">Install preliminary tools</a></li>
+            <li><a href="#createrepofolder">Create a separate repository folder (server)</a></li>
+            <li><a href="#moveyourcode">Move your code to the repository</a></li>
+            <li><a href="#createclientfolder">Create a working folder (client)</a></li>
+            <li><a href="#ignorebins">Don't keep unnecessary binaries in your repository!</a></li>
         </ul>
     </li>
-    <li><a href="#">Moving It to the Cloud: Getting Started with Assembla</a>
+    <li><a href="#assemblagettingstarted">Moving It to the Cloud: Getting Started with Assembla</a>
         <ul>
-            <li><a href="#">Create a dump of your local repository</a></li>
-            <li><a href="#">Set up your SVN hosting space</a></li>
-            <li><a href="#">Create a working folder (client)</a></li>
+            <li><a href="#dump">Create a dump of your local repository</a></li>
+            <li><a href="#hosting">Set up your SVN hosting space</a></li>
+            <li><a href="#workingfoler">Create a working folder (client)</a></li>
         </ul>
     </li>
-    <li><a href="#">Improved User Experience</a>
+    <li><a href="#improvedux">Improved User Experience</a>
         <ul>
-            <li><a href="#">Important note: Know the version of your repository!</a></li>
-            <li><a href="#">Commercial tool: Syncro SVN Client</a></li>
-            <li><a href="#">Free tool with a paid option: Vercue</a></li>
+            <li><a href="#noteversion">Important note: Know the version of your repository!</a></li>
+            <li><a href="#syncrosvn">Commercial tool: Syncro SVN Client</a></li>
+            <li><a href="#vercue">Free tool with a paid option: Vercue</a></li>
         </ul>
     </li>
-    <li><a href="#">Use Your Repository Like a Boss: Take It into Visual Studio!</a>
+    <li><a href="#useinvs">Use Your Repository Like a Boss: Take It into Visual Studio!</a>
         <ul>
-            <li><a href="#">My choice: AnkhSVN</a></li>
-            <li><a href="#">Working side-by-side with TFS: Set your solution's source control</a></li>
-            <li><a href="#">Behind the scenes</a></li>
+            <li><a href="#ankhsvn">My choice: AnkhSVN</a></li>
+            <li><a href="#withtfs">Working side-by-side with TFS: Set your solution's source control</a></li>
+            <li><a href="#behindthescenes">Behind the scenes</a></li>
         </ul>
     </li>
 </ul>
 </p>
-<h2>Particles of a Source-Control System</h2>
+<h2 id="particles">Particles of a Source-Control System</h2>
 <p>
     Usually on a source-control system the project's code resides in a database on central server (commonly referred to as the "<strong>repository</strong>"). Clients can connect to the server and retrieve the project's code files from it.
 </p>
@@ -94,7 +95,9 @@ subtitle: A full cycle
 <p>Some systems (e.g. Microsoft's Visual Source Safe) allow only a single user make changes in a specific file at a time, while others (like Microsoft Team Foundation Server) allow multiple users to make changes concurrently.</p>
 <p>Each file's history of changes it kept on the server, thus it can be reverted to any of its previous states. Additional common features usually include the ability to mark all the files in the project with a label (e.g. "Code version 1.3") at some given point in time, thus versions of the entire project can be managed and retrieved. Another option is to duplicate the entire project into a separate directory, thus creating 2 versions which can evolve in different directions. This action is called <strong>fork</strong> (Microsoft calls it "<strong>branch</strong>"). Separate forked branches can also be re-merged into one another (surprisingly Microsoft also calls this action "<strong>merge</strong>").</p>
 
-<h2>Download List</h2>
+<p><a href="#toc"><i class="fa-solid fa-arrow-up-wide-short"></i> Back to Table of Contents</a></p>
+
+<h2 id="download">Download List</h2>
 Quick link list to the downloads mentioned in this post:
 
 <ul>
@@ -107,16 +110,26 @@ Quick link list to the downloads mentioned in this post:
     <li><a href="http://winmerge.org/" target="_blank">WinMerge</a>, My favourite free code diff tool.</li>
 </ul>
 
-<h2>VCS for Cheap Bastards: Free Open-Source Solutions</h2>
+<p><a href="#toc"><i class="fa-solid fa-arrow-up-wide-short"></i> Back to Table of Contents</a></p>
+
+
+<h2 id="foss">VCS for Cheap Bastards: Free Open-Source Solutions</h2>
 <p>
     Git, Mercurial, Bazaar and Subversion (a.k.a SVN, by Apache) are 4 commonly used open-source solutions, each consists of a source-control proprietary repository schema, an API and several compatible tools (clients and server implementations, IDE and desktop integration etc). Some of those tools  are free and some commercially paid. They all also support remote usage over HTTP based on well-documented REST services, thus they can be stored online.<br/>
     Git and Subversion seem to be the most commonly used repository types. There are many more, which can be seen and compared in <a href="http://en.wikipedia.org/wiki/Comparison_of_revision_control_software" target="_blank">this Wikipedia article</a>.
 </p>
 
-<h3>My choice: Subversion</h3>
+<p><a href="#toc"><i class="fa-solid fa-arrow-up-wide-short"></i> Back to Table of Contents</a></p>
+
+
+<h3 id="subver">My choice: Subversion</h3>
 After a short and painful trial with <strong>Mercurial</strong> and a short shallow glance at <strong>Git</strong>, I came to the conclusion that <strong>Subversion</strong> is the more user-friendly of the four options and decided to go with it (thus I won't be writing much about the other solutions).
 
-<h2>The Sky is not the Limit: Store It in the Cloud</h2>
+
+<p><a href="#toc"><i class="fa-solid fa-arrow-up-wide-short"></i> Back to Table of Contents</a></p>
+
+
+<h2 id="cloudstore">The Sky is not the Limit: Store It in the Cloud</h2>
 <h3>Why store your code online?</h3>
 <ul>
     <li>It makes sharing it among developers easy.</li>
@@ -125,7 +138,11 @@ After a short and painful trial with <strong>Mercurial</strong> and a short shal
     <li>Easy to connect to your code from more than one machine.</li>
     <li>It's a reliable backup for your code with all its changes</li>
 </ul>
-<h3>Where?</h3>
+
+<p><a href="#toc"><i class="fa-solid fa-arrow-up-wide-short"></i> Back to Table of Contents</a></p>
+
+
+<h3 id="cloudwhere">Where?</h3>
 <p>Well, the answer to that question partially depends on how private you need your project's code to be; Whether you are working on a private project which should be restricted and secured, or you are working on an open-source project and you have no problem sharing it with the rest of the world.</p>
 <p>Other factors are the size of your project, the number of individual users who will be working on it, whether you require additional features (like task/bug tracking) and, of course, how cheap a bastard you are.</p>
 <p>There are quite a few websites that offer (some free and some paid) storage of source-control repositories. Many of them are compatible with at least one of the 4 source-control systems listed above.</p>
@@ -309,7 +326,10 @@ After a short and painful trial with <strong>Mercurial</strong> and a short shal
     </td></tr>
     </tbody></table>
 
-<h3>My choice: Assembla</h3>
+    <p><a href="#toc"><i class="fa-solid fa-arrow-up-wide-short"></i> Back to Table of Contents</a></p>
+
+
+<h3 id="cloudchoice">My choice: Assembla</h3>
 After reviewing the above options, and a couple more, my clear winner was Assembla:
 <ul>
     <li>Free, up to 1 GB.</li>
@@ -318,12 +338,35 @@ After reviewing the above options, and a couple more, my clear winner was Assemb
     <li>Gets extra points for containing the word Ass in its name.</li>
 </ul>
 I have ruled out the popular bitbucket since it supports only Git and Mercurial repositories, and also due to their somewhat unorthodox work methodologies...
-<iframe width="560" height="315" src="https://www.youtube.com/embed/8wUOUmeulNs?si=g2go_WD00ces6rEe" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+{% include blog/embed-youtube.html code="8wUOUmeulNs" %}
 
-<h2>Getting Started: Create the Repository Locally</h2>
+<p><a href="#toc"><i class="fa-solid fa-arrow-up-wide-short"></i> Back to Table of Contents</a></p>
+
+
+<h2 id="breakdown">Breakdown of the Procedure</h2>
+<p>The process which I'm going to provide here consists of a number of steps. Perhaps not all of them are necessary for you, but I give them fully in order to give a good explanation of how Subversion works locally as well as online:</p>
+<ul>
+    <li><strong>The starting point</strong>: I have my local code in a local standalone folder.</li>
+    <li>Create an empty local Subversion repository in a local folder.</li>
+    <li>Copy my code from my local standalone folder into the newly created repository.</li>
+    <li>Get code from the local repository to an empty folder, which will now be a working code folder associated with the local repository.</li>
+    <li>Create a dump of the local repository in an archived file.</li>
+    <li>Create an online Subversion hosting account.</li>
+    <li>Upload the archived repository to the online hosting service.</li>
+    <li>Get code from the online repository to an empty local folder. This folder will now be a working code folder associated with the online repository.</li>
+</ul>
+
+
+<p><a href="#toc"><i class="fa-solid fa-arrow-up-wide-short"></i> Back to Table of Contents</a></p>
+
+
+<h2 id="createlocally">Getting Started: Create the Repository Locally</h2>
 <p>Now that I have chosen my source control implementation type (Subversion, i.e. SVN) and where to store it (Assembla), I need to create an SVN repository of my code.</p>
 
-<h3>Install preliminary tools</h3>
+<p><a href="#toc"><i class="fa-solid fa-arrow-up-wide-short"></i> Back to Table of Contents</a></p>
+
+
+<h3 id="installpreliminary">Install preliminary tools</h3>
 <p>
     In order to start working with SVN and produce the repository, the basic binaries need to be installed.<br/>
 
@@ -335,7 +378,7 @@ I have ruled out the popular bitbucket since it supports only Git and Mercurial 
 
 </p>
 
-<h3>Create a separate repository folder (server)</h3>
+<h3 od="createrepofolder">Create a separate repository folder (server)</h3>
 <p>
     To get started working in a source-control mode, we now need to split our code location in 2: We need a folder to contain an SVN managed repository database (server), and a work folder where where we can retrieve versions of the files and submit changes to them (client).
 </p>
@@ -354,7 +397,10 @@ I have ruled out the popular bitbucket since it supports only Git and Mercurial 
 
 <p>This folder now acts as our Subversion repository server.</p>
 
-<h3>Move your code to the repository</h3>
+<p><a href="#toc"><i class="fa-solid fa-arrow-up-wide-short"></i> Back to Table of Contents</a></p>
+
+
+<h3 id="moveyourcode">Move your code to the repository</h3>
 Now to import some code to the empty repository. Doing that is as easy as right-clicking the code's folder and selecting TortoiseSVN <i class="fa-solid fa-arrow-right"></i> Import...
 
 <img src="/assets/img/blog/ImportMyProjIntoRepository.png" title="Import my project into a Subversion repository"/>
@@ -375,7 +421,10 @@ Now to import some code to the empty repository. Doing that is as easy as right-
 <img src="/assets/img/blog/ImportMyProjIntoRepository3.png" title="Congratulations! Version 1 is created in the repository."/>
 <div class="caption">Congratulations! Version 1 is created in the repository.</div>
 
-<h3>Create a working folder (client)</h3>
+<p><a href="#toc"><i class="fa-solid fa-arrow-up-wide-short"></i> Back to Table of Contents</a></p>
+
+
+<h3 id="createclientfolder">Create a working folder (client)</h3>
 <p>Hurray! Now we have a copy of our code in a SVN repository database (in a local folder). This repository folder acts as a source or server from which the code can be retrieved, and to which changes can be submitted (by one or more clients).</p>
 <p><strong>One important thing to note</strong> is that the 2 folders (the repository folder, and the folder from which the code was imported) are not connected at the moment at all. That is, there is no Subversion client-server relation between them. Now it's time to establish this relation.</p>
 <p>Actually, a good practice at this stage is to start with an empty folder, and let Subversion manage its content.</p>
@@ -402,7 +451,10 @@ Now to import some code to the empty repository. Doing that is as easy as right-
 <img src="/assets/img/blog/SVNCheckout5S.png" title="The content of the folder reflects source-control status"/>
 <div class="caption">The content of the folder reflects source-control status</div>
 
-<h3>Don't keep unnecessary binaries in your repository!</h3>
+<p><a href="#toc"><i class="fa-solid fa-arrow-up-wide-short"></i> Back to Table of Contents</a></p>
+
+
+<h3 id="ignorebins">Don't keep unnecessary binaries in your repository!</h3>
 <p>
     It's good practice to keep everything you need for your project to build in the repository. It's uncommon to keep the built outputs, which are created in the Bin and Obj folders.<br/>
     If Subversion adds your binary outputs to the repository, you can easily remove them and set Subversion to ignore them in the future. This can be done by name or extension, at the folder level or at the files level.<br/>
@@ -412,10 +464,16 @@ Now to import some code to the empty repository. Doing that is as easy as right-
 <img src="/assets/img/blog/IgnoreFiles.png" title="Delete and ignore unneeded items"/>
 <div class="caption">Delete and ignore unneeded items</div>
 
-<h2>Moving It to the Cloud: Getting Started with Assembla</h2>
+<p><a href="#toc"><i class="fa-solid fa-arrow-up-wide-short"></i> Back to Table of Contents</a></p>
+
+
+<h2 id="assemblagettingstarted">Moving It to the Cloud: Getting Started with Assembla</h2>
 <p>It's time to discard the local repository and upload it to the cloud. Most of the steps are pretty self-explanatory, but I'll provide a quick screenshot-illustrated walkthrough with some important commentary.</p>
 
-<h3>Create a dump of your local repository</h3>
+<p><a href="#toc"><i class="fa-solid fa-arrow-up-wide-short"></i> Back to Table of Contents</a></p>
+
+
+<h3 id="dump">Create a dump of your local repository</h3>
 <p>
     To make it easy to move your entire repository (that includes the project sources, history of tracked changes etc), it's possible to dump it into a backup file first.<br/>
     This is done with Subversion's command line tool named <stong>SvnAdmin</stong>.It's included in various Subversion implementations, including Slik SVN mentioned above. The syntax is:
@@ -428,7 +486,10 @@ Now to import some code to the empty repository. Doing that is as easy as right-
     Once we have a zipped dump, we're good to go.
 </p>
 
-<h3>Set up your SVN hosting space</h3>
+<p><a href="#toc"><i class="fa-solid fa-arrow-up-wide-short"></i> Back to Table of Contents</a></p>
+
+
+<h3 id="hosting">Set up your SVN hosting space</h3>
 <p>
     Go to Assembla, create an account, confirm it by email and log in (if don't know how to do that, we really need to talk).<br/>
     Under "My Start" you should "Create your own space". This space will host your repository, so pay attention on the following steps.
@@ -463,7 +524,10 @@ Now to import some code to the empty repository. Doing that is as easy as right-
 <img src="/assets/img/blog/Assembla9.png" title="Congrats! Your repository is now online!">
 <div class="caption">Congrats! Your repository is now online!</div>
 
-<h3>Create a working folder (client)</h3>
+<p><a href="#toc"><i class="fa-solid fa-arrow-up-wide-short"></i> Back to Table of Contents</a></p>
+
+
+<h3 id="workingfoler">Create a working folder (client)</h3>
 <p>
     In order to work with a client on the online repository, we need to create a working folder, just like we did with the local repository.<br/>
     The first step is similar: Right click the folder and select SVN Checkout...
@@ -483,18 +547,27 @@ Now to import some code to the empty repository. Doing that is as easy as right-
     The local repository folder can now be discarded.</p>
 
 
-<h2>Improved User Experience</h2>
+    <p><a href="#toc"><i class="fa-solid fa-arrow-up-wide-short"></i> Back to Table of Contents</a></p>
+
+
+<h2 id="improvedux">Improved User Experience</h2>
 <p>
     TortoiseSVN (in Windows Exploerer) and Slik SVN (via the command line) provide all the tools I need now to manage my code. It's easy to update a file, submit changes and perform any action on my Subversion repository, both locally and online.<br/>
     However, in terms of user experience, the situation is far below par. Luckily there are many client solutions. Again, some are paid and some are free open-source. Here is a Wikipedia article with a comprehensive list of  Subversion clients. I have tested a few of those solutions, and I'll list here the 2 which made the best impression so far.
 </p>
 
-<h3>Important note: Know the version of your repository!</h3>
+<p><a href="#toc"><i class="fa-solid fa-arrow-up-wide-short"></i> Back to Table of Contents</a></p>
+
+
+<h3 id="noteversion">Important note: Know the version of your repository!</h3>
 <p>
     One important note when it comes to Subversion repositories: Subversion is being developed by Apache and keeps evolving as a product. There are differences between repositories of version 1.6 and version 1.7.4, and not every tool supports every version. When working with TortoiseSVN or Slik SVN and when creating your repository online or offline, it's good to know which version of Subversion you are working with.<br/>
     When installing client tools, be sure they support your repository version.
 </p>
-<h3>Commercial tool: Syncro SVN Client</h3>
+<p><a href="#toc"><i class="fa-solid fa-arrow-up-wide-short"></i> Back to Table of Contents</a></p>
+
+
+<h3 id="syncrosvn">Commercial tool: Syncro SVN Client</h3>
 <p>
     Syncro SVN Client is a very nice client Subversion application. It's has a very intuitive and easy to use user interface. It allows management of multiple repositories, both online and offline and supports all the main features of Subversion.<br/>
     I have tested version 7.2, which was the latest version at the time this post was written, and at the moment the <strong>supported Subversion version is 1.6</strong>. Thus, for example, it failed to detect my working copy folder with Subversion 1.7.4 as being under source control.<br/>
@@ -507,7 +580,7 @@ Now to import some code to the empty repository. Doing that is as easy as right-
 <img src="/assets/img/blog/SyncroSVN2.png" title="Syncro SVN History Management">
 <div class="caption">Syncro SVN History Management</div>
 
-<h3>Free tool with a paid option: Vercue</h3>
+<h3 if="vercue">Free tool with a paid option: Vercue</h3>
 <p>
     Yes, it's true Vercue has a paid professional version too with extra features, but on a small scale I tried the free version and was very satisfied with it.<br/>
     Vercue supports Subversion 1.7.4 (the latest), works fluently with my online and offline repositories. Good intuitive user interface, and everything a Subversion user needs in one place.<br/>
@@ -517,10 +590,16 @@ Now to import some code to the empty repository. Doing that is as easy as right-
 <div class="caption">Vercue - "The Reasonable Subversion Experience"</div>
 
 
-<h2>Use Your Repository Like a Boss: Take It into Visual Studio!</h2>
+<p><a href="#toc"><i class="fa-solid fa-arrow-up-wide-short"></i> Back to Table of Contents</a></p>
+
+
+<h2 id="useinvs">Use Your Repository Like a Boss: Take It into Visual Studio!</h2>
 <p>In case you are, like me, working with Visual Studio, going back and forth to an external client application is a bit uncomfortable. Integrating Subversion directly into Visual Studio improves the work experience tremendously. With a good tool at hand, you don't have to leave your development environment at all!</p>
 
-<h3>My choice: AnkhSVN</h3>
+<p><a href="#toc"><i class="fa-solid fa-arrow-up-wide-short"></i> Back to Table of Contents</a></p>
+
+
+<h3 id="ankhsvn">My choice: AnkhSVN</h3>
 <p>There are 2 leading extensions for Visual Studio: The paid Visual SVN and the free (and awesome!) AnkhSVN. I have tried both, and I am very impressed with AnkhSVN.</p>
 <p>AnkhSVN has gone quite a way from being a Visual Studio extension to a full-blown Source-Control plugin working directly from within the IDE. If you've worked with VSS or TFS, working with AnkhSVN would be as easy as cake. Many of the features you're used to are already there just where you'd expect them to be.</p>
 <p>Here are a few appetizing screenshots:</p>
@@ -539,7 +618,10 @@ Now to import some code to the empty repository. Doing that is as easy as right-
 <img src="/assets/img/blog/Ankh5.png" title="Use your favourite diff tool! (Mine is the free awesome WinMerge">
 <div class="caption">Use your favourite diff tool! (Mine is the free awesome <a href="http://winmerge.org/" target="_blank">WinMerge</a>)</div>
 
-<h3>Working side-by-side with TFS: Set your solution's source control</h3>
+<p><a href="#toc"><i class="fa-solid fa-arrow-up-wide-short"></i> Back to Table of Contents</a></p>
+
+
+<h3 id="withtfs">Working side-by-side with TFS: Set your solution's source control</h3>
 <p>
 
     You may want to open your Subversion-controlled solution in a place where TFS is used (e.g. in your workplace). It's possible to explicitly set your project to know it's under Subversion control (thus automatically load with AnkhSVN and not with the default TFS).
@@ -568,7 +650,10 @@ Now to import some code to the empty repository. Doing that is as easy as right-
     Other solutions will be opened regularly to work with TFS.
 </p>
 
-<h3>Behind the scenes:</h3>
+<p><a href="#toc"><i class="fa-solid fa-arrow-up-wide-short"></i> Back to Table of Contents</a></p>
+
+
+<h3 id="behindthescenes">Behind the scenes:</h3>
 <p>
     This action adds a few lines in the .sln file and in its .csproj files which relate them to the right source-control.<br/>
     Those lines can also be added manually (although, why?).<br/>
@@ -668,3 +753,7 @@ EndGlobal
 &nbsp;&nbsp;--&gt;<br/>
 &nbsp;&lt;/Project&gt;
 </div>
+
+
+<p><a href="#toc"><i class="fa-solid fa-arrow-up-wide-short"></i> Back to Table of Contents</a></p>
+

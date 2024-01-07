@@ -9,22 +9,30 @@ pagination:
     <div class="row">
         <h1 style="text-align: center; margin: 30px 0px;"><span style="color: #3498db">Alon in the World:</span> The blog</h1>
     </div>
+
+    <!-- display this information only on the first page of the posts list-->
+    {% unless paginator.previous_page  %}
+    <p style="margin-bottom: 30px 0;">
+        {% assign visible_posts_count = site.posts | where: "hidden", false | size %}
+        
+        
+            This blog was started back in the day, <a href="/blog/2011/08/23/insomniac.html">on August 2011</a>, contains now {{ visible_posts_count }} posts.<br/>
+            It was formerly hosted with this domain on <a href="https://alonintheworld.blogspot.com/" target="_blank">Google's Blogger</a>, 
+            and now moved to <a href="https://github.com/alonrotem/alonrotem.github.io" target="_blank">Github</a>, hosted with <a href="https://pages.github.com/" target="_blank">Github Pages</a>, and added a full comprehensive informative site around it.<br/>
+            It was rebuilt with <a href="https://jekyllrb.com/" target="_blank">Jekyll</a>, frontend based on <a href="https://getbootstrap.com/" target="_blank">Bootstrap</a> and a few additional libraries, integrated with <a href="https://disqus.com/" target="_blank">Disqus</a> and a deployment process with <a href="https://github.com/features/actions" target="_blank">Github Actions</a>.
+    </p>
+    {% endunless %}
     <div style="display: flex;
     flex-wrap: nowrap;
     /* align-content: center; */
     justify-content: flex-end;
-    align-items: center;">
+    align-items: center; margin-bottom: 30px;">
     <div>
         <form id="search-form" action="#" style="display:inline">
             {% include blog/search-box.html placeholder_text = "Search posts..." %}
         </form>
     </div>
     </div>
-    <p>
-        <!-- HTML elements for search -->
-    
-
-    </p>
     <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-3 g-3">
         {% assign visible_posts = paginator.posts %}
         {% for post in visible_posts %}
