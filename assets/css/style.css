@@ -1502,11 +1502,13 @@ Blog posts
 	margin-bottom: 20px;
 }
 
+/*
 .blogpost img.post-image {
 	margin: 0px;
 	float: right; 
 	width: 35%;
 }
+*/
 
 .blogpost img:not(.post-image):not(.nolightbox) {
 	border: 1px solid black;

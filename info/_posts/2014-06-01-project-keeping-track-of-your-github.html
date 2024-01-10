@@ -1,0 +1,126 @@
+---
+title: "Keeping Track of your GitHub Open Issues in Real Time"
+tags:
+    -  .NET
+    - C#
+    - GitHub
+    - Internet
+    - Open source
+    - Sample projects
+    - Source control
+redirect_from: /2014/06/project-keeping-track-of-your-github.html
+image: /assets/img/blog/fsm.png
+hidden: false
+subtitle: A project
+---
+<h2>The need</h2>
+<p>
+    Since <a href="http://www.sitefinity.com/documentation" target="_blank">my team</a> started working more and more on open-source projects, which are publicly shared on <a href="http://www.github.com/" target="_blank">GitHub</a>, I faced a need to have an easy way to follow up whenever new issues (GitHub's euphemism of bugs) were submitted by users.
+</p>
+<p>
+    There is a way to keep track by "<a href="https://github.com/watching" target="_blank">watching</a>" repositories of your choice, for which you get email notifications, but those emails are not limited just to newly submitted issues, but also to every pull/push request and comments. Also, for some reason, although I have clearly unsubscribed ("unwatched") specific repositories on my list, GitHub continues to notify me about them (which seems to be an issue in itself).
+</p>
+<p>Thus, I decided (as always) to take things to my own lazy hands, and spent ~2 days building my very own GitHub Issues Notifier.</p>
+
+
+<div style="clear:both;">
+    <a href="https://github.com/alonrotem/GithubIssuesNotifier" target="_blank"><img class="nolightbox" src="/assets/img/blog/AboutDialog.png" /></a>
+    <div class="caption"><a href="https://github.com/alonrotem/GithubIssuesNotifier" target="_blank">Get it on GitHub!</a></div>
+</div>
+
+<h2>GitHub Issues Notifier</h2>
+
+<p>
+    This is a .NET Windows Forms application, which runs automatic scheduled scans for open issues in selected GitHub repositories and/or organizations and notifies the user with new findings in real time from the system's notification area (a.k.a. System Tray).<br/>
+    <a href="https://github.com/alonrotem/GithubIssuesNotifier" target="_blank">GitHub Issues Notifier</a> uses <a href="https://github.com/octokit/octokit.net" target="_blank">OctoKit.NET</a> open library to easily integrate with GitHub's API.
+</p>
+
+<h2>Main features</h2>
+<p>A few of the features which are currently included:</p>
+<ul>
+    <li>Allows selection individual repositories and/or entire organizations to follow.</li>
+    <li>Allows hand-picked repositories to be left out and ignored.</li>
+    <li>Runs in the background from Window's notification area (System Tray).</li>
+    <li>Can run automatically when Windows starts-up.</li>
+    <li>Performs automatic scheduled scans for new issues in the background at configurable intervals.</li>
+    <li>Easily performs scans on demand at any time with a single click.</li>
+    <li>Reflects the current status in the notification icon itself (yes, I know design is not my strong side).</li>
+    <li>Allows the definition of an <a href="http://en.wikipedia.org/wiki/Service-level_agreement" target="_blank">SLA</a> in which issues are declared as "late". Namely, if a repository has an open issue which has not been addressed within a certain number of days (or hours), that repository is highlighted as late.</li>
+    <li>Pops up balloon notifications whenever new scan-results are retrieved.</li>
+    <li>Gives a quick overview list of all the tracked repositories, differentiating ones without any open issues, ones with open issues and ones with open issues which are determined as late according to the defined SLA.</li>
+    <li>One-click to get to the repository's issue list on GitHub.</li>
+    <li>Unlike GitHub's "<a href="https://github.com/watching" target="_blank">watches</a>", this does not publicly list you as a watcher on GitHub. Stalk all you want!!1</li>
+    <li>Supports <a href="http://en.wikipedia.org/wiki/Flying_Spaghetti_Monster" target="_blank">pastafarianism</a>.</li>
+</ul>
+Pending features will include concentrated email notifications as well.
+
+<h2>Selected screenshots, or it didn't happen...</h2>
+<p>The notification icon indicates the current status of the scan or its results:</p>
+
+<div style="display: flex;
+flex-direction: row;
+flex-wrap: nowrap;
+justify-content: space-evenly;
+align-items: center;">
+    <div>
+        <img class="nolightbox" src="/assets/img/blog/NotifyIconScanning.png" />
+        <div class="caption">Scanning...</div>
+    </div>
+
+    <div>
+        <img class="nolightbox" src="/assets/img/blog/NotifyIconAllClear.png" />
+        <div class="caption">All is clear!</div>
+    </div>
+</div>
+<p>
+    A balloon popup notification indicates new findings.
+    
+    <img class="nolightbox" src="/assets/img/blog/NotifyIconBalloon.png" />
+    <div class="caption">Balloons!!! You got a problem with that, HATER??</div>
+    
+</p>
+
+<div style="display: flex;
+flex-direction: row;
+flex-wrap: nowrap;
+justify-content: space-evenly;
+align-items: center;">
+    <div>
+        Open issues indicated by icon-colour and overlay text.<br/>
+        An informative tooltip also gives:
+        <ul>
+            <li>The number of open issues</li>
+            <li>The number of late issues</li>
+            <li>The total number of repositories</li>
+            <li>Time elapsed since the last scan</li>
+        </ul>
+    </div>
+    <div>
+        <img class="nolightbox" src="/assets/img/blog/NotifyIconTooltip.png" />
+        <div class="caption">Informative tooltips. Because why the hell not?!</div>
+    </div>
+</div>
+<p>
+    Once the list is refreshed, you get an easy overview of your selected repositories. Ones with late issues are highlighted, others are marked as either red (plus the number of open issues) or green. Clicking a repository sends you right to the repository's issues page on GitHub.
+</p>
+<div style="display: flex;
+flex-direction: row;
+flex-wrap: nowrap;
+justify-content: space-evenly;
+align-items: center;">
+    <div>
+        <img class="nolightbox" src="/assets/img/blog/gif_422x479_1e2651.gif" />
+        <div class="caption">An animated screenshot. You got a problem with that, HATER?</div>
+    </div>
+    <div>
+        <img class="nolightbox" src="/assets/img/blog/NotifierWin_Results.png" />
+        <div class="caption">A quick overview. Click a repository to go to GitHub.</div>
+    </div>
+</div>
+
+<h2>Get it, use it.</h2>
+<ul>
+    <li>To get the full project source, fork it (or download it as zip) <a href="https://github.com/alonrotem/GithubIssuesNotifier" target="_blank">from GitHub</a>.</li>
+    <li>To get just the application without building it, click here. (<em>this link is deprecated</em>)</li>
+</ul>
+If you encounter any bugs or problems, <a href="https://github.com/alonrotem/GithubIssuesNotifier/issues" target="_blank">open an issue on GitHub</a>. I'm keeping track! :-)
