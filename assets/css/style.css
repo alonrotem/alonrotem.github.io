@@ -1635,6 +1635,21 @@ code.wrap-code {
 	height: 100%; 
 }
 
+.blogpost .post-image {
+	float: right;
+	width: 30%;
+	margin-bottom: 35px;
+	margin-left: 35px;
+	height: auto;
+}
+
+.blogpost.hebrew .post-image {
+	float: left;
+	margin-left: 0px;
+	margin-right: 35px;
+	margin-bottom: 35px;
+}
+
 .blogpost .gridded-table td {
 	border: 1px solid black;
 	padding: 5px;
@@ -1642,4 +1657,27 @@ code.wrap-code {
 
 .blogpost .gridded-table td div {
 	display: flex; flex-direction: row; flex-wrap: nowrap; justify-content: flex-start; align-items: center;
+}
+
+.blogpost.hebrew h1 {
+	letter-spacing: 0px;
+	direction: rtl;
+}
+
+.blogpost.hebrew .post_col, .blogpost.hebrew .post_content {
+	direction: rtl;
+}
+
+.blogpost .thumb_gallery {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.blogpost .thumb_gallery img {
+	width: auto;
+	height: 80px;
 }

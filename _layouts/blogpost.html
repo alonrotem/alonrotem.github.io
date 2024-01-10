@@ -4,22 +4,29 @@ disqus: true
 comments: true
 ---
 
+{% if page.tags contains "Hebrew" %}
+    {% assign hebrew_class="hebrew" %}
+{% else %}
+    {% assign hebrew_class="" %}
+{% endif %}
+
+
 <!-- https://customer.io/blog/easy-date-formatting-with-liquid/ -->
 {% assign datestr = page.date | date: "%d %B %Y" %}
-<div class="container blogpost" style="margin-top: 90px;">
+<div class="container blogpost {{ hebrew_class }}" style="margin-top: 90px;">
     <p>{% include blog/breadcrumb.html %}</p>
     <div class="row">
-        <div class="col">
+        <div class="col post_col">
             <h1>{{ page.title }}</h1>
             <p style="font-weight: 900;">{{ page.subtitle }}</p>
             <div class="post-date"><a href="{{ page.url }}">{{ datestr }}</a></div>
 
             {% if page.image %}
-                <img class="post-image" src="{{ page.image }}" style="float: right; width: 30%; margin-bottom: 35px; margin-left: 35px; height: auto;" />
+                <img class="post-image" src="{{ page.image }}"  />
             {% endif %}
                 
             
-            <div>{{ content }}</div>
+            <div class="post_content">{{ content }}</div>
             
             {% if page.attachment and page.attachment.url %}
             {% assign attachment_text = "Download attachment" %}
